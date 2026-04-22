@@ -879,33 +879,186 @@ function escapeHtmlText(s) {
 
 // Render a simple C++ syntax highlight: comments in color, rest in default
 function renderHighlight(code, el) {
-  const lines = code.split("\n");
-  const html = lines
-    .map((line) => {
-      // Escape HTML
-      let escaped = line
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
+  // Minimal C++ tokenizer — good enough for the exam code students write,
+  // not a full lexer. We preserve ALL whitespace/newlines exactly so the
+  // overlay aligns byte-for-byte with the textarea above it.
+  //
+  // Classes (styled in CSS):
+  //   .tk-keyword   — control flow / modifiers (if, else, for, return, ...)
+  //   .tk-type      — built-in types (int, double, char, bool, string, ...)
+  //   .tk-string    — "double-quoted" and 'single-quoted' literals
+  //   .tk-number    — integer / float literals
+  //   .tk-preproc   — #include / #define / other #directives
+  //   .tk-operator  — << >> + - = == != && || etc.
+  //   .c-en / .c-uz — English / Uzbek line comments (existing behavior)
 
-      // Find // comment
-      const idx = escaped.indexOf("//");
-      if (idx !== -1) {
-        const before = escaped.substring(0, idx);
-        const comment = escaped.substring(idx);
-        // Detect Uzbek: (a) has apostrophe-between-letters patterns common in Uzbek like o' and g',
-        // OR (b) contains common Uzbek words. Covers our TODO comment phrasing.
-        const uzHint =
-          /[a-z]'[a-z]|\b(ning|uchun|yoki|agar|har|gacha|dan|kiriting|so'rang|chaqiring|tekshiring|saqlang|hisoblang|topish|oshiring|yozing|qo'shing|eting|sikl[ia]?|massiv(ga|ni)?|sonlar?|sonni|satr|belgi|misol|raqam|qator|bo'lsa|yechim|QADAM)\b/i;
-        const isUzbek = uzHint.test(comment);
-        const cls = isUzbek ? "c-uz" : "c-en";
-        return before + '<span class="' + cls + '">' + comment + "</span>";
+  const KEYWORDS = new Set([
+    "if","else","for","while","do","switch","case","default","break","continue","return",
+    "true","false","null","nullptr","new","delete","this","using","namespace","const","static",
+    "class","struct","public","private","protected","virtual","template","typename","typedef",
+    "throw","try","catch","auto","sizeof","extern","inline","friend","operator",
+  ]);
+  const TYPES = new Set([
+    "int","long","short","double","float","char","bool","void","string","unsigned","signed",
+    "size_t","vector","map","set","pair","std",
+  ]);
+
+  const htmlEscape = (s) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  const uzbekHint =
+    /[a-z]'[a-z]|\b(ning|uchun|yoki|agar|har|gacha|dan|kiriting|so'rang|chaqiring|tekshiring|saqlang|hisoblang|topish|oshiring|yozing|qo'shing|eting|sikl[ia]?|massiv(ga|ni)?|sonlar?|sonni|satr|belgi|misol|raqam|qator|bo'lsa|yechim|QADAM)\b/i;
+
+  const lines = code.split("\n");
+  const htmlLines = lines.map((line) => {
+    // First, carve off any // line-comment so we don't syntax-color it
+    const commentIdx = findLineCommentStart(line);
+    let codePart = line;
+    let commentPart = "";
+    if (commentIdx !== -1) {
+      codePart = line.substring(0, commentIdx);
+      commentPart = line.substring(commentIdx);
+    }
+
+    // Tokenize the non-comment portion
+    let tokenized = "";
+    let i = 0;
+    while (i < codePart.length) {
+      const ch = codePart[i];
+
+      // Preprocessor directive — only at start of line (after optional whitespace)
+      if (ch === "#" && /^\s*#/.test(codePart.substring(0, i + 1))) {
+        // grab to end of line (or end of codePart)
+        const rest = codePart.substring(i);
+        tokenized +=
+          '<span class="tk-preproc">' + htmlEscape(rest) + "</span>";
+        i = codePart.length;
+        continue;
       }
-      return escaped;
-    })
-    .join("\n");
-  // Add trailing space to preserve final newline visually
-  el.innerHTML = html + "\n";
+
+      // String literal "..."
+      if (ch === '"') {
+        let end = i + 1;
+        while (end < codePart.length) {
+          if (codePart[end] === "\\") { end += 2; continue; }
+          if (codePart[end] === '"') { end++; break; }
+          end++;
+        }
+        tokenized +=
+          '<span class="tk-string">' +
+          htmlEscape(codePart.substring(i, end)) +
+          "</span>";
+        i = end;
+        continue;
+      }
+
+      // Char literal '...'
+      if (ch === "'") {
+        let end = i + 1;
+        while (end < codePart.length) {
+          if (codePart[end] === "\\") { end += 2; continue; }
+          if (codePart[end] === "'") { end++; break; }
+          end++;
+        }
+        tokenized +=
+          '<span class="tk-string">' +
+          htmlEscape(codePart.substring(i, end)) +
+          "</span>";
+        i = end;
+        continue;
+      }
+
+      // Number literal (int or float)
+      if (/[0-9]/.test(ch)) {
+        let end = i;
+        while (end < codePart.length && /[0-9.eEfFuUlL]/.test(codePart[end])) end++;
+        tokenized +=
+          '<span class="tk-number">' +
+          htmlEscape(codePart.substring(i, end)) +
+          "</span>";
+        i = end;
+        continue;
+      }
+
+      // Identifier / keyword / type
+      if (/[A-Za-z_]/.test(ch)) {
+        let end = i;
+        while (end < codePart.length && /[A-Za-z0-9_]/.test(codePart[end])) end++;
+        const word = codePart.substring(i, end);
+        if (KEYWORDS.has(word)) {
+          tokenized += '<span class="tk-keyword">' + htmlEscape(word) + "</span>";
+        } else if (TYPES.has(word)) {
+          tokenized += '<span class="tk-type">' + htmlEscape(word) + "</span>";
+        } else {
+          tokenized += htmlEscape(word);
+        }
+        i = end;
+        continue;
+      }
+
+      // Operators / punctuation — group runs of operator chars
+      if (/[<>=!+\-*/%&|^~?:;,.(){}\[\]]/.test(ch)) {
+        let end = i;
+        while (
+          end < codePart.length &&
+          /[<>=!+\-*/%&|^~?:]/.test(codePart[end])
+        ) end++;
+        if (end > i) {
+          tokenized +=
+            '<span class="tk-operator">' +
+            htmlEscape(codePart.substring(i, end)) +
+            "</span>";
+          i = end;
+          continue;
+        }
+        // single punctuation char (;, . ( ) { } [ ] ,) — leave unhighlighted
+        tokenized += htmlEscape(ch);
+        i++;
+        continue;
+      }
+
+      // Whitespace / anything else — preserve exactly
+      tokenized += htmlEscape(ch);
+      i++;
+    }
+
+    // Append the comment (if any), styled English or Uzbek
+    if (commentPart) {
+      const isUzbek = uzbekHint.test(commentPart);
+      const cls = isUzbek ? "c-uz" : "c-en";
+      tokenized +=
+        '<span class="' + cls + '">' + htmlEscape(commentPart) + "</span>";
+    }
+    return tokenized;
+  });
+
+  // Render to overlay. IMPORTANT: do NOT add a trailing "\n" here — the
+  // textarea's value is what the user typed, and our overlay must render
+  // the SAME number of visual rows as the textarea. Adding an extra
+  // newline would make the overlay one row taller than the textarea,
+  // causing scrollTop mirroring to drift by one line at the bottom of
+  // the editor. split()/join() are already symmetric:
+  //   "abc".split("\n")       === ["abc"]       → join → "abc"
+  //   "abc\n".split("\n")     === ["abc", ""]   → join → "abc\n"
+  //   "abc\nxyz".split("\n")  === ["abc","xyz"] → join → "abc\nxyz"
+  // So just joining preserves the exact structure and alignment.
+  el.innerHTML = htmlLines.join("\n");
+}
+
+// Helper: find where a // line comment starts, skipping any // inside strings
+function findLineCommentStart(line) {
+  let inStr = null;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inStr) {
+      if (ch === "\\") { i++; continue; }
+      if (ch === inStr) inStr = null;
+      continue;
+    }
+    if (ch === '"' || ch === "'") { inStr = ch; continue; }
+    if (ch === "/" && line[i + 1] === "/") return i;
+  }
+  return -1;
 }
 
 // ---------------- Progress ----------------
@@ -1004,6 +1157,28 @@ document.addEventListener("paste", (e) => {
     );
   }
 });
+// F5 / Ctrl+R / Cmd+R interception — separate, earlier-priority handler.
+// Uses capture phase so we intercept BEFORE anything else can react.
+// The main keydown handler also checks for these keys as a fallback,
+// but this capture-phase handler is the primary defense.
+document.addEventListener(
+  "keydown",
+  (e) => {
+    if (!examStarted()) return;
+    const k = (e.key || "").toLowerCase();
+    if (k === "f5" || ((e.ctrlKey || e.metaKey) && k === "r")) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      if (typeof showReloadWarningModal === "function") {
+        showReloadWarningModal();
+      }
+      return false;
+    }
+  },
+  true, // capture phase — runs before bubbling handlers
+);
+
 document.addEventListener("keydown", (e) => {
   if (!examStarted()) return;
   const k = e.key.toLowerCase();
