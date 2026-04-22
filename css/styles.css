@@ -928,15 +928,25 @@ input[type="text"], textarea, select {
   border:1.5px solid var(--line);
   border-radius:8px;
   background:#1e1e1e;
-  /* Was: overflow:hidden + min-height:340px. Changed to allow the editor
-     to grow naturally with content AND enable scrolling when needed. */
-  min-height:340px;
-  overflow:auto;
+  /* FIXED height so both absolutely-positioned layers (textarea and
+     highlight overlay) have the same coordinate space. The textarea
+     scrolls internally when content exceeds this height; the overlay's
+     scrollTop is mirrored to match in JS. */
+  height:380px;
+  overflow:hidden;
 }
 .code-editor-wrap:focus-within{border-color:var(--c2)}
 
 .code-editor-highlight,
 .code-editor-input{
+  /* Both layers absolutely positioned and sized identically — this is
+     CRITICAL for cursor alignment. Any dimensional or padding difference
+     causes drift between the invisible caret and the visible colored text. */
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
   font-family:'JetBrains Mono', 'Menlo', 'Consolas', monospace;
   font-size:.88rem;
   line-height:1.55;
@@ -954,24 +964,20 @@ input[type="text"], textarea, select {
   font-variant-ligatures:none;
   -webkit-font-variant-ligatures:none;
   font-feature-settings:"liga" 0, "clig" 0, "calt" 0;
-  /* CRITICAL: exact same box model on both layers so cursor position
-     in the textarea maps 1:1 to rendered text in the overlay below. */
   box-sizing:border-box;
 }
 
 .code-editor-highlight{
-  position:absolute;
-  top:0;left:0;right:0;bottom:0;
   color:#e8e2d0;
   background:transparent;
   pointer-events:none;
   user-select:none;
   z-index:0;
-  /* Match the textarea's overflow behavior so positions stay aligned
-     when content grows beyond the visible area. */
+  /* Overlay is hidden-overflow but we manually set its scrollTop in JS
+     to mirror the textarea's scroll position. This keeps the rendered
+     syntax-highlighted text aligned with the invisible characters the
+     user is typing in the textarea above. */
   overflow:hidden;
-  width:100%;
-  min-height:100%;
 }
 /* English-language // comments: bright yellow */
 .code-editor-highlight .c-en{
@@ -983,20 +989,35 @@ input[type="text"], textarea, select {
   color:#8ee087;
   font-style:italic;
 }
+/* C++ syntax token colors */
+.code-editor-highlight .tk-keyword   { color:#c792ea; font-weight:600 } /* purple */
+.code-editor-highlight .tk-type      { color:#82aaff; font-weight:600 } /* blue */
+.code-editor-highlight .tk-string    { color:#c3e88d }                  /* green */
+.code-editor-highlight .tk-number    { color:#f78c6c }                  /* orange */
+.code-editor-highlight .tk-preproc   { color:#ff79c6; font-weight:500 } /* pink */
+.code-editor-highlight .tk-operator  { color:#89ddff }                  /* cyan */
 
 .code-editor-input{
-  position:relative;
   z-index:1;
-  display:block;
-  width:100%;
-  min-height:340px;
-  height:auto;          /* let the textarea grow with content */
   background:transparent;
   color:transparent;
   caret-color:#ffffff;
   outline:none;
-  resize:vertical;
-  overflow:hidden;      /* we use the wrap's scroll instead */
+  resize:none;         /* disabled — fixed height matches overlay */
+  /* Textarea scrolls internally via mouse wheel / keyboard; scroll event
+     fires, JS mirrors scrollTop/scrollLeft to overlay. We HIDE the visible
+     scrollbar so it doesn't steal ~15px of width — if the textarea had a
+     scrollbar and the overlay didn't, text would wrap at different column
+     positions in each layer, causing cursor drift. */
+  overflow:auto;
+  scrollbar-width:none;             /* Firefox */
+  -ms-overflow-style:none;          /* legacy IE/Edge */
+}
+.code-editor-input::-webkit-scrollbar{
+  /* Chrome / Safari / Edge Chromium */
+  display:none;
+  width:0;
+  height:0;
 }
 .code-editor-input::selection{
   background:rgba(255, 217, 102, .25);
@@ -2330,12 +2351,13 @@ h2.part-heading:first-of-type,
   align-items:stretch;
 }
 .coding-split > .code-editor-wrap{
-  min-height:440px;
-  height:100%;
+  height:460px;
 }
 .coding-split .code-editor-wrap .code-editor-input,
 .coding-split .code-editor-wrap .code-editor-highlight{
-  min-height:440px;
+  /* Both layers always fill the wrap — already set by base rules,
+     repeated here for clarity. */
+  height:100%;
 }
 .coding-split > .run-panel-col{
   display:flex;flex-direction:column;gap:12px;
@@ -2708,3 +2730,28 @@ pre, code{
 /* Legacy .q-num class — hide it since q-badge-row replaces it.
    Some older render paths might still emit .q-num, so we keep it safe. */
 .q-num{display:none}
+
+/* "Load PDF" button in admin submissions table.
+   Shown when a Firebase-method record has pdfPath but no pdfUrl (because
+   the student's anonymous auth couldn't fetch getDownloadURL at upload
+   time). Admin has password auth, so this button fetches the URL now. */
+.pdf-load-btn{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  padding:4px 10px;
+  background:#1e3a5f;
+  color:#fff;
+  border:1px solid #1e3a5f;
+  border-radius:4px;
+  cursor:pointer;
+  transition:background 120ms ease;
+}
+.pdf-load-btn:hover:not(:disabled){
+  background:#2a4f7a;
+}
+.pdf-load-btn:disabled{
+  background:#6a7a8c;
+  cursor:wait;
+}
