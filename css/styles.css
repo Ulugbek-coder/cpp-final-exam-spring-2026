@@ -2617,3 +2617,26 @@ pre, code{
   color:#7b5a18;
   font-size:.78rem;
 }
+
+/* ========================================================== */
+/* ====== BADGE POSITIONING ON WIDE SCREENS ================== */
+/* ========================================================== */
+/* Pull the floating badges in from the viewport edges on wider
+   screens so they sit closer to the actual content column
+   (which is capped at ~1360px). Prevents them from feeling
+   disconnected/stranded on ultra-wide monitors. */
+@media (min-width: 1600px){
+  body.exam-body #timer,
+  #timer{right:140px}
+  #tabcount{left:140px}
+}
+@media (min-width: 1400px) and (max-width: 1599px){
+  body.exam-body #timer,
+  #timer{right:90px}
+  #tabcount{left:90px}
+}
+@media (min-width: 1200px) and (max-width: 1399px){
+  body.exam-body #timer,
+  #timer{right:40px}
+  #tabcount{left:40px}
+}
