@@ -1894,26 +1894,40 @@ input[type="text"], textarea, select {
    isn't affected by whitespace from the source HTML. Blueish tone
    for better visibility than grey. */
 .run-output.empty{
-  color:#2b4a70;
-  font-style:italic;
-  white-space:normal;
-  text-align:left;
-  padding:14px 16px;
+  white-space:normal !important;
+  text-align:left !important;
+  padding:14px 16px !important;
+  font-style:normal !important;
 }
-.run-output.empty b{
-  color:#1e3a5f;
-  font-style:normal;
-  font-weight:700;
+/* English message: medium navy blue, italic, on its own line */
+.run-output.empty .empty-msg-en{
+  display:block !important;
+  color:#1e3a5f !important;
+  font-style:italic !important;
+  font-weight:400 !important;
+  margin:0 0 10px 0 !important;
+  line-height:1.5 !important;
 }
-/* The Uzbek translation sits as a <span> inside the empty block.
-   Give it a slightly lighter tone but still in the blue family. */
-.run-output.empty span{
+.run-output.empty .empty-msg-en b{
+  color:#102645 !important;
+  font-weight:700 !important;
+  font-style:normal !important;
+}
+/* Uzbek message: slightly lighter blue, italic, on its own separate line */
+.run-output.empty .empty-msg-uz{
+  display:block !important;
   color:#3d6090 !important;
-  display:block;
-  margin-top:8px;
+  font-style:italic !important;
+  font-weight:400 !important;
+  margin:0 !important;
+  line-height:1.5 !important;
+  padding-top:8px !important;
+  border-top:1px dashed #c9d5e5 !important;
 }
-.run-output.empty span b{
-  color:#2b4a70;
+.run-output.empty .empty-msg-uz b{
+  color:#1e3a5f !important;
+  font-weight:700 !important;
+  font-style:normal !important;
 }
 .run-output.success{background:#edf7ee;border-top:3px solid #2e8b4a}
 .run-output.error{background:#fde9e9;border-top:3px solid #b13a3a}
