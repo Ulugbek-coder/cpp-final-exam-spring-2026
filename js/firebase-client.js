@@ -111,8 +111,25 @@ async function uploadSubmission(submissionData, pdfBlob, onProgress) {
   const storageRef = window.fbStorage.ref().child(storagePath);
 
   // -----------------------------------------------------------------
-  // Phase 1: Upload PDF to Storage (up to 3 attempts)
+  // Phase 1: Upload PDF to Storage (up to 3 attempts).
+  //
+  // IMPORTANT: put() and getDownloadURL() are TWO separate operations
+  // with different permission requirements:
+  //   - put()           → requires CREATE permission (anonymous OK per rules)
+  //   - getDownloadURL()→ requires READ permission (may NOT be granted to
+  //                        anonymous auth depending on Storage rules)
+  //
+  // If we failed both in one try block (like the pre-fix code did), a
+  // getDownloadURL() permission error would cause us to re-upload the
+  // PDF pointlessly, then fall through to "Google Form fallback" even
+  // though the PDF IS safely in Storage. The admin dashboard would then
+  // show NO PDF link AND no way to find the file.
+  //
+  // Fix: track upload success separately. If put() succeeds, we record
+  // pdfPath on the Firestore doc even if getDownloadURL() fails — admin
+  // can fetch the URL on demand (admin has password auth = read permission).
   // -----------------------------------------------------------------
+  let pdfUploaded = false;
   let downloadURL = null;
   let storageAttempts = 0;
   let lastStorageError = "";
@@ -120,11 +137,22 @@ async function uploadSubmission(submissionData, pdfBlob, onProgress) {
     storageAttempts = attempt;
     report("uploading", attempt);
     try {
-      const uploadSnap = await storageRef.put(pdfBlob, {
-        contentType: "application/pdf",
-      });
-      downloadURL = await uploadSnap.ref.getDownloadURL();
-      break; // success
+      await storageRef.put(pdfBlob, { contentType: "application/pdf" });
+      pdfUploaded = true;
+      // PDF is safely in Storage now. Try to also get a download URL for
+      // convenience — but this is best-effort and non-fatal.
+      try {
+        downloadURL = await storageRef.getDownloadURL();
+      } catch (urlErr) {
+        console.warn(
+          "PDF uploaded to Storage, but getDownloadURL() failed (" +
+            ((urlErr && urlErr.message) || urlErr) +
+            "). The admin dashboard will fetch the URL on demand.",
+        );
+        // downloadURL stays null — admin.js handles this case with a
+        // "Load PDF" button that calls getDownloadURL() with password auth.
+      }
+      break; // exit retry loop — upload succeeded
     } catch (err) {
       console.error("Storage upload attempt " + attempt + " failed:", err);
       lastStorageError = (err && err.message) || String(err);
@@ -136,10 +164,11 @@ async function uploadSubmission(submissionData, pdfBlob, onProgress) {
     }
   }
 
-  if (!downloadURL) {
-    // Storage totally failed — PDF is NOT saved anywhere. Student must
-    // use the Google Form to upload manually.
-    return activateGoogleFormFallback("storage_upload_failed:" + lastStorageError);
+  if (!pdfUploaded) {
+    // PDF is NOT in Storage. Student must use the Google Form to upload.
+    return activateGoogleFormFallback(
+      "storage_upload_failed:" + lastStorageError,
+    );
   }
 
   // -----------------------------------------------------------------
