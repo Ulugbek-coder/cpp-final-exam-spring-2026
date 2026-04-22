@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // -------------------------------------------------------------
+    // /schedules/{group}
+    //   Readable by anyone (students need to see their group's window
+    //   from the welcome page, without logging in).
+    //   Writable ONLY by authenticated instructors (email/password),
+    //   and only for the 17 known group IDs.
+    // -------------------------------------------------------------
+    match /schedules/{groupId} {
+      allow read: if true;
+
+      allow write: if
+        request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'password'
+        && groupId in [
+             'FM1', 'FM2', 'FM3', 'FM4', 'FM5', 'FM6', 'FM7',
+             'FIT1', 'FIT2', 'FIT3', 'FIT4', 'FIT5', 'FIT6',
+             'FAR1', 'FAR2', 'FAR3'
+           ];
+    }
+
+    // -------------------------------------------------------------
+    // /submissions/{autoId}
+    //   Students are authenticated anonymously, so they may CREATE a
+    //   submission document. They cannot read/update/delete anyone's.
+    //   Instructors (password auth) may read everything; they do not
+    //   need to modify submissions after the fact.
+    // -------------------------------------------------------------
+    match /submissions/{submissionId} {
+      allow create: if
+        request.auth != null
+        && request.resource.data.keys().hasAll(
+             ['group', 'studentId', 'firstName', 'lastName', 'version']
+           )
+        && request.resource.data.group in [
+             'FM1', 'FM2', 'FM3', 'FM4', 'FM5', 'FM6', 'FM7',
+             'FIT1', 'FIT2', 'FIT3', 'FIT4', 'FIT5', 'FIT6',
+             'FAR1', 'FAR2', 'FAR3'
+           ]
+        && request.resource.data.version in ['A', 'B']
+        && request.resource.data.studentId is string
+        && request.resource.data.studentId.matches('^[0-9]{6}$');
+
+      allow read: if
+        request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'password';
+
+      // Instructors (password auth) may delete submissions from the admin
+      // dashboard (e.g. to remove a test submission or an accidental duplicate).
+      // Students (anonymous auth) cannot delete. Updates remain blocked —
+      // submissions are still immutable: to correct one, delete and re-submit.
+      allow delete: if
+        request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'password';
+
+      allow update: if false;
+    }
+
+    // -------------------------------------------------------------
+    // /config/{docId}
+    //   Used for exam_seeds (question-refresh feature).
+    //   READ: anyone. WRITE: instructors only.
+    // -------------------------------------------------------------
+    match /config/{docId} {
+      allow read: if true;
+      allow write: if
+        request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'password';
+    }
+  }
+}

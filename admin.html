@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <title>Admin — Programming 1 with C++ — NPUU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/firebase-client.js"></script>
+  </head>
+  <body class="admin-body">
+    <header class="admin-top">
+      <div class="admin-top-left">
+        <div class="admin-brand">
+          <div class="admin-crest">
+            <svg
+              viewBox="0 0 42 42"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M21 2 L37 7 L37 22 C37 31 30 38 21 40 C12 38 5 31 5 22 L5 7 Z"
+                stroke="white"
+                stroke-width="2"
+                fill="rgba(255,255,255,0.08)"
+              />
+              <path
+                d="M14 16 L21 12 L28 16 L21 20 Z"
+                fill="white"
+                opacity=".9"
+              />
+              <path
+                d="M14 22 L21 18 L28 22 L21 26 Z"
+                fill="white"
+                opacity=".6"
+              />
+              <path
+                d="M14 28 L21 24 L28 28 L21 32 Z"
+                fill="white"
+                opacity=".35"
+              />
+            </svg>
+          </div>
+          <div class="admin-brand-text">
+            <div class="abt-1">NPUU · C++ Exam Admin</div>
+            <div class="abt-2">
+              Programming 1 with C++ — Instructor Dashboard
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="admin-top-right">
+        <span id="adminEmail" class="admin-email">&nbsp;</span>
+        <button id="logoutBtn" class="admin-btn ghost">Log out</button>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <!-- SECTION 0: Refresh exam questions -->
+      <section class="admin-card">
+        <div class="admin-card-head">
+          <h2>Refresh Exam Questions</h2>
+          <p>
+            Refreshes and generates a new collection of 25 test questions and 3
+            coding problems in every exam version (A and B) automatically. Both
+            versions are guaranteed to receive DIFFERENT coding problems.
+            Students already taking an exam are unaffected — only new exam
+            starts pick up the new questions.
+          </p>
+        </div>
+
+        <div class="admin-toolbar">
+          <button id="refreshQuestionsBtn" class="admin-btn">
+            🔄 Refresh All Exam Questions
+          </button>
+          <div id="refreshStatus" class="refresh-status-pill" aria-live="polite">
+            <span class="rsp-icon">—</span>
+            <span class="rsp-text">Not refreshed yet</span>
+          </div>
+        </div>
+
+        <div id="refreshMsg" class="admin-msg" aria-live="polite"></div>
+      </section>
+
+      <!-- SECTION 1: Schedule editor -->
+      <section class="admin-card">
+        <div class="admin-card-head">
+          <h2>Exam Schedule per Group</h2>
+          <p>
+            Set the start and end times during which students in each group may
+            start the exam. Times are shown in your browser's local timezone.
+          </p>
+        </div>
+
+        <div id="scheduleTableWrap" class="admin-table-wrap">
+          <table class="admin-table schedule-table">
+            <thead>
+              <tr>
+                <th>Group</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Status</th>
+                <th>Scheduled by</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="scheduleTbody">
+              <!-- Populated by admin.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="scheduleMsg" class="admin-msg" aria-live="polite"></div>
+      </section>
+
+      <!-- SECTION 2: Submissions -->
+      <section class="admin-card">
+        <div class="admin-card-head">
+          <h2>Submissions</h2>
+          <p>
+            All student submissions recorded by Firebase. Click the PDF link to
+            download the student's report. Fallback submissions came in via the
+            Google Form (no PDF URL here — check the Google Form / Drive).
+          </p>
+        </div>
+
+        <div class="admin-toolbar">
+          <label class="admin-filter">
+            <span>Filter by group:</span>
+            <select id="subFilter">
+              <option value="">All groups</option>
+              <option value="FM1">FM1</option>
+              <option value="FM2">FM2</option>
+              <option value="FM3">FM3</option>
+              <option value="FM4">FM4</option>
+              <option value="FM5">FM5</option>
+              <option value="FM6">FM6</option>
+              <option value="FM7">FM7</option>
+              <option value="FIT1">FIT1</option>
+              <option value="FIT2">FIT2</option>
+              <option value="FIT3">FIT3</option>
+              <option value="FIT4">FIT4</option>
+              <option value="FIT5">FIT5</option>
+              <option value="FIT6">FIT6</option>
+              <option value="FAR1">FAR1</option>
+              <option value="FAR2">FAR2</option>
+              <option value="FAR3">FAR3</option>
+            </select>
+          </label>
+          <label class="admin-filter">
+            <span>Method:</span>
+            <select id="subMethod">
+              <option value="">Any</option>
+              <option value="firebase">Firebase (auto)</option>
+              <option value="google_form_fallback">
+                Fallback (Google Form)
+              </option>
+            </select>
+          </label>
+          <button id="refreshBtn" class="admin-btn">Refresh</button>
+          <div id="subCountCard" class="sub-count-card">
+            <div class="scc-num" id="subCountNum">—</div>
+            <div class="scc-lbl">Total<br>Submissions</div>
+          </div>
+        </div>
+
+        <div class="admin-table-wrap scroll">
+          <table class="admin-table sub-table">
+            <thead>
+              <tr>
+                <th>Submitted</th>
+                <th>Group</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Exam Version</th>
+                <th>Test Points</th>
+                <th>Tabs</th>
+                <th>Exam Violated</th>
+                <th>Time</th>
+                <th>Method</th>
+                <th>PDF</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="subsTbody">
+              <tr>
+                <td colspan="12" class="admin-empty">Loading…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <!-- Reusable modal dialog (hidden by default) -->
+    <div
+      id="appModal"
+      class="app-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="appModalTitle"
+      style="display: none"
+    >
+      <div class="app-modal-backdrop"></div>
+      <div class="app-modal-dialog" role="document">
+        <div class="app-modal-head">
+          <div class="app-modal-icon" id="appModalIcon">?</div>
+          <h3 id="appModalTitle">Confirm</h3>
+        </div>
+        <div class="app-modal-body" id="appModalBody">Message</div>
+        <div class="app-modal-actions" id="appModalActions"></div>
+      </div>
+    </div>
+
+    <script src="js/questions/coding-bank.js"></script>
+    <script src="js/admin.js"></script>
+  </body>
+</html>

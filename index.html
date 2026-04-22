@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <title>
+      Programming 1 with C++ — Final Exam (Spring Semester, 2026) — NPUU
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- Firebase SDK (compat build for no-bundler vanilla JS) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/firebase-client.js"></script>
+  </head>
+  <body>
+    <div class="wrap">
+      <section id="welcome">
+        <!-- NPUU Logo Block -->
+        <div class="logo-block">
+          <div class="logo-shield">
+            <svg
+              viewBox="0 0 42 42"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M21 2 L37 7 L37 22 C37 31 30 38 21 40 C12 38 5 31 5 22 L5 7 Z"
+                stroke="white"
+                stroke-width="2"
+                fill="rgba(255,255,255,0.08)"
+              />
+              <path
+                d="M14 16 L21 12 L28 16 L21 20 Z"
+                fill="white"
+                opacity="0.9"
+              />
+              <path
+                d="M14 22 L21 18 L28 22 L21 26 Z"
+                fill="white"
+                opacity="0.6"
+              />
+              <path
+                d="M14 28 L21 24 L28 28 L21 32 Z"
+                fill="white"
+                opacity="0.35"
+              />
+            </svg>
+          </div>
+          <div class="logo-text">
+            <div class="ln1">National Pedagogical</div>
+            <div class="ln2">University of Uzbekistan</div>
+          </div>
+        </div>
+
+        <div class="eyebrow">NPUU · School of Exact Sciences · Spring 2026</div>
+        <h1>
+          Programming 1 with C++<br /><em
+            >Final Exam (Spring Semester - 2026)</em
+          >
+        </h1>
+
+        <div class="meta-grid">
+          <div class="meta-item m1">
+            <div class="k">Multiple Choice<br />Testlar</div>
+            <div class="v">25</div>
+          </div>
+          <div class="meta-item m2">
+            <div class="k">Coding Problems<br />Kodlash bo'yicha masalalar</div>
+            <div class="v">3</div>
+          </div>
+          <div class="meta-item m3">
+            <div class="k">Exam duration<br />Imtihon uchun ajratilgan vaqt</div>
+            <div class="v">90 <span class="v-unit">mins</span></div>
+          </div>
+        </div>
+
+        <div class="rules exam-guide">
+          <div class="exam-guide-header">
+            <span class="eg-icon" aria-hidden="true">📋</span>
+            <div class="eg-title">
+              <strong>Exam Guide</strong>
+              <span class="eg-title-uz">Imtihon Yo'riqnomasi</span>
+            </div>
+          </div>
+          <ul>
+            <li>
+              <b>Total:</b> 25 multiple-choice (50 pts) + 3 coding problems (15
+              + 15 + 20 = 50 pts) = 100 points.
+              <span class="uz"
+                >Jami: 25 ta test (50 ball) + 3 ta kodlash masalasi (15 + 15 +
+                20 = 50 ball) = 100 ball.</span
+              >
+            </li>
+            <li>
+              You have <b>90 minutes</b>. The timer appears top-right and
+              auto-submits at 00:00.
+              <span class="uz"
+                >Sizga <b>90 daqiqa</b> vaqt beriladi. Taymer yuqori-o'ngda
+                ko'rinadi va 00:00 da avtomatik yuboriladi.</span
+              >
+            </li>
+            <li>
+              Each multiple-choice question has exactly one correct answer.
+              <span class="uz"
+                >Har bir test savolida aniq bitta to'g'ri javob bor.</span
+              >
+            </li>
+            <li class="rule-critical">
+              Do <b>NOT</b> switch browser tabs or open other windows. Tab
+              switches are logged and flagged.
+              <span class="uz"
+                >Brauzer yorliqlarini almashtirmang yoki boshqa oynalarni
+                ochmang. Almashtirishlar qayd etiladi.</span
+              >
+            </li>
+            <li class="rule-critical">
+              Copy-paste and right-click are <b>disabled</b>. Write your code
+              yourself.
+              <span class="uz"
+                >Nusxa ko'chirish va o'ng-tugmacha o'chirilgan. Kodingizni
+                o'zingiz yozing.</span
+              >
+            </li>
+            <li>
+              After you click Submit, your work is automatically saved to our
+              server. If auto-save fails, a backup Google Form will appear.
+              <span class="uz"
+                >Yuborish tugmasini bosgandan so'ng, ishingiz serverga avtomatik
+                saqlanadi. Avto-saqlash muvaffaqiyatsiz bo'lsa, zaxira Google
+                Form ko'rsatiladi.</span
+              >
+            </li>
+          </ul>
+        </div>
+
+        <!-- Version Selection -->
+        <div class="version-section">
+          <h3>
+            Select Your Exam Version
+            <span class="uz">Imtihon Versiyangizni Tanlang</span>
+          </h3>
+          <div class="version-grid">
+            <div class="version-card" data-version="A">
+              <div class="v-label">Version</div>
+              <div class="v-letter">A</div>
+            </div>
+            <div class="version-card" data-version="B">
+              <div class="v-label">Version</div>
+              <div class="v-letter">B</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Student Info Form -->
+        <div class="info-form">
+          <h3>
+            Student Information
+            <span class="uz">Talaba Ma'lumoti</span>
+          </h3>
+          <hr />
+
+          <div class="form-row">
+            <label>Group <span class="req">*</span></label>
+            <select id="studentGroup">
+              <option value="">
+                -- Select your group / Guruhingizni tanlang --
+              </option>
+              <option value="FM1">FM1</option>
+              <option value="FM2">FM2</option>
+              <option value="FM3">FM3</option>
+              <option value="FM4">FM4</option>
+              <option value="FM5">FM5</option>
+              <option value="FM6">FM6</option>
+              <option value="FM7">FM7</option>
+              <option value="FIT1">FIT1</option>
+              <option value="FIT2">FIT2</option>
+              <option value="FIT3">FIT3</option>
+              <option value="FIT4">FIT4</option>
+              <option value="FIT5">FIT5</option>
+              <option value="FIT6">FIT6</option>
+              <option value="FAR1">FAR1</option>
+              <option value="FAR2">FAR2</option>
+              <option value="FAR3">FAR3</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label>Student ID <span class="req">*</span></label>
+            <input
+              type="text"
+              id="studentId"
+              placeholder="e.g. 230012"
+              maxlength="6"
+              inputmode="numeric"
+              autocomplete="off"
+            />
+            <div class="hint" id="idHint">
+              Student ID must be exactly 6 digits. / Talaba ID aynan 6 raqamdan
+              iborat bo'lishi kerak.
+            </div>
+          </div>
+
+          <div class="form-two">
+            <div class="form-row">
+              <label>First Name <span class="req">*</span></label>
+              <input
+                type="text"
+                id="studentFirstName"
+                placeholder="e.g. Jasurbek"
+                autocomplete="off"
+              />
+            </div>
+            <div class="form-row">
+              <label>Last Name <span class="req">*</span></label>
+              <input
+                type="text"
+                id="studentLastName"
+                placeholder="e.g. Mahkamov"
+                autocomplete="off"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Master override banner (shown only when ?master=... is valid) -->
+        <div id="masterBanner" class="master-banner" style="display: none">
+          ⚠ Master Override Active — schedule check bypassed. Use only if
+          Firebase is unreachable on exam day.
+          <span class="uz"
+            >Master rejimi faol — jadval tekshiruvi chetlab o'tilmoqda. Faqat
+            imtihon kunida Firebase ishlamasa foydalaning.</span
+          >
+        </div>
+
+        <!-- Schedule status panel (populated after group is selected) -->
+        <div
+          id="schedulePanel"
+          class="schedule-panel"
+          style="display: none"
+          aria-live="polite"
+        >
+          <div class="sp-head">
+            <div class="sp-label">
+              Exam Window · Imtihon Oynasi
+              <span class="sp-dot" id="spDot"></span>
+            </div>
+            <div class="sp-status" id="spStatus">Checking…</div>
+          </div>
+          <div class="sp-range" id="spRange">&nbsp;</div>
+          <div class="sp-note" id="spNote">&nbsp;</div>
+        </div>
+
+        <button id="startBtn" class="btn" type="button" disabled>
+          Start the Exam &nbsp;→
+        </button>
+
+        <!-- Instructor access card -->
+        <button
+          type="button"
+          id="instructorLoginBtn"
+          class="instructor-card"
+          aria-label="Instructor login"
+        >
+          <div class="ic-icon" aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 11a4 4 0 100-8 4 4 0 000 8z"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </div>
+          <div class="ic-body">
+            <div class="ic-title">Instructor Login</div>
+            <div class="ic-sub">
+              O'qituvchilar uchun kirish · Manage exam schedules &amp;
+              submissions
+            </div>
+          </div>
+          <div class="ic-arrow" aria-hidden="true">→</div>
+        </button>
+      </section>
+    </div>
+
+    <!-- Modal popup -->
+    <div id="modal" class="modal-overlay" role="dialog" aria-modal="true">
+      <div class="modal" id="modal-box">
+        <div class="modal-body">
+          <div class="modal-icon" id="modal-icon">!</div>
+          <h3 id="modal-title">
+            Title
+            <span class="uz" id="modal-title-uz">Sarlavha</span>
+          </h3>
+          <p id="modal-text">Message</p>
+          <div
+            class="progress-info"
+            id="modal-progress"
+            style="display: none"
+          ></div>
+        </div>
+        <div class="modal-footer">
+          <button id="modal-cancel" class="modal-btn secondary" type="button">
+            Cancel
+          </button>
+          <button id="modal-ok" class="modal-btn primary" type="button">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Load scripts -->
+    <script src="js/questions/question-bank.js"></script>
+    <script src="js/questions/coding-bank.js"></script>
+    <script src="js/questions/version-a.js"></script>
+    <script src="js/questions/version-b.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

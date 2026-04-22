@@ -1,0 +1,40 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // -------------------------------------------------------------
+    // /submissions/{group}/{file}
+    //   CREATE: any authenticated user (anonymous students) may upload
+    //           a PDF under 5 MB to one of the 17 known group paths.
+    //   READ:   instructors only (password auth).
+    //   UPDATE/DELETE: forbidden from the client.
+    // -------------------------------------------------------------
+    match /submissions/{group}/{fileName} {
+      allow create: if
+        request.auth != null
+        && group in [
+             'FM1', 'FM2', 'FM3', 'FM4', 'FM5', 'FM6', 'FM7',
+             'FIT1', 'FIT2', 'FIT3', 'FIT4', 'FIT5', 'FIT6',
+             'FAR1', 'FAR2', 'FAR3'
+           ]
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType == 'application/pdf';
+
+      allow read: if
+        request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'password';
+
+      // Instructors (password auth) may delete PDFs from the admin dashboard.
+      // Students (anonymous auth) cannot delete. Updates are never allowed.
+      allow delete: if
+        request.auth != null
+        && request.auth.token.firebase.sign_in_provider == 'password';
+
+      allow update: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

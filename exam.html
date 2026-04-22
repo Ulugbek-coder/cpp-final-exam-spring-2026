@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <title>Exam — Programming 1 with C++ — NPUU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/firebase-client.js"></script>
+  </head>
+  <body class="exam-body">
+    <!-- Floating timer & tab counter -->
+    <div id="timer">
+      <span class="tlabel">Time Remaining · Qolgan Vaqt</span
+      ><span id="timer-val">90 min 00 sec</span>
+    </div>
+    <div id="tabcount">
+      <span class="tclabel">Tab Switches</span><b id="tabcount-val">0</b>
+    </div>
+
+    <div class="wrap">
+      <!-- ============ TEST SCREEN ============ -->
+      <section id="test" style="display: block">
+        <div class="test-header">
+          <div class="exam-title-bar">
+            <div class="exam-title-left">
+              <h2 class="exam-title">Programming 1 with C++</h2>
+              <div class="exam-subtitle">
+                Final Exam (Spring Semester, 2026) · NPUU
+              </div>
+            </div>
+            <div id="versionBadge" class="version-badge-big">
+              Exam Version A
+            </div>
+          </div>
+
+          <div class="exam-info-grid">
+            <!-- CARD 1: Student info -->
+            <div class="exam-info-card card-student">
+              <div class="eic-icon">&#128100;</div>
+              <div class="eic-body">
+                <div class="eic-label">
+                  Student Information / Talaba Ma'lumotlari
+                </div>
+                <div class="student-rows">
+                  <div class="sr-row">
+                    <span class="sr-label">Full Name / To'liq Ism:</span
+                    ><span class="sr-val" id="studentName">&nbsp;</span>
+                  </div>
+                  <div class="sr-row">
+                    <span class="sr-label">Group / Guruh:</span
+                    ><span class="sr-val" id="studentGroupLbl">&nbsp;</span>
+                  </div>
+                  <div class="sr-row">
+                    <span class="sr-label">Student ID / ID:</span
+                    ><span class="sr-val" id="studentIdLbl">&nbsp;</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD 2: Exam structure + points -->
+            <div class="exam-info-card card-points">
+              <div class="eic-icon">&Sigma;</div>
+              <div class="eic-body">
+                <div class="eic-label">Exam Structure / Imtihon Tuzilmasi</div>
+                <div class="points-rows">
+                  <div class="points-row">
+                    <span class="pr-left">25 Tests &times; 2 pts</span>
+                    <span class="pr-eq">=</span>
+                    <span class="pr-right">50 points</span>
+                  </div>
+                  <div class="points-row">
+                    <span class="pr-left"
+                      >3 Coding Problems (15 + 15 + 20)</span
+                    >
+                    <span class="pr-eq">=</span>
+                    <span class="pr-right">50 points</span>
+                  </div>
+                  <div class="points-row points-total">
+                    <span class="pr-left">TOTAL MAX / JAMI MAKSIMUM BALL:</span>
+                    <span class="pr-eq">=</span>
+                    <span class="pr-right">100 points</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="progress-rail">
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+          <div class="progress-text" id="progress-text">
+            Answered 0 / 25 test questions · 0 / 25 test savoliga javob berildi
+          </div>
+        </div>
+
+        <div class="section-heading s-mc">
+          <span class="num">PART 01</span> Multiple Choice Questions
+          <span class="uz">Test Savollari</span>
+        </div>
+
+        <div id="questions-root"></div>
+
+        <div class="section-heading s-code">
+          <span class="num">PART 02</span> Coding Problems
+          <span class="uz">Kodlash Masalalari</span>
+        </div>
+
+        <!-- Reassurance banner — persistent during the entire coding section -->
+        <div class="coding-reassurance" role="note">
+          <div class="cr-icon" aria-hidden="true">ℹ</div>
+          <div class="cr-body">
+            <div class="cr-en">
+              <b>Write your code carefully and submit when you're done.</b>
+              The instructor grades your code by reading it — you do not need
+              a fully-working solution to submit. Partial or imperfect code
+              still earns partial credit.
+            </div>
+            <div class="cr-uz">
+              <b>Kodingizni diqqat bilan yozing va tayyor bo'lganda yuboring.</b>
+              O'qituvchi kodingizni o'qib baholaydi — yuborish uchun to'liq
+              ishlaydigan yechim bo'lishi shart emas. Qisman yoki tugal bo'lmagan
+              kod ham qisman ball oladi.
+            </div>
+          </div>
+        </div>
+
+        <div id="coding-root"></div>
+
+        <div class="submit-bar">
+          <div class="status" id="submit-status">
+            <b id="answered-count">0</b> of <b>25</b> test questions answered
+            <span class="uz"
+              ><b id="answered-count-uz">0</b> dan 25 test savoliga javob
+              berildi</span
+            >
+          </div>
+          <button id="submitBtn" class="btn" type="button">
+            Submit Exam &nbsp;→
+          </button>
+        </div>
+      </section>
+
+      <!-- ============ REPORT SCREEN ============ -->
+      <section id="report" style="display: none">
+        <div id="scorecard"></div>
+
+        <div class="submission-card">
+          <h3>
+            Submission Status
+            <span class="uz">Topshiruv Holati</span>
+          </h3>
+
+          <!-- Upload progress / result area (managed by app.js) -->
+          <div id="uploadStatus" class="upload-status" aria-live="polite">
+            <div class="us-icon" id="usIcon">⟳</div>
+            <div class="us-body">
+              <div class="us-title" id="usTitle">
+                Uploading your exam to the NPUU server…
+              </div>
+              <div class="us-title-uz" id="usTitleUz">
+                Imtihoningiz NPUU serveriga yuklanmoqda…
+              </div>
+              <div class="us-sub" id="usSub">Attempt 1 of 3</div>
+            </div>
+          </div>
+
+          <!-- SUCCESS block (hidden by default) -->
+          <div id="successBlock" class="success-block" style="display: none">
+            <div class="sb-title">
+              ✓ Submission received by NPUU server.
+              <span class="uz">✓ Topshiruv NPUU serveri tomonidan qabul qilindi.</span>
+            </div>
+            <div class="sb-sub">
+              Your PDF has also been downloaded to your computer as a personal
+              copy. You do not need to do anything else.
+              <span class="uz"
+                >PDF shaxsiy nusxa sifatida kompyuteringizga ham yuklab
+                olindi. Boshqa hech narsa qilishingiz shart emas.</span
+              >
+            </div>
+            <button
+              class="gform-btn secondary"
+              style="margin-top: 14px"
+              onclick="downloadPDF()"
+            >
+              ⬇ Re-download PDF / PDF ni Qayta Yuklab Olish
+            </button>
+          </div>
+
+          <!-- FALLBACK block (hidden by default, shown only if all 3 attempts fail) -->
+          <div id="fallbackBlock" class="fallback-block" style="display: none">
+            <div class="fb-title">
+              ⚠ Automatic upload failed. Please submit manually via Google Form.
+              <span class="uz"
+                >⚠ Avtomatik yuklash muvaffaqiyatsiz tugadi. Iltimos, Google
+                Forma orqali qo'lda yuboring.</span
+              >
+            </div>
+            <div class="fb-sub">
+              Your PDF has been downloaded automatically. Follow these steps:
+              <span class="uz"
+                >PDF avtomatik ravishda yuklab olindi. Quyidagi qadamlarni
+                bajaring:</span
+              >
+            </div>
+
+            <div class="steps">
+              <ol>
+                <li>
+                  <b>Step 1:</b> Your PDF report has been downloaded
+                  automatically.
+                  <span class="uz"
+                    >1-qadam: PDF hisobotingiz avtomatik yuklab olindi.</span
+                  >
+                </li>
+                <li>
+                  <b>Step 2:</b> Click the red button below to open the Google
+                  Form.
+                  <span class="uz"
+                    >2-qadam: Google Formani ochish uchun quyidagi qizil tugmani
+                    bosing.</span
+                  >
+                </li>
+                <li>
+                  <b>Step 3:</b> Enter your Student ID and Full Name in the
+                  form, then upload the downloaded PDF.
+                  <span class="uz"
+                    >3-qadam: Formada Talaba ID va To'liq Ismingizni kiriting,
+                    keyin yuklab olingan PDF ni yuklang.</span
+                  >
+                </li>
+                <li>
+                  <b>Step 4:</b> Click Submit on the Google Form.
+                  <span class="uz"
+                    >4-qadam: Google Formada Yuborish tugmasini bosing.</span
+                  >
+                </li>
+              </ol>
+            </div>
+
+            <a
+              href="#"
+              target="_blank"
+              class="gform-btn"
+              id="gformBtn"
+              rel="noopener"
+            >
+              📝 Open Google Form / Google Formani Ochish
+            </a>
+            <br />
+            <button class="gform-btn secondary" onclick="downloadPDF()">
+              ⬇ Re-download PDF / PDF ni Qayta Yuklab Olish
+            </button>
+
+            <div class="warning-note">
+              ⚠ Your submission is NOT complete until you upload the PDF to the
+              Google Form!
+              <span class="uz"
+                >PDF ni Google Formaga yuklamaguncha topshiruv
+                yakunlanmagan!</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal-overlay" role="dialog" aria-modal="true">
+      <div class="modal" id="modal-box">
+        <div class="modal-body">
+          <div class="modal-icon" id="modal-icon">!</div>
+          <h3 id="modal-title">
+            Title
+            <span class="uz" id="modal-title-uz">Sarlavha</span>
+          </h3>
+          <p id="modal-text">Message</p>
+          <div
+            class="progress-info"
+            id="modal-progress"
+            style="display: none"
+          ></div>
+        </div>
+        <div class="modal-footer">
+          <button id="modal-cancel" class="modal-btn secondary" type="button">
+            Cancel
+          </button>
+          <button id="modal-ok" class="modal-btn primary" type="button">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flash violation -->
+    <div id="flash"></div>
+
+    <!-- Scripts -->
+    <script src="js/questions/question-bank.js"></script>
+    <script src="js/questions/coding-bank.js"></script>
+    <script src="js/questions/version-a.js"></script>
+    <script src="js/questions/version-b.js"></script>
+    <script src="js/questions/solutions.js"></script>
+    <script src="js/code-runner.js"></script>
+    <script src="js/pdf-generator.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

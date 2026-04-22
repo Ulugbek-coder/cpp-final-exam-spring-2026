@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <title>Instructor Login — Programming 1 with C++ — NPUU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+  </head>
+  <body>
+    <div class="wrap narrow">
+      <section id="login-section" class="login-card">
+        <div class="login-head">
+          <div class="login-crest">
+            <svg viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M21 2 L37 7 L37 22 C37 31 30 38 21 40 C12 38 5 31 5 22 L5 7 Z"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+              />
+              <path d="M14 16 L21 12 L28 16 L21 20 Z" fill="currentColor" opacity=".9" />
+              <path d="M14 22 L21 18 L28 22 L21 26 Z" fill="currentColor" opacity=".6" />
+              <path d="M14 28 L21 24 L28 28 L21 32 Z" fill="currentColor" opacity=".35" />
+            </svg>
+          </div>
+          <h2>Instructor Login</h2>
+          <div class="login-sub">O'qituvchi uchun kirish · NPUU</div>
+        </div>
+
+        <div class="login-body">
+          <div class="form-row">
+            <label>Institutional Email</label>
+            <input
+              type="email"
+              id="loginEmail"
+              autocomplete="username"
+              placeholder="name@npuu.uz"
+            />
+          </div>
+          <div class="form-row">
+            <label>Password</label>
+            <div class="pw-wrap">
+              <input
+                type="password"
+                id="loginPassword"
+                autocomplete="current-password"
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                id="pwToggle"
+                class="pw-toggle"
+                aria-label="Show password"
+                title="Show password"
+              >
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div id="loginError" class="login-error" style="display: none"></div>
+
+          <button id="loginBtn" type="button" class="btn login-btn">
+            Log in &nbsp;→
+          </button>
+
+          <div class="login-note">
+            Only pre-authorized instructor accounts can log in. If you are a
+            student, go back to the <a href="index.html">exam page</a>.
+            <span class="uz">
+              Faqat ro'yxatdan o'tgan o'qituvchilar tizimga kira olishadi. Agar siz
+              talaba bo'lsangiz, <a href="index.html">imtihon sahifasi</a>ga
+              qayting.
+            </span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // If already signed in (and it's an email account), go straight to admin.
+        window.fbAuth.onAuthStateChanged(function (user) {
+          if (
+            user &&
+            user.providerData &&
+            user.providerData.length &&
+            user.providerData[0].providerId === "password"
+          ) {
+            window.location.href = "admin.html";
+          }
+        });
+
+        var btn = document.getElementById("loginBtn");
+        var errEl = document.getElementById("loginError");
+
+        function setError(msg) {
+          errEl.textContent = msg;
+          errEl.style.display = msg ? "block" : "none";
+        }
+
+        btn.addEventListener("click", function () {
+          setError("");
+          var email = document.getElementById("loginEmail").value.trim();
+          var pw = document.getElementById("loginPassword").value;
+          if (!email || !pw) {
+            setError("Please enter both your email and password.");
+            return;
+          }
+          btn.disabled = true;
+          btn.textContent = "Signing in…";
+          window.fbAuth
+            .signInWithEmailAndPassword(email, pw)
+            .then(function () {
+              window.location.href = "admin.html";
+            })
+            .catch(function (err) {
+              btn.disabled = false;
+              btn.textContent = "Log in →";
+              var code = (err && err.code) || "";
+              if (
+                code === "auth/user-not-found" ||
+                code === "auth/invalid-email" ||
+                code === "auth/wrong-password" ||
+                code === "auth/invalid-credential"
+              ) {
+                setError(
+                  "Email not authorized or password incorrect. Only pre-registered instructor accounts may sign in.",
+                );
+              } else if (code === "auth/too-many-requests") {
+                setError(
+                  "Too many failed attempts. Please wait a few minutes and try again.",
+                );
+              } else {
+                setError(
+                  "Sign-in failed: " + (err && err.message ? err.message : code),
+                );
+              }
+            });
+        });
+
+        // Submit on Enter
+        ["loginEmail", "loginPassword"].forEach(function (id) {
+          var el = document.getElementById(id);
+          el.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") btn.click();
+          });
+        });
+
+        // Password eye-toggle
+        var pwInput = document.getElementById("loginPassword");
+        var pwBtn = document.getElementById("pwToggle");
+        pwBtn.addEventListener("click", function () {
+          var showing = pwInput.type === "text";
+          pwInput.type = showing ? "password" : "text";
+          pwBtn.setAttribute(
+            "aria-label",
+            showing ? "Show password" : "Hide password",
+          );
+          pwBtn.setAttribute(
+            "title",
+            showing ? "Show password" : "Hide password",
+          );
+          // Swap the icon (eye vs eye-off)
+          if (showing) {
+            pwBtn.innerHTML =
+              '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+              '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>' +
+              '<circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/>' +
+              '</svg>';
+          } else {
+            pwBtn.innerHTML =
+              '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+              '<path d="M1 1l22 22" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' +
+              '<path d="M4.5 6.5C2.5 8.3 1 12 1 12s4 8 11 8c2 0 3.7-.6 5.2-1.5M9.5 4.2A12.6 12.6 0 0112 4c7 0 11 8 11 8s-.9 1.7-2.5 3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>' +
+              '<path d="M10.6 10.6a2 2 0 002.8 2.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>' +
+              '</svg>';
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
