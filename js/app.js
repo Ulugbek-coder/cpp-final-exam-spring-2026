@@ -1,5 +1,5 @@
 // =============================================================
-// C++ Final Exam — Main Application
+// C++ Homework Assignment — Main Application
 // - Reads version from URL (?v=A / B / C / D)
 // - Shuffles MC bank deterministically per version (seeded)
 // - Anti-cheating: fixed tab-switch double-count bug
@@ -533,7 +533,16 @@ function renderQuestions() {
     const card = document.createElement("div");
     card.className = "q-card";
     card.innerHTML = `
-      <div class="q-num">Question ${qIdx + 1} / ${mcQuestions.length} · Savol ${qIdx + 1} / ${mcQuestions.length}</div>
+      <div class="q-badge-row">
+        <div class="q-badge">
+          <span class="q-badge-num">${qIdx + 1}</span>
+          <span class="q-badge-divider">/</span>
+          <span class="q-badge-total">${mcQuestions.length}</span>
+        </div>
+        <div class="q-badge-label">
+          Question<span class="q-badge-label-uz">Savol</span>
+        </div>
+      </div>
       <div class="q-text">${q.en}</div>
       <div class="q-text-uz">${q.uz}</div>
       <div class="opt-list">
