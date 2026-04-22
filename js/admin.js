@@ -430,14 +430,26 @@
       let pdf;
       if (method === "firebase_manual" || method === "firebase_auto") {
         if (r.pdfUrl) {
-          pdf = '<a href="' + r.pdfUrl + '" target="_blank" rel="noopener" class="pdf-link">Download</a>';
+          pdf =
+            '<a href="' +
+            r.pdfUrl +
+            '" target="_blank" rel="noopener" class="pdf-link">Download</a>';
+        } else if (r.pdfPath) {
+          // Firestore record knows the PDF path but we don't have a URL
+          // cached (happens when anonymous student uploaded the PDF but
+          // couldn't call getDownloadURL() due to Storage read rules).
+          // The admin has password auth, so WE can fetch the URL on demand.
+          pdf =
+            '<button class="pdf-load-btn" data-pdfpath="' +
+            esc(r.pdfPath) +
+            '" title="Fetch PDF URL from Storage">Load PDF</button>';
         } else {
-          // This can happen if Firestore write orphaned: Storage has the PDF
-          // but the record was written without pdfUrl. Show a "storage only" hint.
-          pdf = '<span class="muted" title="PDF uploaded to Storage but URL metadata missing. Check Firebase Storage directly.">storage only</span>';
+          pdf =
+            '<span class="muted" title="No PDF path recorded. PDF likely still exists in Storage — check manually.">path missing</span>';
         }
       } else if (method === "google_form") {
-        pdf = '<span class="muted" title="PDF not uploaded to Firebase. Check Google Form responses.">PDF unavailable</span>';
+        pdf =
+          '<span class="muted" title="PDF not uploaded to Firebase. Check Google Form responses.">PDF unavailable</span>';
       } else {
         pdf = '<span class="muted">—</span>';
       }
@@ -493,9 +505,78 @@
           icon: "!",
         });
         if (!ok) return;
-        deleteSubmission(docId, pdfPath, row);
+        // Before deleting, look up the full row data in case pdfPath is
+        // missing from the button's data attribute (old records, edge
+        // cases). If pdfPath is missing, try to reconstruct it from
+        // student info so we can still delete the Storage file.
+        const reconstructedPath =
+          !pdfPath ? reconstructPdfPath(row) : null;
+        deleteSubmission(docId, pdfPath || reconstructedPath, row);
       });
     });
+
+    // Wire "Load PDF" buttons for records where pdfUrl is missing.
+    // Admin has password auth, so they CAN read from Storage regardless
+    // of whether the student (anonymous) could.
+    tb.querySelectorAll(".pdf-load-btn").forEach(function (btn) {
+      btn.addEventListener("click", async function () {
+        const path = btn.dataset.pdfpath;
+        if (!path || !window.firebase || !firebase.storage) return;
+        btn.disabled = true;
+        btn.textContent = "Loading…";
+        try {
+          const url = await firebase.storage().ref(path).getDownloadURL();
+          // Replace the button with a proper Download link
+          const link = document.createElement("a");
+          link.href = url;
+          link.target = "_blank";
+          link.rel = "noopener";
+          link.className = "pdf-link";
+          link.textContent = "Download";
+          btn.replaceWith(link);
+        } catch (err) {
+          console.error("Load PDF URL failed:", err);
+          btn.disabled = false;
+          btn.textContent = "Load PDF";
+          modalAlert({
+            title: "Could not load PDF",
+            message:
+              "Failed to fetch the PDF URL from Storage.<br><br>" +
+              "<b>Path:</b> <code>" + escapeHtml(path) + "</code><br><br>" +
+              "<b>Reason:</b> " + escapeHtml((err && err.message) || String(err)),
+            kind: "danger",
+            icon: "!",
+          });
+        }
+      });
+    });
+  }
+
+  // Reconstruct the Storage path for a row when the Firestore record
+  // doesn't have pdfPath stored (old records from the pre-fix era).
+  // The filename convention is: {group}_{id}_{first}_{last}.pdf
+  function reconstructPdfPath(rowEl) {
+    if (!rowEl) return null;
+    // Cell order: Submitted, Group, ID, Name, Version, Test Points, Tabs, Violated, Time, Method, PDF, Delete
+    const cells = rowEl.querySelectorAll("td");
+    if (cells.length < 4) return null;
+    const group = (cells[1].textContent || "").trim();
+    const id = (cells[2].textContent || "").trim();
+    const name = (cells[3].textContent || "").trim();
+    if (!group || !id || !name) return null;
+    // Name is "First Last" — split; fallback to full name as "last" only
+    const parts = name.split(/\s+/);
+    let first = "", last = "";
+    if (parts.length >= 2) {
+      first = parts[0];
+      last = parts.slice(1).join("");
+    } else {
+      last = parts[0] || "";
+    }
+    const safe = (s) => (s || "").replace(/[^a-zA-Z0-9]/g, "");
+    const filename =
+      safe(group) + "_" + safe(id) + "_" + safe(first) + "_" + safe(last) + ".pdf";
+    return "submissions/" + group + "/" + filename;
   }
 
   function deleteSubmission(docId, pdfPath, rowEl) {
