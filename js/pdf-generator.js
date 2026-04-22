@@ -655,9 +655,21 @@ function generatePDFReport() {
     let statusLabelUz = "ISHGA TUSHIRILMAGAN — talaba bu kodni sinab ko'rmagan";
     if (lastRun) {
       if (lastRun.status === "success") {
-        accentColor = [46, 139, 74];
-        statusLabel = "LAST RUN: SUCCESS (exit 0)";
-        statusLabelUz = "OXIRGI ISHGA TUSHIRISH: MUVAFFAQIYATLI (exit 0)";
+        // Special case: student ran the code, but the code is byte-identical
+        // to the starter template — meaning they never wrote a real solution.
+        // Report this as its OWN category (amber), not as a success, because
+        // it misleads instructors otherwise.
+        if (lastRun.starterOnly) {
+          accentColor = [200, 140, 30]; // amber
+          statusLabel =
+            "LAST RUN: STARTER CODE ONLY — student did not write a solution";
+          statusLabelUz =
+            "OXIRGI ISHGA TUSHIRISH: FAQAT BOSHLANG'ICH KOD — talaba yechim yozmagan";
+        } else {
+          accentColor = [46, 139, 74];
+          statusLabel = "LAST RUN: SUCCESS (exit 0)";
+          statusLabelUz = "OXIRGI ISHGA TUSHIRISH: MUVAFFAQIYATLI (exit 0)";
+        }
       } else if (lastRun.status === "compile_error") {
         accentColor = [177, 58, 58];
         statusLabel = "LAST RUN: COMPILATION ERROR";
