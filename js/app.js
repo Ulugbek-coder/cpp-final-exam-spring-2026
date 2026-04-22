@@ -1,5 +1,5 @@
 // =============================================================
-// C++ Homework Assignment — Main Application
+// C++ Final Exam — Main Application
 // - Reads version from URL (?v=A / B / C / D)
 // - Shuffles MC bank deterministically per version (seeded)
 // - Anti-cheating: fixed tab-switch double-count bug
@@ -1043,7 +1043,53 @@ document.addEventListener("keydown", (e) => {
       "Saving is disabled during the exam! / Imtihon paytida saqlash mumkin emas!",
     );
   }
+
+  // F5 or Ctrl+R / Cmd+R (plain reload) or Ctrl+Shift+R / Cmd+Shift+R
+  // (hard reload). Show a custom warning modal explaining the consequences.
+  // Browser's native beforeunload still fires as a second safety net.
+  if (
+    k === "f5" ||
+    ((e.ctrlKey || e.metaKey) && k === "r")  // covers Shift+R too since it's still "r"
+  ) {
+    e.preventDefault();
+    e.stopPropagation();
+    showReloadWarningModal();
+  }
 });
+
+// Reload warning modal — shown when student tries to refresh the exam page
+// via F5 or Ctrl/Cmd+R. Explains the consequences bilingually and asks
+// for explicit confirmation before actually reloading.
+let _reloadModalOpen = false;
+function showReloadWarningModal() {
+  if (_reloadModalOpen) return;  // prevent stacking if user spams F5
+  _reloadModalOpen = true;
+  showModal({
+    type: "warning",
+    title: "Reload the exam page?",
+    titleUz: "Imtihon sahifasini qayta yuklashni istaysizmi?",
+    message:
+      "<b>Warning:</b> If you reload this page, ALL your current answers and code will be erased. You will have to start the exam from the beginning. Your time remaining will also reset.<br><br>" +
+      "<b>Only reload if you really need to.</b> If your internet briefly disconnected, the exam still works — you can keep answering and submit when you're done. There is no need to reload.<br><br>" +
+      '<span class="uz">' +
+      "<b>Ogohlantirish:</b> Agar siz bu sahifani qayta yuklasangiz, HAMMA joriy javoblaringiz va kodingiz o'chib ketadi. Imtihonni boshidan boshlashga majbur bo'lasiz. Qolgan vaqtingiz ham qayta tiklanadi.<br><br>" +
+      "<b>Faqat haqiqatan kerak bo'lsa qayta yukalang.</b> Agar internetingiz qisqa vaqtga uzilgan bo'lsa, imtihon baribir ishlaydi — javob berishni davom ettiring va tugatganingizda topshiring. Qayta yuklash shart emas." +
+      "</span>",
+    okText: "Yes, reload anyway / Ha, baribir qayta yuklash",
+    cancelText: "Cancel — keep my work / Bekor qilish — ishimni saqlash",
+  }).then((confirmed) => {
+    _reloadModalOpen = false;
+    if (confirmed) {
+      // Student has acknowledged the consequences. Allow the reload to
+      // proceed. We have to temporarily disable beforeunload or it will
+      // block us via the browser's native dialog as a second layer.
+      window.onbeforeunload = null;
+      window.removeEventListener("beforeunload", _beforeUnloadHandler);
+      location.reload();
+    }
+    // If not confirmed, nothing happens — student's work is preserved.
+  });
+}
 // FIX: only visibilitychange, not window.blur (prevents double counting)
 document.addEventListener("visibilitychange", () => {
   if (examStarted() && document.hidden) {
@@ -1051,13 +1097,14 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-window.addEventListener("beforeunload", (e) => {
+const _beforeUnloadHandler = (e) => {
   if (examStarted()) {
     e.preventDefault();
     e.returnValue = "";
     return "";
   }
-});
+};
+window.addEventListener("beforeunload", _beforeUnloadHandler);
 
 // ---------------- Modal ----------------
 let _modalResolve = null;
