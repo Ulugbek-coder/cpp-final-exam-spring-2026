@@ -2621,27 +2621,17 @@ pre, code{
 }
 
 /* ========================================================== */
-/* ====== BADGE POSITIONING ON WIDE SCREENS ================== */
-/* ========================================================== */
-/* Position the floating badges just OUTSIDE the content column
-   on wide screens so they never overlap the questions. The content
-   column is capped at 1360px max-width with ~44px side padding.
-   Total content width ≈ 1448px. On screens wider than that, there's
-   empty space on each side — use it for the badges.
+/* ====== BADGE POSITIONING ====================================
+   ========================================================== */
+/* The floating badges stay pinned at the far edges of the viewport
+   on all screen sizes. The default rules (top:12px; right:12px for
+   timer, top:12px; left:12px for tabcount) already defined earlier
+   handle this correctly — no size-specific override needed.
 
-   Formula: right = (viewport_width - 1448) / 2 + 16px
-   This places the badge's right edge 16px inside the empty space
-   to the right of the content column (i.e. never overlaps content).
-   Floor at 12px for narrower screens so we don't go negative. */
-@media (min-width: 1500px){
-  body.exam-body #timer,
-  #timer{
-    right:max(12px, calc((100vw - 1448px) / 2 + 16px));
-  }
-  #tabcount{
-    left:max(12px, calc((100vw - 1448px) / 2 + 16px));
-  }
-}
+   Earlier attempts to "pull them inward toward the content column"
+   on wide screens caused overlap bugs, because on wide screens the
+   content column is capped at ~1448px but the rule placed badges
+   INSIDE that boundary. Keep this simple: badges at edges, always. */
 
 /* ========================================================== */
 /* ====== MC QUESTION BADGE (DIFFERENT FROM CODING BADGE) ==== */
