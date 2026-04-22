@@ -928,8 +928,10 @@ input[type="text"], textarea, select {
   border:1.5px solid var(--line);
   border-radius:8px;
   background:#1e1e1e;
-  overflow:hidden;
+  /* Was: overflow:hidden + min-height:340px. Changed to allow the editor
+     to grow naturally with content AND enable scrolling when needed. */
   min-height:340px;
+  overflow:auto;
 }
 .code-editor-wrap:focus-within{border-color:var(--c2)}
 
@@ -948,26 +950,28 @@ input[type="text"], textarea, select {
   -moz-tab-size:4;
   letter-spacing:0;
   /* Disable font ligatures so '!=', '<=', '>=', '->', '=>' etc. are shown
-     as literal two-character sequences instead of '≠', '≤', '≥', '→', '⇒'.
-     Students need to see exactly the C++ operators they typed, both
-     while editing and when instructors read the PDF. */
+     as literal two-character sequences instead of '≠', '≤', '≥', '→', '⇒'. */
   font-variant-ligatures:none;
   -webkit-font-variant-ligatures:none;
   font-feature-settings:"liga" 0, "clig" 0, "calt" 0;
+  /* CRITICAL: exact same box model on both layers so cursor position
+     in the textarea maps 1:1 to rendered text in the overlay below. */
+  box-sizing:border-box;
 }
 
 .code-editor-highlight{
   position:absolute;
-  inset:0;
+  top:0;left:0;right:0;bottom:0;
   color:#e8e2d0;
   background:transparent;
   pointer-events:none;
   user-select:none;
   z-index:0;
+  /* Match the textarea's overflow behavior so positions stay aligned
+     when content grows beyond the visible area. */
   overflow:hidden;
-  box-sizing:border-box;
   width:100%;
-  height:100%;
+  min-height:100%;
 }
 /* English-language // comments: bright yellow */
 .code-editor-highlight .c-en{
@@ -986,12 +990,13 @@ input[type="text"], textarea, select {
   display:block;
   width:100%;
   min-height:340px;
+  height:auto;          /* let the textarea grow with content */
   background:transparent;
   color:transparent;
   caret-color:#ffffff;
   outline:none;
   resize:vertical;
-  box-sizing:border-box;
+  overflow:hidden;      /* we use the wrap's scroll instead */
 }
 .code-editor-input::selection{
   background:rgba(255, 217, 102, .25);
@@ -1884,7 +1889,32 @@ input[type="text"], textarea, select {
   white-space:pre-wrap;word-break:break-word;color:#1d1d1d;
   min-height:50px;
 }
-.run-output.empty{color:#8a8a8a;font-style:italic}
+/* Empty (initial) state — shown before any run has happened.
+   Uses normal wrapping (not pre-wrap) so the explanatory message
+   isn't affected by whitespace from the source HTML. Blueish tone
+   for better visibility than grey. */
+.run-output.empty{
+  color:#2b4a70;
+  font-style:italic;
+  white-space:normal;
+  text-align:left;
+  padding:14px 16px;
+}
+.run-output.empty b{
+  color:#1e3a5f;
+  font-style:normal;
+  font-weight:700;
+}
+/* The Uzbek translation sits as a <span> inside the empty block.
+   Give it a slightly lighter tone but still in the blue family. */
+.run-output.empty span{
+  color:#3d6090 !important;
+  display:block;
+  margin-top:8px;
+}
+.run-output.empty span b{
+  color:#2b4a70;
+}
 .run-output.success{background:#edf7ee;border-top:3px solid #2e8b4a}
 .run-output.error{background:#fde9e9;border-top:3px solid #b13a3a}
 .run-output.running{background:#eef4fb;border-top:3px solid #1e3a5f;color:#1e3a5f}
@@ -2532,4 +2562,44 @@ pre, code{
   font-variant-ligatures:none !important;
   -webkit-font-variant-ligatures:none !important;
   font-feature-settings:"liga" 0, "clig" 0, "calt" 0 !important;
+}
+
+/* ========================================================== */
+/* ====== WARNING BANNER INSIDE RUN-OUTPUT SUCCESS PANEL ===== */
+/* ========================================================== */
+/* Shown when student's code is essentially unchanged from the starter
+   template. Not a failure — the code did run — but a clear signal that
+   they haven't written a solution yet. */
+.run-warning-banner{
+  background:#fff8e0;
+  border:1px solid #e6d280;
+  border-left:4px solid #d39e1c;
+  border-radius:6px;
+  padding:10px 14px;
+  margin:10px 0 14px;
+  color:#6b4d0e;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;
+  line-height:1.5;
+  font-style:normal;
+}
+.run-warning-banner b{
+  color:#8a5e10;
+  font-weight:700;
+}
+.run-warning-banner code{
+  background:#f4e6b8;
+  padding:1px 5px;
+  border-radius:3px;
+  font-size:.82rem;
+  color:#6b4d0e;
+}
+.run-warning-banner .uz-inline{
+  display:block;
+  margin-top:8px;
+  padding-top:8px;
+  border-top:1px dashed #d4bc74;
+  font-style:italic;
+  color:#7b5a18;
+  font-size:.78rem;
 }
