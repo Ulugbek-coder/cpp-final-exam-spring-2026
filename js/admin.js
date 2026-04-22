@@ -499,31 +499,64 @@
   }
 
   function deleteSubmission(docId, pdfPath, rowEl) {
-    // Delete Firestore doc first, then best-effort delete PDF from Storage.
+    // Two-step delete: Firestore record first, then Storage PDF.
+    // We do Firestore first because if Firestore fails (permission, network),
+    // leaving the PDF behind is harmless — but orphaning a Firestore record
+    // that points to a deleted PDF would be worse.
     window.fbDb
       .collection("submissions")
       .doc(docId)
       .delete()
       .then(function () {
-        // Try to also delete the PDF blob (non-fatal if it fails)
-        if (pdfPath && window.firebase && firebase.storage) {
-          try {
-            firebase.storage().ref(pdfPath).delete().catch(function (e) {
-              console.warn("PDF blob delete failed (Firestore doc was deleted OK):", e);
-            });
-          } catch (e) {
-            console.warn("Storage ref failed:", e);
-          }
-        }
+        // Firestore record is now gone. Remove the row from the admin table.
         if (rowEl) rowEl.remove();
         const countEl = $("subCountNum");
         if (countEl) {
           const n = parseInt(countEl.textContent, 10);
           if (!isNaN(n)) countEl.textContent = Math.max(0, n - 1);
         }
+
+        // Now try to delete the PDF from Storage. This runs in the
+        // background — success and failure are both non-blocking, but we
+        // surface a warning to the instructor if it fails so you know a
+        // manual Storage cleanup might be needed.
+        if (pdfPath && window.firebase && firebase.storage) {
+          firebase
+            .storage()
+            .ref(pdfPath)
+            .delete()
+            .then(function () {
+              console.log("✓ PDF deleted from Storage: " + pdfPath);
+            })
+            .catch(function (err) {
+              // object-not-found means there was no PDF file to begin with
+              // (probably a google_form record). That's not an error.
+              if (err && err.code === "storage/object-not-found") {
+                console.log(
+                  "PDF delete skipped (no file at " + pdfPath + " — expected for Google Form submissions)",
+                );
+                return;
+              }
+              console.warn("✗ PDF delete failed:", err);
+              modalAlert({
+                title: "Submission deleted — PDF cleanup failed",
+                message:
+                  "The submission record was deleted, but the PDF file could not " +
+                  "be removed from Firebase Storage automatically." +
+                  "<br><br><b>Path:</b> <code>" + escapeHtml(pdfPath) + "</code>" +
+                  "<br><br>You can delete it manually from Firebase Console → Storage.",
+                kind: "warning",
+                icon: "!",
+              });
+            });
+        } else {
+          // No pdfPath on this record (google_form fallback with no PDF).
+          // Nothing to delete from Storage — totally fine.
+          console.log("No PDF path for this record — Storage delete skipped.");
+        }
       })
       .catch(function (err) {
-        console.error(err);
+        console.error("Firestore delete failed:", err);
         modalAlert({
           title: "Delete failed",
           message: "Could not delete submission: " + escapeHtml(err.message),
