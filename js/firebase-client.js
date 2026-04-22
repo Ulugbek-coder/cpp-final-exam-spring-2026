@@ -61,18 +61,28 @@ function ensureAnonymousAuth() {
 }
 
 // ---------- PDF upload with retry + Google Form fallback ----------
-// attemptsMax = 3. On every failure we notify onProgress, and before giving
-// up we wait a short backoff.
+// Submission classification:
+//   firebase_manual — student clicked Submit, Firebase upload succeeded
+//   firebase_auto   — 90-min timer ran out and auto-submitted, Firebase OK
+//   google_form     — ALL Firebase attempts failed, student downloaded PDF
+//                     and must upload via Google Form
+//
+// The Storage upload and Firestore write are now done in separate retry
+// loops so that a Firestore failure after a successful Storage upload
+// doesn't lose the PDF. If Storage succeeds but Firestore fails, we
+// still create a Firestore record in a final best-effort pass with the
+// pdfPath + pdfUrl attached.
 async function uploadSubmission(submissionData, pdfBlob, onProgress) {
   const group = submissionData.group;
   const id = submissionData.studentId;
   const first = submissionData.firstName || "";
   const last = submissionData.lastName || "student";
+  const trigger =
+    submissionData.submitTrigger === "auto" ? "auto" : "manual";
+  const firebaseMethod =
+    trigger === "auto" ? "firebase_auto" : "firebase_manual";
+
   const safe = (s) => (s || "").replace(/[^a-zA-Z0-9]/g, "");
-  // Friendly, consistent filename — matches what the student sees if the PDF
-  // is downloaded locally via the Google Form fallback path. If a student
-  // somehow submits twice with the same id+name, the second upload
-  // overwrites the first, which is the desired behavior (latest wins).
   const filename =
     safe(group) +
     "_" +
@@ -95,49 +105,30 @@ async function uploadSubmission(submissionData, pdfBlob, onProgress) {
     await ensureAnonymousAuth();
   } catch (err) {
     report("auth_failed", 0, err && err.message);
-    return activateFallback("auth_failed");
+    return activateGoogleFormFallback("auth_failed");
   }
 
   const storageRef = window.fbStorage.ref().child(storagePath);
 
+  // -----------------------------------------------------------------
+  // Phase 1: Upload PDF to Storage (up to 3 attempts)
+  // -----------------------------------------------------------------
+  let downloadURL = null;
+  let storageAttempts = 0;
+  let lastStorageError = "";
   for (let attempt = 1; attempt <= 3; attempt++) {
+    storageAttempts = attempt;
     report("uploading", attempt);
     try {
-      // 1) Upload PDF to Storage
       const uploadSnap = await storageRef.put(pdfBlob, {
         contentType: "application/pdf",
       });
-      const downloadURL = await uploadSnap.ref.getDownloadURL();
-
-      // 2) Write Firestore submission record
-      const doc = {
-        group: submissionData.group,
-        studentId: submissionData.studentId,
-        firstName: submissionData.firstName,
-        lastName: submissionData.lastName,
-        version: submissionData.version,
-        mcScore: submissionData.mcScore,
-        correctCount: submissionData.correct,
-        timeUsed: submissionData.timeStr,
-        tabSwitches: submissionData.tabSwitches,
-        pdfPath: storagePath,
-        pdfUrl: downloadURL,
-        uploadMethod: "firebase",
-        uploadAttempts: attempt,
-        submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      };
-      const docRef = await window.fbDb.collection("submissions").add(doc);
-
-      report("success", attempt, { url: downloadURL });
-      return {
-        method: "firebase",
-        url: downloadURL,
-        docId: docRef.id,
-        attempt,
-      };
+      downloadURL = await uploadSnap.ref.getDownloadURL();
+      break; // success
     } catch (err) {
-      console.error("Upload attempt " + attempt + " failed:", err);
-      report("attempt_failed", attempt, (err && err.message) || String(err));
+      console.error("Storage upload attempt " + attempt + " failed:", err);
+      lastStorageError = (err && err.message) || String(err);
+      report("attempt_failed", attempt, lastStorageError);
       if (attempt < 3) {
         const backoff = attempt === 1 ? 2000 : 4000;
         await new Promise((r) => setTimeout(r, backoff));
@@ -145,13 +136,87 @@ async function uploadSubmission(submissionData, pdfBlob, onProgress) {
     }
   }
 
-  // All 3 attempts failed
-  return activateFallback("upload_failed");
+  if (!downloadURL) {
+    // Storage totally failed — PDF is NOT saved anywhere. Student must
+    // use the Google Form to upload manually.
+    return activateGoogleFormFallback("storage_upload_failed:" + lastStorageError);
+  }
 
-  function activateFallback(reason) {
+  // -----------------------------------------------------------------
+  // Phase 2: Write Firestore record (up to 3 attempts).
+  // If this fails after Storage succeeded, we still classify as Firebase
+  // submission because the PDF IS saved — the admin can match it up by
+  // Storage path even without the Firestore record. We write a minimal
+  // "orphan" record in the fallback path so it still appears in the
+  // admin list.
+  // -----------------------------------------------------------------
+  const doc = {
+    group: submissionData.group,
+    studentId: submissionData.studentId,
+    firstName: submissionData.firstName,
+    lastName: submissionData.lastName,
+    version: submissionData.version,
+    mcScore: submissionData.mcScore,
+    correctCount: submissionData.correct,
+    timeUsed: submissionData.timeStr,
+    tabSwitches: submissionData.tabSwitches,
+    pdfPath: storagePath,
+    pdfUrl: downloadURL,
+    uploadMethod: firebaseMethod, // firebase_manual or firebase_auto
+    submitTrigger: trigger,
+    storageAttempts,
+    submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+
+  let firestoreAttempts = 0;
+  let lastFirestoreError = "";
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    firestoreAttempts = attempt;
+    try {
+      const docRef = await window.fbDb.collection("submissions").add({
+        ...doc,
+        firestoreAttempts: attempt,
+      });
+      report("success", attempt, { url: downloadURL });
+      return {
+        method: firebaseMethod,
+        url: downloadURL,
+        docId: docRef.id,
+        trigger,
+      };
+    } catch (err) {
+      console.error("Firestore write attempt " + attempt + " failed:", err);
+      lastFirestoreError = (err && err.message) || String(err);
+      report("firestore_attempt_failed", attempt, lastFirestoreError);
+      if (attempt < 3) {
+        const backoff = attempt === 1 ? 2000 : 4000;
+        await new Promise((r) => setTimeout(r, backoff));
+      }
+    }
+  }
+
+  // All Firestore attempts failed but PDF IS in Storage. This is still
+  // a successful Firebase submission from the student's perspective:
+  // their work is safely stored. The Firestore record is metadata the
+  // admin relies on — without it, the admin won't see this submission
+  // in the dashboard. Treat it as Firebase success but log the issue.
+  console.error(
+    "Firestore write failed for all attempts, but Storage succeeded. " +
+      "PDF is at " + storagePath + ". Manually check Storage for this file.",
+  );
+  report("firestore_failed_storage_ok", 3, lastFirestoreError);
+  return {
+    method: firebaseMethod,
+    url: downloadURL,
+    docId: null,
+    trigger,
+    warning: "firestore_write_failed",
+    warningDetail: lastFirestoreError,
+  };
+
+  // ----- Google Form fallback -----
+  function activateGoogleFormFallback(reason) {
     report("fallback", 3, reason);
-    // Best-effort: still try to write a Firestore record marking the fallback,
-    // but if Firestore itself is down, the client already knows.
     try {
       window.fbDb.collection("submissions").add({
         group: submissionData.group,
@@ -163,15 +228,15 @@ async function uploadSubmission(submissionData, pdfBlob, onProgress) {
         correctCount: submissionData.correct,
         timeUsed: submissionData.timeStr,
         tabSwitches: submissionData.tabSwitches,
-        uploadMethod: "google_form_fallback",
-        uploadAttempts: 3,
+        uploadMethod: "google_form",
+        submitTrigger: trigger,
         fallbackReason: reason,
         submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
       });
     } catch (_) {
-      /* ignore — client-side record already notifies student */
+      /* ignore — student already sees the fallback UI */
     }
-    return { method: "google_form_fallback", reason };
+    return { method: "google_form", reason, trigger };
   }
 }
 
