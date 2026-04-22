@@ -636,7 +636,7 @@ function renderCoding() {
             <label for="stdin${i}">Input (stdin) / Qiymat Kiritish</label>
             <textarea id="stdin${i}" placeholder="If your program reads input with cin, type it here - one value per line. / Agar dasturingiz cin bilan kiritish o'qisa, har bir qiymatni yangi qatorga yozing."></textarea>
           </div>
-          <div class="run-output empty" id="runOutput${i}">Click <b>Run Code</b> to compile and execute your code. This is for your own testing — the instructor grades the code you submit, not the run result.<span>Natijani tekshirish uchun <b>Kodni Ishga Tushirish</b> tugmasini bosing. Bu faqat sizning sinovingiz uchun - o'qituvchi siz yuborgan kodni baholaydi, ishga tushirish natijasini emas.</span></div>
+          <div class="run-output empty" id="runOutput${i}"><div class="empty-msg-en">Click <b>Run Code</b> to compile and execute your code. This is for your own testing — the instructor grades the code you submit, not the run result.</div><div class="empty-msg-uz">Natijani tekshirish uchun <b>Kodni Ishga Tushirish</b> tugmasini bosing. Bu faqat sizning sinovingiz uchun — o'qituvchi siz yuborgan kodni baholaydi, ishga tushirish natijasini emas.</div></div>
         </div>
       </div>
     `;
