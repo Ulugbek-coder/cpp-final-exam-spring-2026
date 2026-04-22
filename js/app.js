@@ -937,9 +937,9 @@ function updateTimer() {
       message:
         "Your time has expired. The exam is being submitted automatically. <span class='uz'>Vaqtingiz tugadi. Imtihon avtomatik yuborilmoqda.</span>",
       okText: "OK",
-    }).then(() => performSubmit());
+    }).then(() => performSubmit("auto"));
     setTimeout(() => {
-      if (!examEnded) performSubmit();
+      if (!examEnded) performSubmit("auto");
     }, 4000);
     return;
   }
@@ -1186,13 +1186,17 @@ async function trySubmit() {
     cancelText: "Cancel / Bekor qilish",
   });
   if (!confirmed) return;
-  performSubmit();
+  performSubmit("manual");
 }
 
-function performSubmit() {
+function performSubmit(trigger) {
   if (examEnded) return;
   examEnded = true;
   clearInterval(timerInterval);
+  // Track how the submission was triggered: "manual" (student clicked
+  // Submit) or "auto" (timer ran out). Default to "manual" for safety
+  // since any undefined path is more likely a user action than a timeout.
+  window._submitTrigger = trigger === "auto" ? "auto" : "manual";
 
   let correct = 0;
   userAnswers.forEach((ans, idx) => {
@@ -1404,13 +1408,17 @@ async function runUploadFlow(pdfResult) {
     }
   };
 
+  // Include how the submission was triggered so firebase-client can
+  // classify it as manual vs auto.
+  window._submissionData.submitTrigger = window._submitTrigger || "manual";
+
   const result = await window.FBClient.uploadSubmission(
     window._submissionData,
     pdfResult.blob,
     onProgress,
   );
 
-  if (result && result.method === "firebase") {
+  if (result && (result.method === "firebase_manual" || result.method === "firebase_auto")) {
     showSuccessBlock();
   } else {
     showFallbackBlock((result && result.reason) || "unknown");
