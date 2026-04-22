@@ -1,5 +1,5 @@
 /* =============================================================
-   C++ Final Exam — Shared Styles
+   C++ Homework Assignment — Shared Styles
    Academic/editorial theme for NPUU
    ============================================================= */
 
@@ -2621,22 +2621,98 @@ pre, code{
 /* ========================================================== */
 /* ====== BADGE POSITIONING ON WIDE SCREENS ================== */
 /* ========================================================== */
-/* Pull the floating badges in from the viewport edges on wider
-   screens so they sit closer to the actual content column
-   (which is capped at ~1360px). Prevents them from feeling
-   disconnected/stranded on ultra-wide monitors. */
-@media (min-width: 1600px){
+/* Position the floating badges just OUTSIDE the content column
+   on wide screens so they never overlap the questions. The content
+   column is capped at 1360px max-width with ~44px side padding.
+   Total content width ≈ 1448px. On screens wider than that, there's
+   empty space on each side — use it for the badges.
+
+   Formula: right = (viewport_width - 1448) / 2 + 16px
+   This places the badge's right edge 16px inside the empty space
+   to the right of the content column (i.e. never overlaps content).
+   Floor at 12px for narrower screens so we don't go negative. */
+@media (min-width: 1500px){
   body.exam-body #timer,
-  #timer{right:140px}
-  #tabcount{left:140px}
+  #timer{
+    right:max(12px, calc((100vw - 1448px) / 2 + 16px));
+  }
+  #tabcount{
+    left:max(12px, calc((100vw - 1448px) / 2 + 16px));
+  }
 }
-@media (min-width: 1400px) and (max-width: 1599px){
-  body.exam-body #timer,
-  #timer{right:90px}
-  #tabcount{left:90px}
+
+/* ========================================================== */
+/* ====== MC QUESTION BADGE (DIFFERENT FROM CODING BADGE) ==== */
+/* ========================================================== */
+/* The coding-problem badge (.code-badge) is a warm, big orange
+   circle — loud, because each coding problem is heavy and unique.
+   MC questions are smaller and more numerous, so their badge is:
+     - cool navy palette (not orange)
+     - flat rectangle (not circle)
+     - smaller footprint
+     - with a counter-style "N / TOTAL" visible inside the badge
+   This way, at a glance the student can tell MC ("blue pill") from
+   coding ("orange circle") without reading anything. */
+
+.q-badge-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+  padding-bottom:10px;
+  border-bottom:1px dashed var(--line);
 }
-@media (min-width: 1200px) and (max-width: 1399px){
-  body.exam-body #timer,
-  #timer{right:40px}
-  #tabcount{left:40px}
+
+.q-badge{
+  display:inline-flex;
+  align-items:baseline;
+  gap:4px;
+  font-family:'JetBrains Mono',monospace;
+  background:linear-gradient(135deg, var(--ink) 0%, #2d3748 100%);
+  color:#fff;
+  padding:8px 14px;
+  border-radius:6px;
+  box-shadow:0 2px 6px rgba(26,26,26,.25);
+  line-height:1;
+  flex-shrink:0;
 }
+.q-badge-num{
+  font-weight:700;
+  font-size:1.1rem;
+  color:#ffd866;  /* yellow accent so current question stands out */
+}
+.q-badge-divider{
+  color:rgba(255,255,255,.45);
+  font-weight:400;
+  font-size:.9rem;
+}
+.q-badge-total{
+  color:rgba(255,255,255,.85);
+  font-weight:500;
+  font-size:.9rem;
+}
+
+.q-badge-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.68rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--ink-medium);
+  font-weight:700;
+  line-height:1.3;
+}
+.q-badge-label-uz{
+  display:block;
+  font-family:'Inter',sans-serif;
+  font-style:italic;
+  font-weight:500;
+  color:var(--ink-faint);
+  letter-spacing:.06em;
+  text-transform:none;
+  margin-top:2px;
+  font-size:.7rem;
+}
+
+/* Legacy .q-num class — hide it since q-badge-row replaces it.
+   Some older render paths might still emit .q-num, so we keep it safe. */
+.q-num{display:none}
