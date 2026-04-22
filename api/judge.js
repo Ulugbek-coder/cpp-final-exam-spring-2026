@@ -88,6 +88,18 @@ module.exports = async function handler(req, res) {
   const b64_source = Buffer.from(source_code, "utf8").toString("base64");
   const b64_stdin = Buffer.from(stdin, "utf8").toString("base64");
 
+  // Try up to 3 language IDs, starting with the one requested. If Judge0
+  // returns 422 (unknown language_id on this particular server build),
+  // try the next one. Keeps us working across different Judge0 versions
+  // without requiring a config change.
+  //
+  //   Judge0 CE newer builds:  105 = C++ (GCC 14.1.0)
+  //   Judge0 CE v1.13.x:        54 = C++ (GCC 9.2.0)
+  //   Some older builds:        52 = C++ (GCC 9.2.0)
+  const idCandidates = Array.from(
+    new Set([language_id, 105, 54, 52]),
+  );
+
   const url =
     baseUrl.replace(/\/+$/, "") +
     "/submissions?base64_encoded=true&wait=true";
@@ -99,51 +111,80 @@ module.exports = async function handler(req, res) {
   }
 
   let upstream;
-  try {
-    upstream = await fetch(url, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        source_code: b64_source,
-        language_id,
-        stdin: b64_stdin,
-        // Allow up to 3 seconds CPU time to catch infinite loops cheaply
-        cpu_time_limit: 3,
-        wall_time_limit: 5,
-      }),
-    });
-  } catch (err) {
-    console.error("Judge0 fetch failed:", err);
-    return res.status(502).json({
-      kind: "internal_error",
-      error:
-        "Could not reach the Judge0 server. Please try again in a moment.",
-      detail: String(err && err.message ? err.message : err),
-    });
-  }
+  let lastErrorDetail = "";
+  let result = null;
 
-  if (!upstream.ok) {
+  for (let idx = 0; idx < idCandidates.length; idx++) {
+    const tryId = idCandidates[idx];
+    try {
+      upstream = await fetch(url, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          source_code: b64_source,
+          language_id: tryId,
+          stdin: b64_stdin,
+          // Allow up to 3 seconds CPU time to catch infinite loops cheaply
+          cpu_time_limit: 3,
+          wall_time_limit: 5,
+        }),
+      });
+    } catch (err) {
+      console.error("Judge0 fetch failed:", err);
+      return res.status(502).json({
+        kind: "internal_error",
+        error:
+          "Could not reach the Judge0 server. Please try again in a moment.",
+        detail: String(err && err.message ? err.message : err),
+      });
+    }
+
+    if (upstream.ok) {
+      try {
+        result = await upstream.json();
+        break; // success — stop trying other language IDs
+      } catch (err) {
+        return res.status(502).json({
+          kind: "internal_error",
+          error: "Invalid JSON from Judge0",
+          detail: String(err && err.message ? err.message : err),
+        });
+      }
+    }
+
+    // Capture the error body for reporting
     let bodyText = "";
     try {
       bodyText = await upstream.text();
     } catch (_) {
       /* ignore */
     }
-    return res.status(502).json({
-      kind: "internal_error",
-      error: "Judge0 returned " + upstream.status,
-      detail: bodyText.slice(0, 500),
-    });
+    lastErrorDetail =
+      "status=" + upstream.status + " lang_id=" + tryId + " body=" +
+      (bodyText ? bodyText.slice(0, 300) : "<empty>");
+
+    // 422 = unprocessable entity (most likely wrong language_id).
+    // 400 = bad request (also sometimes returned for bad language_id).
+    // Try the next candidate.
+    // For any other status (500, 503, network), give up immediately.
+    if (upstream.status !== 422 && upstream.status !== 400) {
+      return res.status(502).json({
+        kind: "internal_error",
+        error: "Judge0 returned " + upstream.status,
+        detail: lastErrorDetail,
+      });
+    }
   }
 
-  let result;
-  try {
-    result = await upstream.json();
-  } catch (err) {
+  // All language IDs failed
+  if (!result) {
     return res.status(502).json({
       kind: "internal_error",
-      error: "Invalid JSON from Judge0",
-      detail: String(err && err.message ? err.message : err),
+      error:
+        "Judge0 rejected all C++ language IDs (105, 54, 52). The Judge0 server may be misconfigured or using an unexpected build. " +
+        "Contact the server administrator to check installed languages via GET " +
+        baseUrl + "/languages",
+      detail: lastErrorDetail,
     });
   }
 
