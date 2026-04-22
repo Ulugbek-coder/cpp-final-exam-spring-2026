@@ -1745,8 +1745,10 @@ input[type="text"], textarea, select {
 .tag-ended   {background:#fdecec;color:#7a1a1a}
 .tag-notset  {background:#eee;color:#555}
 .tag-err     {background:#fdecec;color:#7a1a1a}
-.tag-fb      {background:#eef4fb;color:#1e3a5f}
-.tag-fallback{background:#fff5e1;color:#7a4a00}
+.tag-fb      {background:#eef4fb;color:#1e3a5f}   /* legacy — kept for back-compat */
+.tag-fb-manual {background:#e9f6ec;color:#1b5a2e}  /* REGULAR: student submitted normally, green */
+.tag-fb-auto   {background:#fff4e5;color:#8a5010}  /* AUTO: timer ran out, amber */
+.tag-fallback{background:#fde7e7;color:#8a1a1a}   /* GOOGLE FORM fallback, red */
 .tag-unknown {background:#eee;color:#555}
 
 .pdf-link{
