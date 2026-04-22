@@ -636,10 +636,7 @@ function renderCoding() {
             <label for="stdin${i}">Input (stdin) / Qiymat Kiritish</label>
             <textarea id="stdin${i}" placeholder="If your program reads input with cin, type it here - one value per line. / Agar dasturingiz cin bilan kiritish o'qisa, har bir qiymatni yangi qatorga yozing."></textarea>
           </div>
-          <div class="run-output empty" id="runOutput${i}">
-            Click <b>Run Code</b> to compile and execute your code. This is for your own testing — the instructor grades the code you submit, not the run result.<br>
-            <span style="font-style:italic;color:#8a8a8a">Natijani tekshirish uchun <b>Kodni Ishga Tushirish</b> tugmasini bosing. Bu faqat sizning sinovingiz uchun - o'qituvchi siz yuborgan kodni baholaydi, ishga tushirish natijasini emas.</span>
-          </div>
+          <div class="run-output empty" id="runOutput${i}">Click <b>Run Code</b> to compile and execute your code. This is for your own testing — the instructor grades the code you submit, not the run result.<span>Natijani tekshirish uchun <b>Kodni Ishga Tushirish</b> tugmasini bosing. Bu faqat sizning sinovingiz uchun - o'qituvchi siz yuborgan kodni baholaydi, ishga tushirish natijasini emas.</span></div>
         </div>
       </div>
     `;
@@ -793,8 +790,42 @@ async function handleRunClick(idx) {
 
   // Success
   outputEl.className = "run-output success";
+
+  // Detect whether the student actually wrote anything different from
+  // the starter. If not, show a warning so they don't think running the
+  // unchanged starter means "I'm done." This does NOT prevent submission
+  // — it just warns, because the instructor grades the code itself.
+  const starter = (versionData.coding[idx] && versionData.coding[idx].starter) || "";
+  const normalize = (s) =>
+    String(s || "")
+      // strip line comments (any // through end of line)
+      .replace(/\/\/[^\n]*/g, "")
+      // strip block comments (/* ... */)
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      // collapse whitespace
+      .replace(/\s+/g, " ")
+      .trim();
+  const studentNormalized = normalize(code);
+  const starterNormalized = normalize(starter);
+  const unchanged = studentNormalized === starterNormalized;
+
+  const warningBanner = unchanged
+    ? '<div class="run-warning-banner">' +
+      '<b>⚠ Your code looks the same as the starter template.</b> ' +
+      'This means you have not written any solution yet. The compiler still ran it, ' +
+      'but running the starter does not count as solving the problem. ' +
+      'Replace the <code>// TODO</code> comments with your actual solution.' +
+      '<div class="uz-inline">' +
+      '<b>⚠ Kodingiz boshlang\'ich shablon bilan bir xil ko\'rinadi.</b> ' +
+      'Bu siz hali yechim yozmaganingizni anglatadi. Kompilyator uni baribir ishga tushirdi, ' +
+      'lekin boshlang\'ich shablonni ishga tushirish masalani yechish hisoblanmaydi. ' +
+      '<code>// TODO</code> izohlari o\'rniga haqiqiy yechimingizni yozing.' +
+      '</div></div>'
+    : '';
+
   outputEl.innerHTML =
     '<div class="run-status-row"><span class="run-status-dot"></span>PROGRAM RAN SUCCESSFULLY · DASTUR MUVAFFAQIYATLI ISHLADI</div>' +
+    warningBanner +
     '<div class="run-output-block">' +
     '<div class="run-output-label">STDOUT</div>' +
     "<div>" +
@@ -810,6 +841,7 @@ async function handleRunClick(idx) {
     stdout: result.stdout,
     stderr: result.stderr,
     exitCode: 0,
+    starterOnly: unchanged, // flag for PDF generator if it wants to note it
   });
 }
 
