@@ -357,7 +357,14 @@
         snap.forEach(function (doc) {
           const d = doc.data();
           if (group && d.group !== group) return;
-          if (method && d.uploadMethod !== method) return;
+          // Method filter uses normalized names. Translate old records so
+          // they match the filter dropdown options.
+          if (method) {
+            let m = d.uploadMethod || "";
+            if (m === "firebase") m = "firebase_manual";
+            if (m === "google_form_fallback") m = "google_form";
+            if (m !== method) return;
+          }
           rows.push({ id: doc.id, ...d });
         });
         renderSubmissions(rows);
@@ -395,27 +402,52 @@
           })
         : "—";
       const name = [r.firstName, r.lastName].filter(Boolean).join(" ");
-      const pdf =
-        r.pdfUrl
-          ? '<a href="' +
-            r.pdfUrl +
-            '" target="_blank" rel="noopener" class="pdf-link">Download</a>'
-          : '<span class="muted">—</span>';
-      const methodTag =
-        r.uploadMethod === "firebase"
-          ? '<span class="tag tag-fb">firebase</span>'
-          : r.uploadMethod === "google_form_fallback"
-          ? '<span class="tag tag-fallback">fallback</span>'
-          : '<span class="tag tag-unknown">?</span>';
+
+      // Normalize method. Handle backward-compat for old records:
+      //   "firebase"                  (old successful upload, no trigger)  → firebase_manual
+      //   "google_form_fallback"      (old fallback name)                   → google_form
+      const rawMethod = r.uploadMethod || "";
+      let method = rawMethod;
+      if (rawMethod === "firebase") method = "firebase_manual"; // best-guess backfill
+      if (rawMethod === "google_form_fallback") method = "google_form";
+
+      // 3-way classification of how it was submitted
+      //   firebase_manual → student clicked Submit, Firebase upload OK (green)
+      //   firebase_auto   → 90-min timer auto-submit, Firebase upload OK (amber)
+      //   google_form     → all Firebase attempts failed, student used Form (red)
+      let methodTag;
+      if (method === "firebase_manual") {
+        methodTag = '<span class="tag tag-fb-manual" title="Student clicked Submit · Firebase upload OK">REGULAR</span>';
+      } else if (method === "firebase_auto") {
+        methodTag = '<span class="tag tag-fb-auto" title="Timer expired (90 min) · Firebase upload OK">AUTO</span>';
+      } else if (method === "google_form") {
+        methodTag = '<span class="tag tag-fallback" title="Firebase upload failed · student must upload via Google Form">GOOGLE FORM</span>';
+      } else {
+        methodTag = '<span class="tag tag-unknown">?</span>';
+      }
+
+      // PDF column: link for both firebase methods, "unavailable" for google_form
+      let pdf;
+      if (method === "firebase_manual" || method === "firebase_auto") {
+        if (r.pdfUrl) {
+          pdf = '<a href="' + r.pdfUrl + '" target="_blank" rel="noopener" class="pdf-link">Download</a>';
+        } else {
+          // This can happen if Firestore write orphaned: Storage has the PDF
+          // but the record was written without pdfUrl. Show a "storage only" hint.
+          pdf = '<span class="muted" title="PDF uploaded to Storage but URL metadata missing. Check Firebase Storage directly.">storage only</span>';
+        }
+      } else if (method === "google_form") {
+        pdf = '<span class="muted" title="PDF not uploaded to Firebase. Check Google Form responses.">PDF unavailable</span>';
+      } else {
+        pdf = '<span class="muted">—</span>';
+      }
+
       const tabs = typeof r.tabSwitches === "number" ? r.tabSwitches : null;
       const violated = tabs !== null && tabs > 0;
       const violatedTag = violated
         ? '<span class="tag tag-violated">VIOLATED</span>'
         : '<span class="tag tag-ok">clean</span>';
       const rowFlag = violated ? ' class="row-flag"' : "";
-      // Test Points — display out of 50 (new scale; old submissions that pre-date
-      // the 25Q × 2 pts rework may still have mcScore values on the old /60 scale,
-      // so cap display sensibly)
       const mcDisplay = r.mcScore != null ? r.mcScore + "/50" : "—";
       tr.innerHTML =
         "<td>" + whenStr + "</td>" +
