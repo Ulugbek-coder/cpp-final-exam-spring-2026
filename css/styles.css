@@ -1,5 +1,5 @@
 /* =============================================================
-   C++ Homework Assignment — Shared Styles
+   C++ Final Exam — Shared Styles
    Academic/editorial theme for NPUU
    ============================================================= */
 
@@ -947,6 +947,13 @@ input[type="text"], textarea, select {
   tab-size:4;
   -moz-tab-size:4;
   letter-spacing:0;
+  /* Disable font ligatures so '!=', '<=', '>=', '->', '=>' etc. are shown
+     as literal two-character sequences instead of '≠', '≤', '≥', '→', '⇒'.
+     Students need to see exactly the C++ operators they typed, both
+     while editing and when instructors read the PDF. */
+  font-variant-ligatures:none;
+  -webkit-font-variant-ligatures:none;
+  font-feature-settings:"liga" 0, "clig" 0, "calt" 0;
 }
 
 .code-editor-highlight{
@@ -2504,4 +2511,25 @@ body:has(#test) .code-card{
   #tabcount{min-width:74px;font-size:.72rem;padding:5px 8px}
   #tabcount b{font-size:.82rem}
   body.exam-body .exam-title-bar{padding:50px 8px 8px}
+}
+
+/* ========================================================== */
+/* ====== DISABLE FONT LIGATURES IN CODE CONTEXTS =========== */
+/* ========================================================== */
+/* JetBrains Mono renders operator pairs like '!=' → '≠' and
+   '<=' → '≤' by default. These are PRETTY but they confuse
+   students (who panic thinking the editor changed their code)
+   and instructors reading the PDF. Disable ligatures anywhere
+   real code is rendered. */
+.code-editor-highlight,
+.code-editor-input,
+.stdin-wrap textarea,
+.run-output,
+.run-output-block,
+.run-output-block div,
+.run-meta,
+pre, code{
+  font-variant-ligatures:none !important;
+  -webkit-font-variant-ligatures:none !important;
+  font-feature-settings:"liga" 0, "clig" 0, "calt" 0 !important;
 }
