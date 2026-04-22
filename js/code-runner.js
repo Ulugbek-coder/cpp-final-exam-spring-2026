@@ -104,7 +104,7 @@ window.CodeRunner = (function () {
         errorKind: "server_down",
         message:
           "Code execution service is temporarily unavailable" +
-          (detail ? " (" + detail + ")" : "") +
+          (detail ? ": " + detail : "") +
           ". You can continue the exam without it.",
       };
     }
