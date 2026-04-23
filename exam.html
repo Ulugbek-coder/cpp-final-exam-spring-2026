@@ -3,23 +3,72 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- ==================================================================
+         ACCESS GATE — runs BEFORE any other script or stylesheet loads.
+         If the user arrived here without filling out the welcome form
+         (i.e. no valid sessionStorage.exam_state), redirect to index.html
+         immediately. This prevents anyone from bookmarking /exam.html and
+         skipping the credentials screen.
+
+         This runs synchronously in <head>, so the body never renders.
+         We also hide <body> via inline CSS as a belt-and-suspenders guard:
+         if JS is disabled, nothing shows. JS re-enables body once the gate
+         passes.
+         ================================================================== -->
+    <style id="access-gate-css">body{display:none !important}</style>
+    <script>
+      (function examAccessGate() {
+        try {
+          var raw = sessionStorage.getItem("exam_state");
+          if (!raw) {
+            window.location.replace("index.html");
+            return;
+          }
+          var state = JSON.parse(raw);
+          // Validate minimum required fields. A tampered or stale entry
+          // without these is treated as missing.
+          if (
+            !state ||
+            !state.info ||
+            !state.info.group ||
+            !state.info.id ||
+            !state.info.firstName ||
+            !state.info.lastName ||
+            !state.version
+          ) {
+            sessionStorage.removeItem("exam_state");
+            window.location.replace("index.html");
+            return;
+          }
+          // Passed gate — allow body to render once DOM is ready.
+          document.addEventListener("DOMContentLoaded", function () {
+            var css = document.getElementById("access-gate-css");
+            if (css) css.remove();
+          });
+        } catch (e) {
+          // Any parse error → treat as unauthorized
+          try { sessionStorage.removeItem("exam_state"); } catch (_) {}
+          window.location.replace("index.html");
+        }
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-    <title>NPUU Exam Platform - Exam Page</title>
+    <title>NPUU Exam Platform - Main Exam Page </title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/styles.css?v=20260422m" />
+    <link rel="stylesheet" href="css/styles.css?v=20260422n" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-    <script src="js/firebase-config.js?v=20260422m"></script>
-    <script src="js/firebase-client.js?v=20260422m"></script>
+    <script src="js/firebase-config.js?v=20260422n"></script>
+    <script src="js/firebase-client.js?v=20260422n"></script>
   </head>
   <body class="exam-body">
     <!-- Floating timer & tab counter -->
@@ -316,8 +365,8 @@
     <script src="js/questions/version-a.js"></script>
     <script src="js/questions/version-b.js"></script>
     <script src="js/questions/solutions.js"></script>
-    <script src="js/code-runner.js?v=20260422m"></script>
-    <script src="js/pdf-generator.js?v=20260422m"></script>
-    <script src="js/app.js?v=20260422m"></script>
+    <script src="js/code-runner.js?v=20260422n"></script>
+    <script src="js/pdf-generator.js?v=20260422n"></script>
+    <script src="js/app.js?v=20260422n"></script>
   </body>
 </html>
