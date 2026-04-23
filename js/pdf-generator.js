@@ -459,6 +459,18 @@ function generatePDFReport() {
         : null;
     return p && p.uz ? p.uz : [];
   }
+  // Look up sample solution by problem title. Returns null if not found.
+  function getSolution(i) {
+    const p =
+      data.codingProblems && data.codingProblems[i]
+        ? data.codingProblems[i]
+        : null;
+    if (!p || !p.title_en) return null;
+    if (typeof window !== "undefined" && window.SOLUTIONS) {
+      return window.SOLUTIONS[p.title_en] || null;
+    }
+    return null;
+  }
 
   // Each coding problem: problem-title row → requirements bullets → full-width student code → Last Run block
   for (let i = 0; i < 3; i++) {
@@ -533,9 +545,10 @@ function generatePDFReport() {
 
     checkPage(60);
 
-    // --- Student code panel (full width) ---
+    // --- Student code + sample solution panels (side-by-side) ---
     const studentCode = getStudentCode(i);
     const starterCode = getStarter(i);
+    const solutionCode = getSolution(i) || "// Sample solution not available for this problem.";
 
     const starterSet = new Set();
     starterCode.split("\n").forEach(function (ln) {
@@ -543,83 +556,121 @@ function generatePDFReport() {
       if (t) starterSet.add(t);
     });
 
+    // Side-by-side geometry:
+    //   |---- LEFT (student) ----|-gap-|---- RIGHT (solution) ----|
+    const colGap = 6;
+    const colW = (contentW - colGap) / 2;
+    const codeInnerW = colW - 14; // accounting for left/right padding
+    const lineHeight = 10.5;       // slightly smaller than full-width version
+    const codeFontSize = 7.5;
     doc.setFont("courier", "normal");
-    doc.setFontSize(8);
-    const lineHeight = 11;
-    const panelW = contentW;
-    const codeInnerW = panelW - 14;
+    doc.setFontSize(codeFontSize);
 
-    // Header
-    const headerH = 22;
-    doc.setFillColor(30, 58, 95);
-    doc.rect(margin, y, panelW, headerH, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
-    doc.text("STUDENT'S SUBMITTED CODE  /  TALABANING YUBORGAN KODI", margin + 8, y + 15);
-    doc.setTextColor(0, 0, 0);
-    y += headerH;
-
-    // Walk each student line, tagging student-added vs. unchanged starter
+    // Tag each student line as added vs unchanged starter, and wrap for width
     const studentOriginalLines = studentCode.split("\n");
-    const entries = []; // [{ text, added }]
-    doc.setFont("courier", "normal");
-    doc.setFontSize(8);
+    const studentEntries = []; // [{ text, added }]
     studentOriginalLines.forEach(function (origLine) {
       const trimmed = origLine.trim();
       const isAdded = trimmed.length > 0 && !starterSet.has(trimmed);
       const wrap = doc.splitTextToSize(origLine || " ", codeInnerW);
       wrap.forEach(function (piece) {
-        entries.push({ text: piece, added: isAdded });
+        studentEntries.push({ text: piece, added: isAdded });
       });
     });
 
-    const boxH = Math.max(60, entries.length * lineHeight + 14);
-    // Check if it fits on page; if not, split
-    if (y + boxH > pageH - margin) {
+    // Wrap solution the same way (no diff highlighting — just plain)
+    const solutionLines = solutionCode.split("\n");
+    const solutionEntries = [];
+    solutionLines.forEach(function (origLine) {
+      const wrap = doc.splitTextToSize(origLine || " ", codeInnerW);
+      wrap.forEach(function (piece) {
+        solutionEntries.push(piece);
+      });
+    });
+
+    // Panel height is the taller of the two so both align at the top
+    const maxLines = Math.max(studentEntries.length, solutionEntries.length);
+    const boxH = Math.max(60, maxLines * lineHeight + 14);
+
+    // Header geometry
+    const headerH = 22;
+
+    // Check if the header + panel fits on the current page; otherwise wrap
+    if (y + headerH + boxH > pageH - margin) {
       doc.addPage();
       y = margin;
-      doc.setFillColor(30, 58, 95);
-      doc.rect(margin, y, panelW, headerH, "F");
-      doc.setTextColor(255, 255, 255);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-      doc.text("STUDENT'S SUBMITTED CODE (cont.)", margin + 8, y + 15);
-      doc.setTextColor(0, 0, 0);
-      y += headerH;
     }
 
-    // Panel background
+    // ----- Headers (two side-by-side dark strips) -----
+    const leftX = margin;
+    const rightX = margin + colW + colGap;
+
+    doc.setFillColor(30, 58, 95);
+    doc.rect(leftX, y, colW, headerH, "F");
+    doc.rect(rightX, y, colW, headerH, "F");
+
+    // Smaller font so the full bilingual labels fit comfortably in each
+    // half-width column. 7.5pt keeps the labels readable but prevents
+    // truncation/overlap at the panel boundary.
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.5);
+    doc.text(
+      "STUDENT'S SUBMITTED CODE  /  TALABANING YUBORGAN KODI",
+      leftX + 6,
+      y + 14,
+    );
+    doc.text(
+      "SAMPLE SOLUTION CODE  /  NAMUNAVIY YECHIM KODI",
+      rightX + 6,
+      y + 14,
+    );
+    doc.setTextColor(0, 0, 0);
+    y += headerH;
+
+    // ----- Panel backgrounds (side-by-side) -----
     doc.setFillColor(246, 249, 252);
     doc.setDrawColor(30, 58, 95);
     doc.setLineWidth(0.8);
-    doc.rect(margin, y, panelW, boxH, "FD");
+    doc.rect(leftX, y, colW, boxH, "FD");
+    doc.rect(rightX, y, colW, boxH, "FD");
 
-    // Render each line
-    const textStartY = y + 11;
+    // ----- Left column: student code with diff highlighting -----
+    const textStartY = y + 10;
     doc.setFont("courier", "normal");
-    doc.setFontSize(8);
-    entries.forEach(function (entry, idx) {
+    doc.setFontSize(codeFontSize);
+    studentEntries.forEach(function (entry, idx) {
       const ly = textStartY + idx * lineHeight;
       if (ly > y + boxH - 6) return;
       if (entry.added) {
-        // Yellow highlight strip
+        // Yellow highlight strip marking lines student wrote (vs. starter)
         doc.setFillColor(255, 240, 140);
         doc.rect(
-          margin + 2,
+          leftX + 2,
           ly - (lineHeight - 2),
-          panelW - 4,
+          colW - 4,
           lineHeight,
           "F",
         );
-        // BOLD blue for student-written lines (stronger emphasis)
+        // Same typeface (courier) as starter, but BOLD + blue color +
+        // yellow highlight to make student-written lines stand out clearly.
         doc.setFont("courier", "bold");
         doc.setTextColor(10, 30, 160);
       } else {
         doc.setFont("courier", "normal");
         doc.setTextColor(60, 60, 60);
       }
-      doc.text(entry.text, margin + 6, ly);
+      doc.text(entry.text, leftX + 6, ly);
+    });
+
+    // ----- Right column: sample solution (plain black, no diff coloring) -----
+    doc.setFont("courier", "normal");
+    doc.setFontSize(codeFontSize);
+    doc.setTextColor(0, 0, 0);
+    solutionEntries.forEach(function (piece, idx) {
+      const ly = textStartY + idx * lineHeight;
+      if (ly > y + boxH - 6) return;
+      doc.text(piece, rightX + 6, ly);
     });
 
     doc.setTextColor(0, 0, 0);
