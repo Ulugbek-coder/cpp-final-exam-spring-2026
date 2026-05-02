@@ -419,7 +419,7 @@
       if (method === "firebase_manual") {
         methodTag = '<span class="tag tag-fb-manual" title="Student clicked Submit · Firebase upload OK">REGULAR</span>';
       } else if (method === "firebase_auto") {
-        methodTag = '<span class="tag tag-fb-auto" title="Timer expired (90 min) · Firebase upload OK">AUTO</span>';
+        methodTag = '<span class="tag tag-fb-auto" title="Timer expired (100 min) · Firebase upload OK">AUTO</span>';
       } else if (method === "google_form") {
         methodTag = '<span class="tag tag-fallback" title="Firebase upload failed · student must upload via Google Form">GOOGLE FORM</span>';
       } else {
@@ -659,16 +659,19 @@
   }
 
   // =============================================================
-  // QUESTION REFRESH
+  // QUESTION REFRESH (May 2026: now 4 coding problems per version)
   // =============================================================
   // Generates fresh seeds for both versions and writes them to
   // /config/exam_seeds. Guarantees:
-  //   1. Both versions (A, B) get DIFFERENT coding problems in slots
-  //      P1, P2 (from "control_loop_function").
-  //   2. Both versions get DIFFERENT coding problems in slot P3
+  //   1. Both versions (A, B) get DIFFERENT coding problems in slot
+  //      P1 (from "easy_medium_starter" — the new 10-pt slot).
+  //   2. Both versions get DIFFERENT coding problems in slots P2 and
+  //      P3 (from "control_loop_function").
+  //   3. Both versions get DIFFERENT coding problems in slot P4
   //      (from "array_or_string_hard").
-  //   3. MC seed strings are unique per version so the 25-question
-  //      pick and balanced-distribution layout differs per version.
+  //   4. MC seed strings are unique per version so the 20-question
+  //      pick (15 from MC_BANK + 5 from MC_BANK_NEW) and balanced-
+  //      distribution layout differs per version.
   // =============================================================
   function setRefreshMsg(text, kind) {
     const el = $("refreshMsg");
@@ -705,19 +708,23 @@
     const idx = window.CODING_BANK_IDX;
     if (
       !idx ||
+      !idx.easy_medium_starter ||
       !idx.control_loop_function ||
       !idx.array_or_string_hard
     ) {
       setRefreshMsg("Coding bank not loaded. Please reload the page.", "err");
       return;
     }
+    const easyCount = idx.easy_medium_starter.length;
     const clfCount = idx.control_loop_function.length;
     const hardCount = idx.array_or_string_hard.length;
-    // We need: 4 distinct CLF (2 per version × 2 versions)
-    //        + 2 distinct hard  (1 per version × 2 versions)
-    if (clfCount < 4 || hardCount < 2) {
+    // We need:
+    //   2 distinct easy_medium_starter (1 per version × 2 versions)  ⇒ P1
+    //   4 distinct control_loop_function (2 per version × 2 versions) ⇒ P2, P3
+    //   2 distinct array_or_string_hard (1 per version × 2 versions)  ⇒ P4
+    if (easyCount < 2 || clfCount < 4 || hardCount < 2) {
       setRefreshMsg(
-        "Coding bank too small — need at least 4 control/loop problems and 2 hard array/string problems.",
+        "Coding bank too small — need at least 2 easy/medium starter, 4 control/loop, and 2 hard array/string problems.",
         "err",
       );
       return;
@@ -746,12 +753,17 @@
     setRefreshMsg("Generating new seeds and writing to Firestore…", "ok");
 
     try {
-      // Pick 4 distinct control/loop/function + 2 distinct array/string_hard
+      // Pick:
+      //   2 distinct easy_medium_starter   (P1 for each version)
+      //   4 distinct control_loop_function (P2, P3 for each version)
+      //   2 distinct array_or_string_hard  (P4 for each version)
+      const easyPicks = pickNDistinct(idx.easy_medium_starter, 2);
       const clfPicks = pickNDistinct(idx.control_loop_function, 4);
       const hardPicks = pickNDistinct(idx.array_or_string_hard, 2);
 
       // Distinctness paranoia check
       if (
+        new Set(easyPicks).size !== 2 ||
         new Set(clfPicks).size !== 4 ||
         new Set(hardPicks).size !== 2
       ) {
@@ -763,18 +775,17 @@
         (window.fbAuth.currentUser && window.fbAuth.currentUser.email) ||
         "unknown";
 
-      // Assign 2 CLF problems to A (indices 0,1) and 2 to B (indices 2,3).
-      // Assign 1 hard problem to each.
+      // Assign per version: P1=easy, P2/P3=CLF, P4=hard.
       const assignments = [
-        { v: "A", p1: clfPicks[0], p2: clfPicks[1], p3: hardPicks[0] },
-        { v: "B", p1: clfPicks[2], p2: clfPicks[3], p3: hardPicks[1] },
+        { v: "A", p1: easyPicks[0], p2: clfPicks[0], p3: clfPicks[1], p4: hardPicks[0] },
+        { v: "B", p1: easyPicks[1], p2: clfPicks[2], p3: clfPicks[3], p4: hardPicks[1] },
       ];
 
       const seedsDoc = { refreshedBy: me };
       assignments.forEach(function (a) {
         seedsDoc[a.v] = {
           mcSeed: randomSeed(a.v),
-          coding: { p1: a.p1, p2: a.p2, p3: a.p3 },
+          coding: { p1: a.p1, p2: a.p2, p3: a.p3, p4: a.p4 },
         };
       });
 
@@ -800,15 +811,18 @@
             const p1 = bank[a.p1];
             const p2 = bank[a.p2];
             const p3 = bank[a.p3];
+            const p4 = bank[a.p4];
             return (
               '<div class="rsc-version">' +
                 '<span class="rsc-version-label">Version ' + a.v + '</span>' +
                 '<div class="rsc-problems">' +
-                  '<b>P1:</b> ' + escapeHtml(p1 ? p1.title_en : "?") +
+                  '<b>P1 (10pt):</b> ' + escapeHtml(p1 ? p1.title_en : "?") +
                   '  &nbsp;·&nbsp;  ' +
-                  '<b>P2:</b> ' + escapeHtml(p2 ? p2.title_en : "?") +
+                  '<b>P2 (15pt):</b> ' + escapeHtml(p2 ? p2.title_en : "?") +
                   '  &nbsp;·&nbsp;  ' +
-                  '<b>P3:</b> ' + escapeHtml(p3 ? p3.title_en : "?") +
+                  '<b>P3 (15pt):</b> ' + escapeHtml(p3 ? p3.title_en : "?") +
+                  '  &nbsp;·&nbsp;  ' +
+                  '<b>P4 (20pt):</b> ' + escapeHtml(p4 ? p4.title_en : "?") +
                 '</div>' +
               '</div>'
             );
