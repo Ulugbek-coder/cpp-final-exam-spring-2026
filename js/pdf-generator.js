@@ -460,16 +460,26 @@ function generatePDFReport() {
     return p && p.uz ? p.uz : [];
   }
   // Look up sample solution by problem title. Returns null if not found.
+  //
+  // IMPORTANT: app.js's buildCodingForVersion prefixes each problem's
+  // title_en with "Coding Problem N — " for display purposes. But
+  // solutions.js is keyed by the ORIGINAL (unprefixed) bank title. So
+  // we strip that prefix before the lookup. The regex matches the
+  // prefix pattern with both the em-dash (—) and hyphen (-) for safety.
   function getSolution(i) {
     const p =
       data.codingProblems && data.codingProblems[i]
         ? data.codingProblems[i]
         : null;
     if (!p || !p.title_en) return null;
-    if (typeof window !== "undefined" && window.SOLUTIONS) {
-      return window.SOLUTIONS[p.title_en] || null;
-    }
-    return null;
+    if (typeof window === "undefined" || !window.SOLUTIONS) return null;
+    // Strip the "Coding Problem N — " (or "- ") prefix if present
+    const originalTitle = p.title_en.replace(/^Coding Problem \d+\s*[—–-]\s*/, "");
+    return (
+      window.SOLUTIONS[originalTitle] ||
+      window.SOLUTIONS[p.title_en] ||
+      null
+    );
   }
 
   // Each coding problem: problem-title row → requirements bullets → full-width student code → Last Run block
