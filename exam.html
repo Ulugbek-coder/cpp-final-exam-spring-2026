@@ -60,27 +60,39 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/styles.css?v=20260422o" />
+    <link rel="stylesheet" href="css/styles.css?v=20260502a" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-    <script src="js/firebase-config.js?v=20260422o"></script>
-    <script src="js/firebase-client.js?v=20260422o"></script>
+    <script src="js/firebase-config.js?v=20260502a"></script>
+    <script src="js/firebase-client.js?v=20260502a"></script>
   </head>
   <body class="exam-body">
     <!-- Floating timer & tab counter -->
     <div id="timer">
-      <span class="tlabel">Time Remaining · Qolgan Vaqt</span
-      ><span id="timer-val">90 min 00 sec</span>
+      <span class="tlabel">Time Remaining <span class="uz">· Qolgan Vaqt</span><span class="ru">· Оставшееся время</span></span
+      ><span id="timer-val">100 min 00 sec</span>
     </div>
     <div id="tabcount">
-      <span class="tclabel">Tab Switches</span><b id="tabcount-val">0</b>
+      <span class="tclabel">Tab Switches <span class="uz">· Almashishlar</span><span class="ru">· Переключения</span></span><b id="tabcount-val">0</b>
     </div>
 
     <div class="wrap">
+      <!-- Language Switcher -->
+      <div class="lang-switcher" role="region" aria-label="Language switcher">
+        <label for="langSwitcher">
+          <span class="lang-icon" aria-hidden="true">🌐</span>
+          Language:
+        </label>
+        <select id="langSwitcher" aria-label="Choose secondary language">
+          <option value="uz">English &amp; Uzbek</option>
+          <option value="ru">English &amp; Russian</option>
+        </select>
+      </div>
+
       <!-- ============ TEST SCREEN ============ -->
       <section id="test" style="display: block">
         <div class="test-header">
@@ -102,19 +114,19 @@
               <div class="eic-icon">&#128100;</div>
               <div class="eic-body">
                 <div class="eic-label">
-                  Student Information / Talaba Ma'lumotlari
+                  Student Information <span class="uz">/ Talaba Ma'lumotlari</span><span class="ru">/ Информация о студенте</span>
                 </div>
                 <div class="student-rows">
                   <div class="sr-row">
-                    <span class="sr-label">Full Name / To'liq Ism:</span
+                    <span class="sr-label">Full Name <span class="uz">/ To'liq Ism</span><span class="ru">/ Полное имя</span>:</span
                     ><span class="sr-val" id="studentName">&nbsp;</span>
                   </div>
                   <div class="sr-row">
-                    <span class="sr-label">Group / Guruh:</span
+                    <span class="sr-label">Group <span class="uz">/ Guruh</span><span class="ru">/ Группа</span>:</span
                     ><span class="sr-val" id="studentGroupLbl">&nbsp;</span>
                   </div>
                   <div class="sr-row">
-                    <span class="sr-label">Student ID / ID:</span
+                    <span class="sr-label">Student ID <span class="uz">/ ID</span><span class="ru">/ ID</span>:</span
                     ><span class="sr-val" id="studentIdLbl">&nbsp;</span>
                   </div>
                 </div>
@@ -125,22 +137,22 @@
             <div class="exam-info-card card-points">
               <div class="eic-icon">&Sigma;</div>
               <div class="eic-body">
-                <div class="eic-label">Exam Structure / Imtihon Tuzilmasi</div>
+                <div class="eic-label">Exam Structure <span class="uz">/ Imtihon Tuzilmasi</span><span class="ru">/ Структура экзамена</span></div>
                 <div class="points-rows">
                   <div class="points-row">
-                    <span class="pr-left">25 Tests &times; 2 pts</span>
+                    <span class="pr-left">20 Tests &times; 2 pts</span>
                     <span class="pr-eq">=</span>
-                    <span class="pr-right">50 points</span>
+                    <span class="pr-right">40 points</span>
                   </div>
                   <div class="points-row">
                     <span class="pr-left"
-                      >3 Coding Problems (15 + 15 + 20)</span
+                      >4 Coding Problems (10 + 15 + 15 + 20)</span
                     >
                     <span class="pr-eq">=</span>
-                    <span class="pr-right">50 points</span>
+                    <span class="pr-right">60 points</span>
                   </div>
                   <div class="points-row points-total">
-                    <span class="pr-left">TOTAL MAX / JAMI MAKSIMUM BALL:</span>
+                    <span class="pr-left">TOTAL MAX <span class="uz">/ JAMI MAKSIMUM BALL</span><span class="ru">/ ИТОГО МАКСИМУМ</span>:</span>
                     <span class="pr-eq">=</span>
                     <span class="pr-right">100 points</span>
                   </div>
@@ -153,13 +165,14 @@
             <div id="progress-fill" class="progress-fill"></div>
           </div>
           <div class="progress-text" id="progress-text">
-            Answered 0 / 25 test questions · 0 / 25 test savoliga javob berildi
+            Answered 0 / 20 test questions <span class="uz">· 0 / 20 test savoliga javob berildi</span><span class="ru">· отвечено 0 / 20 тестовых вопросов</span>
           </div>
         </div>
 
         <div class="section-heading s-mc">
           <span class="num">PART 01</span> Multiple Choice Questions
           <span class="uz">Test Savollari</span>
+          <span class="ru">Тестовые вопросы</span>
         </div>
 
         <div id="questions-root"></div>
@@ -167,6 +180,7 @@
         <div class="section-heading s-code">
           <span class="num">PART 02</span> Coding Problems
           <span class="uz">Kodlash Masalalari</span>
+          <span class="ru">Задачи по программированию</span>
         </div>
 
         <!-- Reassurance banner — persistent during the entire coding section -->
@@ -179,11 +193,17 @@
               a fully-working solution to submit. Partial or imperfect code
               still earns partial credit.
             </div>
-            <div class="cr-uz">
+            <div class="cr-uz uz">
               <b>Kodingizni diqqat bilan yozing va tayyor bo'lganda yuboring.</b>
               O'qituvchi kodingizni o'qib baholaydi — yuborish uchun to'liq
               ishlaydigan yechim bo'lishi shart emas. Qisman yoki tugal bo'lmagan
               kod ham qisman ball oladi.
+            </div>
+            <div class="cr-ru ru">
+              <b>Пишите код внимательно и отправьте, когда закончите.</b>
+              Преподаватель оценивает ваш код, читая его — для отправки
+              не обязательно иметь полностью работающее решение. Частичный
+              или несовершенный код всё равно получит частичный балл.
             </div>
           </div>
         </div>
@@ -192,10 +212,13 @@
 
         <div class="submit-bar">
           <div class="status" id="submit-status">
-            <b id="answered-count">0</b> of <b>25</b> test questions answered
+            <b id="answered-count">0</b> of <b>20</b> test questions answered
             <span class="uz"
-              ><b id="answered-count-uz">0</b> dan 25 test savoliga javob
+              ><b id="answered-count-uz">0</b> dan 20 test savoliga javob
               berildi</span
+            >
+            <span class="ru"
+              >отвечено <b id="answered-count-ru">0</b> из 20 тестовых вопросов</span
             >
           </div>
           <button id="submitBtn" class="btn" type="button">
@@ -221,8 +244,11 @@
               <div class="us-title" id="usTitle">
                 Uploading your exam to the NPUU server…
               </div>
-              <div class="us-title-uz" id="usTitleUz">
+              <div class="us-title-uz uz" id="usTitleUz">
                 Imtihoningiz NPUU serveriga yuklanmoqda…
+              </div>
+              <div class="us-title-ru ru" id="usTitleRu">
+                Ваш экзамен загружается на сервер NPUU…
               </div>
               <div class="us-sub" id="usSub">Attempt 1 of 3</div>
             </div>
@@ -233,6 +259,7 @@
             <div class="sb-title">
               ✓ Submission received by NPUU server.
               <span class="uz">✓ Topshiruv NPUU serveri tomonidan qabul qilindi.</span>
+              <span class="ru">✓ Работа принята сервером NPUU.</span>
             </div>
             <div class="sb-sub">
               Your PDF has also been downloaded to your computer as a personal
@@ -241,13 +268,16 @@
                 >PDF shaxsiy nusxa sifatida kompyuteringizga ham yuklab
                 olindi. Boshqa hech narsa qilishingiz shart emas.</span
               >
+              <span class="ru"
+                >PDF также скачан на ваш компьютер как личная копия. Больше ничего делать не нужно.</span
+              >
             </div>
             <button
               class="gform-btn secondary"
               style="margin-top: 14px"
               onclick="downloadPDF()"
             >
-              ⬇ Re-download PDF / PDF ni Qayta Yuklab Olish
+              ⬇ Re-download PDF <span class="uz">/ PDF ni Qayta Yuklab Olish</span><span class="ru">/ Перескачать PDF</span>
             </button>
           </div>
 
@@ -259,12 +289,18 @@
                 >⚠ Avtomatik yuklash muvaffaqiyatsiz tugadi. Iltimos, Google
                 Forma orqali qo'lda yuboring.</span
               >
+              <span class="ru"
+                >⚠ Автоматическая загрузка не удалась. Пожалуйста, отправьте работу вручную через Google Форму.</span
+              >
             </div>
             <div class="fb-sub">
               Your PDF has been downloaded automatically. Follow these steps:
               <span class="uz"
                 >PDF avtomatik ravishda yuklab olindi. Quyidagi qadamlarni
                 bajaring:</span
+              >
+              <span class="ru"
+                >PDF был скачан автоматически. Выполните следующие шаги:</span
               >
             </div>
 
@@ -276,6 +312,9 @@
                   <span class="uz"
                     >1-qadam: PDF hisobotingiz avtomatik yuklab olindi.</span
                   >
+                  <span class="ru"
+                    >Шаг 1: PDF-отчёт скачан автоматически.</span
+                  >
                 </li>
                 <li>
                   <b>Step 2:</b> Click the red button below to open the Google
@@ -283,6 +322,9 @@
                   <span class="uz"
                     >2-qadam: Google Formani ochish uchun quyidagi qizil tugmani
                     bosing.</span
+                  >
+                  <span class="ru"
+                    >Шаг 2: Нажмите красную кнопку ниже, чтобы открыть Google Форму.</span
                   >
                 </li>
                 <li>
@@ -292,11 +334,17 @@
                     >3-qadam: Formada Talaba ID va To'liq Ismingizni kiriting,
                     keyin yuklab olingan PDF ni yuklang.</span
                   >
+                  <span class="ru"
+                    >Шаг 3: Введите ваш ID студента и полное имя в форме, затем загрузите скачанный PDF.</span
+                  >
                 </li>
                 <li>
                   <b>Step 4:</b> Click Submit on the Google Form.
                   <span class="uz"
                     >4-qadam: Google Formada Yuborish tugmasini bosing.</span
+                  >
+                  <span class="ru"
+                    >Шаг 4: Нажмите «Отправить» в Google Форме.</span
                   >
                 </li>
               </ol>
@@ -309,11 +357,11 @@
               id="gformBtn"
               rel="noopener"
             >
-              📝 Open Google Form / Google Formani Ochish
+              📝 Open Google Form <span class="uz">/ Google Formani Ochish</span><span class="ru">/ Открыть Google Форму</span>
             </a>
             <br />
             <button class="gform-btn secondary" onclick="downloadPDF()">
-              ⬇ Re-download PDF / PDF ni Qayta Yuklab Olish
+              ⬇ Re-download PDF <span class="uz">/ PDF ni Qayta Yuklab Olish</span><span class="ru">/ Перескачать PDF</span>
             </button>
 
             <div class="warning-note">
@@ -322,6 +370,9 @@
               <span class="uz"
                 >PDF ni Google Formaga yuklamaguncha topshiruv
                 yakunlanmagan!</span
+              >
+              <span class="ru"
+                >Ваша работа НЕ считается отправленной, пока вы не загрузите PDF в Google Форму!</span
               >
             </div>
           </div>
@@ -337,6 +388,7 @@
           <h3 id="modal-title">
             Title
             <span class="uz" id="modal-title-uz">Sarlavha</span>
+            <span class="ru" id="modal-title-ru">Заголовок</span>
           </h3>
           <p id="modal-text">Message</p>
           <div
@@ -360,13 +412,14 @@
     <div id="flash"></div>
 
     <!-- Scripts -->
-    <script src="js/questions/question-bank.js"></script>
-    <script src="js/questions/coding-bank.js"></script>
-    <script src="js/questions/version-a.js"></script>
-    <script src="js/questions/version-b.js"></script>
-    <script src="js/questions/solutions.js"></script>
-    <script src="js/code-runner.js?v=20260422o"></script>
-    <script src="js/pdf-generator.js?v=20260422o"></script>
-    <script src="js/app.js?v=20260422o"></script>
+    <script src="js/questions/question-bank.js?v=20260502a"></script>
+    <script src="js/questions/question-bank-new.js?v=20260502a"></script>
+    <script src="js/questions/coding-bank.js?v=20260502a"></script>
+    <script src="js/questions/version-a.js?v=20260502a"></script>
+    <script src="js/questions/version-b.js?v=20260502a"></script>
+    <script src="js/questions/solutions.js?v=20260502a"></script>
+    <script src="js/code-runner.js?v=20260502a"></script>
+    <script src="js/pdf-generator.js?v=20260502a"></script>
+    <script src="js/app.js?v=20260502a"></script>
   </body>
 </html>
