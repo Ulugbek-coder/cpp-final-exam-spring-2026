@@ -1,5 +1,6 @@
 // ===============================================================
-// Sample solutions for the 34 coding problems in coding-bank.js.
+// Sample solutions for the 49 coding problems in coding-bank.js
+// (May 2026 update: added 15 easy/medium starter solutions).
 // Keyed by title_en (stable across updates). Rendered side-by-side
 // with the student's submitted code in the exam PDF so the
 // instructor can grade by visual comparison.
@@ -630,6 +631,248 @@ int main() {
         if (arr[i] == target) count++;
     }
     cout << "Occurrences of " << target << ": " << count << endl;
+    return 0;
+}`,
+
+  // ---------- easy_medium_starter (15) — added May 2026 ----------
+
+  "Print Multiples of 3 up to N": `#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cout << "Enter n: ";
+    cin >> n;
+
+    for (int i = 1; i <= n; i++) {
+        if (i % 3 == 0) {
+            cout << i << " ";
+        }
+    }
+    cout << endl;
+    return 0;
+}`,
+
+  "Count Positive Numbers Entered": `#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cout << "Enter n: ";
+    cin >> n;
+
+    int count = 0;
+    for (int i = 0; i < n; i++) {
+        int x;
+        cin >> x;
+        if (x > 0) count++;
+    }
+    cout << "Positives = " << count << endl;
+    return 0;
+}`,
+
+  "Square Function": `#include <iostream>
+using namespace std;
+
+int square(int x) {
+    return x * x;
+}
+
+int main() {
+    int n;
+    cout << "Enter n: ";
+    cin >> n;
+    cout << "Square = " << square(n) << endl;
+    return 0;
+}`,
+
+  "Sum Function (1 to N)": `#include <iostream>
+using namespace std;
+
+int sumTo(int n) {
+    int s = 0;
+    for (int i = 1; i <= n; i++) s += i;
+    return s;
+}
+
+int main() {
+    int n;
+    cout << "Enter n: ";
+    cin >> n;
+    cout << "Sum = " << sumTo(n) << endl;
+    return 0;
+}`,
+
+  "Is Even Function": `#include <iostream>
+using namespace std;
+
+bool isEven(int x) {
+    return x % 2 == 0;
+}
+
+int main() {
+    int n;
+    cout << "Enter n: ";
+    cin >> n;
+    if (isEven(n)) cout << "Even" << endl;
+    else cout << "Odd" << endl;
+    return 0;
+}`,
+
+  "Sum Array Function": `#include <iostream>
+using namespace std;
+
+int sumArray(int arr[], int n) {
+    int s = 0;
+    for (int i = 0; i < n; i++) s += arr[i];
+    return s;
+}
+
+int main() {
+    int arr[6] = {4, 8, 15, 16, 23, 42};
+    cout << "Sum = " << sumArray(arr, 6) << endl;
+    return 0;
+}`,
+
+  "Count Negatives in Array": `#include <iostream>
+using namespace std;
+
+int main() {
+    int arr[8] = {3, -1, 7, -4, -2, 9, 5, -6};
+    int count = 0;
+    for (int i = 0; i < 8; i++) {
+        if (arr[i] < 0) count++;
+    }
+    cout << "Negatives = " << count << endl;
+    return 0;
+}`,
+
+  "Max of Two Function": `#include <iostream>
+using namespace std;
+
+int maxOf(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+int main() {
+    int a, b;
+    cout << "Enter two integers: ";
+    cin >> a >> b;
+    cout << "Max = " << maxOf(a, b) << endl;
+    return 0;
+}`,
+
+  "Star Triangle of Height N": `#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cout << "Enter height: ";
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= i; j++) {
+            cout << "*";
+        }
+        cout << endl;
+    }
+    return 0;
+}`,
+
+  "Print Array Function": `#include <iostream>
+using namespace std;
+
+void printArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        cout << arr[i];
+        if (i < n - 1) cout << " ";
+    }
+}
+
+int main() {
+    int arr[5] = {5, 3, 8, 1, 9};
+    printArray(arr, 5);
+    cout << endl;
+    return 0;
+}`,
+
+  "Average of First 5 Inputs": `#include <iostream>
+using namespace std;
+
+int main() {
+    double x;
+    double sum = 0;
+    for (int i = 0; i < 5; i++) {
+        cin >> x;
+        sum += x;
+    }
+    cout << "Average = " << (sum / 5) << endl;
+    return 0;
+}`,
+
+  "Absolute Value Function": `#include <iostream>
+using namespace std;
+
+int myAbs(int x) {
+    if (x < 0) return -x;
+    else return x;
+}
+
+int main() {
+    int n;
+    cout << "Enter n: ";
+    cin >> n;
+    cout << "|n| = " << myAbs(n) << endl;
+    return 0;
+}`,
+
+  "Largest of N Inputs": `#include <iostream>
+using namespace std;
+
+int main() {
+    int n;
+    cout << "Enter n: ";
+    cin >> n;
+
+    int largest;
+    cin >> largest;
+    for (int i = 1; i < n; i++) {
+        int x;
+        cin >> x;
+        if (x > largest) largest = x;
+    }
+    cout << "Largest = " << largest << endl;
+    return 0;
+}`,
+
+  "Cube Function": `#include <iostream>
+using namespace std;
+
+int cube(int x) {
+    return x * x * x;
+}
+
+int main() {
+    int n;
+    cout << "Enter n: ";
+    cin >> n;
+    cout << "Cube = " << cube(n) << endl;
+    return 0;
+}`,
+
+  "Count Target in Array Function": `#include <iostream>
+using namespace std;
+
+int countTarget(int arr[], int n, int target) {
+    int c = 0;
+    for (int i = 0; i < n; i++) {
+        if (arr[i] == target) c++;
+    }
+    return c;
+}
+
+int main() {
+    int arr[6] = {2, 5, 2, 7, 2, 3};
+    cout << "Count = " << countTarget(arr, 6, 2) << endl;
     return 0;
 }`,
 };
