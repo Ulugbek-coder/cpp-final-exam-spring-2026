@@ -6,7 +6,80 @@
 // - Starter code: uses value (not placeholder) so it persists
 // =============================================================
 
-const EXAM_DURATION = 90 * 60;
+const EXAM_DURATION = 100 * 60;
+
+// =============================================================
+// LANGUAGE TOGGLE MODULE
+// -------------------------------------------------------------
+// Two bilingual modes: English+Uzbek (default) and English+Russian.
+// The active mode adds a class onto <body>: "lang-uz" or "lang-ru".
+// CSS rules in styles.css use these to show/hide .uz vs .ru spans.
+// The choice persists across pages via localStorage.examLang.
+// IIFE so it runs as early as possible (before DOMContentLoaded), to
+// avoid a flash of the wrong language while the page is rendering.
+// =============================================================
+(function applyLanguageEarly() {
+  let lang;
+  try {
+    lang = localStorage.getItem("examLang");
+  } catch (_) {
+    lang = null;
+  }
+  if (lang !== "uz" && lang !== "ru") lang = "uz"; // default
+  // Document might not have <body> yet at this point (script in <head>);
+  // setting via documentElement is fine — CSS rules also accept that.
+  // We mirror onto <body> as soon as it's available.
+  const setBoth = function () {
+    const html = document.documentElement;
+    const body = document.body;
+    [html, body].forEach((el) => {
+      if (!el) return;
+      el.classList.remove("lang-uz", "lang-ru");
+      el.classList.add("lang-" + lang);
+    });
+  };
+  setBoth();
+  document.addEventListener("DOMContentLoaded", setBoth);
+})();
+
+// Public helpers exposed for the dropdown click handler and any caller
+// that needs the current language at runtime.
+window.getExamLang = function () {
+  try {
+    const v = localStorage.getItem("examLang");
+    return v === "ru" ? "ru" : "uz";
+  } catch (_) {
+    return "uz";
+  }
+};
+window.setExamLang = function (lang) {
+  if (lang !== "uz" && lang !== "ru") return;
+  try {
+    localStorage.setItem("examLang", lang);
+  } catch (_) {}
+  const html = document.documentElement;
+  const body = document.body;
+  [html, body].forEach((el) => {
+    if (!el) return;
+    el.classList.remove("lang-uz", "lang-ru");
+    el.classList.add("lang-" + lang);
+  });
+  // Sync any dropdowns on the page (select elements inside .lang-switcher)
+  document.querySelectorAll(".lang-switcher select").forEach(function (sel) {
+    if (sel.value !== lang) sel.value = lang;
+  });
+};
+
+// Wire any .lang-switcher dropdown on this page to call setExamLang.
+function wireLangSwitcher() {
+  const initial = window.getExamLang();
+  document.querySelectorAll(".lang-switcher select").forEach(function (sel) {
+    sel.value = initial;
+    sel.addEventListener("change", function () {
+      window.setExamLang(this.value);
+    });
+  });
+}
 
 let studentInfo = { group: "", id: "", firstName: "", lastName: "" };
 let examVersion = null;
@@ -78,28 +151,47 @@ function flash(msg) {
 }
 
 // ---------------- Question selection ----------------
-// Pick 30 questions from the bank.
+// Pick 20 questions total:
+//   - 15 from the old/main bank (window.MC_BANK)
+//   - 5 from the new bank (window.MC_BANK_NEW : 20 code-snippet output
+//     questions + 10 pointer questions = 30 total)
 // Uses seeded shuffle so each version gets a DIFFERENT selection + ordering.
 //
 // Distribution of correct answers is BALANCED:
-//   For 30 questions and 4 options, target = [8, 8, 7, 7] spread across
+//   For 20 questions and 4 options, target = [5, 5, 5, 5] spread across
 //   positions 0..3. We build a balanced target sequence, reject the
-//   no-3-consecutive rule, then construct each question's option order
-//   so its correct answer lands at the target position.
-function selectArrangeAndShuffle(bank, seed) {
+//   3-consecutive rule (i.e. allow at most 2 consecutive same letter),
+//   then construct each question's option order so its correct answer
+//   lands at the target position.
+//
+// Selection layout: 15 OLD then 5 NEW, then the whole 20 is shuffled
+// once more so old/new questions are interleaved (no clean partition).
+function selectArrangeAndShuffle(mainBank, newBank, seed) {
   const rng = seededRNG(seed);
 
-  // --- 1) pick & order 30 questions ---
-  const shuffled = seededShuffle(bank, rng);
-  const selected = shuffled.slice(0, 25);
+  // Defensive: fall back to whatever is available if a bank is missing
+  const oldArr = Array.isArray(mainBank) ? mainBank : [];
+  const newArr = Array.isArray(newBank) ? newBank : [];
+
+  // --- 1) pick 15 from old + 5 from new ---
+  const N_OLD = Math.min(15, oldArr.length);
+  const N_NEW = Math.min(5, newArr.length);
+
+  const shuffledOld = seededShuffle(oldArr, rng).slice(0, N_OLD);
+  const shuffledNew = seededShuffle(newArr, rng).slice(0, N_NEW);
+
+  // Combine, then shuffle once more so the 5 new questions are
+  // interleaved into the main 15 instead of clustered at the end.
+  const combined = shuffledOld.concat(shuffledNew);
+  const selected = seededShuffle(combined, rng);
   const N = selected.length;
 
   // --- 2) build balanced target positions ---
-  // Counts: for 30 questions => [8, 8, 7, 7]. For other N, distribute as
-  // evenly as possible.
+  // Counts for N=20 → [5,5,5,5]. For other N, distribute as evenly as possible.
   const counts = [0, 0, 0, 0];
   for (let i = 0; i < N; i++) counts[i % 4]++;
-  // Randomize WHICH position gets 8 vs 7 via the RNG (so it isn't always A/B)
+  // Randomize WHICH position gets the larger counts via the RNG so it
+  // isn't always A/B that gets the +1.
   const posOrder = seededShuffle([0, 1, 2, 3], rng);
   const balancedCounts = [0, 0, 0, 0];
   posOrder.forEach((p, i) => (balancedCounts[p] = counts[i]));
@@ -111,7 +203,7 @@ function selectArrangeAndShuffle(bank, seed) {
   }
   targetPool = seededShuffle(targetPool, rng);
 
-  // --- 3) enforce no 3 consecutive same ---
+  // --- 3) enforce no 3 consecutive same (i.e. max 2 consecutive same) ---
   // Greedy: walk the array; if positions i-2, i-1, i are all equal, swap
   // the value at i with the nearest position (later OR earlier) that differs.
   // Multi-pass until stable or max iterations reached.
@@ -181,42 +273,75 @@ function selectArrangeAndShuffle(bank, seed) {
 }
 
 // ---------------- Coding problem picker ----------------
-// Build the 3 coding problems for this version:
-//   Problem 1: control_loop_function  (15 pts)
-//   Problem 2: control_loop_function  (15 pts, distinct from #1)
-//   Problem 3: array_or_string_hard   (20 pts)
-// picks = { p1, p2, p3 } — global indices into CODING_BANK
+// Build the 4 coding problems for this version:
+//   Problem 1: easy_medium_starter   (10 pts) — from the new 15-problem set
+//   Problem 2: control_loop_function (15 pts)
+//   Problem 3: control_loop_function (15 pts, distinct from #2)
+//   Problem 4: array_or_string_hard  (20 pts)
+// picks = { p1, p2, p3, p4 } — global indices into CODING_BANK
+//
+// May 2026: each bank entry has both `starter` (EN+UZ TODO comments) and
+// `starter_ru` (EN+RU TODO comments). We freeze the `starter` field used
+// at build time based on the language toggle, so the editor only ever
+// shows comments in the language the student picked. If the student
+// changes language mid-exam the typed code is preserved (the starter
+// itself is not re-loaded).
 function buildCodingForVersion(picks) {
   const bank = window.CODING_BANK || [];
   if (
     !picks ||
     typeof picks.p1 !== "number" ||
     typeof picks.p2 !== "number" ||
-    typeof picks.p3 !== "number"
+    typeof picks.p3 !== "number" ||
+    typeof picks.p4 !== "number"
   ) {
     return null;
   }
   const p1 = bank[picks.p1];
   const p2 = bank[picks.p2];
   const p3 = bank[picks.p3];
-  if (!p1 || !p2 || !p3) return null;
+  const p4 = bank[picks.p4];
+  if (!p1 || !p2 || !p3 || !p4) return null;
+
+  // Pick the starter variant based on the student's language choice.
+  // Falls back to `starter` (EN+UZ) if `starter_ru` is missing for any reason.
+  const lang = (typeof window.getExamLang === "function" ? window.getExamLang() : "uz");
+  function pickStarter(p) {
+    if (lang === "ru" && p.starter_ru) return p.starter_ru;
+    return p.starter;
+  }
+
   return [
     {
       ...p1,
+      starter: pickStarter(p1),
       title_en: "Coding Problem 1 — " + p1.title_en,
       title_uz: "1-Kodlash Masalasi — " + p1.title_uz,
-      maxPoints: 15,
+      title_ru: "Задача по программированию 1 — " + (p1.title_ru || p1.title_en),
+      maxPoints: 10,
     },
     {
       ...p2,
+      starter: pickStarter(p2),
       title_en: "Coding Problem 2 — " + p2.title_en,
       title_uz: "2-Kodlash Masalasi — " + p2.title_uz,
+      title_ru: "Задача по программированию 2 — " + (p2.title_ru || p2.title_en),
       maxPoints: 15,
     },
     {
       ...p3,
+      starter: pickStarter(p3),
       title_en: "Coding Problem 3 — " + p3.title_en,
       title_uz: "3-Kodlash Masalasi — " + p3.title_uz,
+      title_ru: "Задача по программированию 3 — " + (p3.title_ru || p3.title_en),
+      maxPoints: 15,
+    },
+    {
+      ...p4,
+      starter: pickStarter(p4),
+      title_en: "Coding Problem 4 — " + p4.title_en,
+      title_uz: "4-Kodlash Masalasi — " + p4.title_uz,
+      title_ru: "Задача по программированию 4 — " + (p4.title_ru || p4.title_en),
       maxPoints: 20,
     },
   ];
@@ -302,9 +427,13 @@ function renderSchedulePanel() {
     $("spStatus").textContent = "MASTER OVERRIDE";
     $("spDot").className = "sp-dot dot-master";
     $("spRange").innerHTML =
-      "Schedule check bypassed.<br><span class='sp-uz'>Jadval tekshiruvi chetlab o'tildi.</span>";
+      "Schedule check bypassed." +
+      "<br><span class='sp-uz uz'>Jadval tekshiruvi chetlab o'tildi.</span>" +
+      "<br><span class='sp-ru ru'>Проверка расписания пропущена.</span>";
     $("spNote").innerHTML =
-      "You can start the exam regardless of the scheduled window.<br><span class='sp-uz'>Belgilangan vaqtdan qat'i nazar imtihonni boshlashingiz mumkin.</span>";
+      "You can start the exam regardless of the scheduled window." +
+      "<br><span class='sp-uz uz'>Belgilangan vaqtdan qat'i nazar imtihonni boshlashingiz mumkin.</span>" +
+      "<br><span class='sp-ru ru'>Вы можете начать экзамен независимо от запланированного окна.</span>";
     return;
   }
 
@@ -320,7 +449,9 @@ function renderSchedulePanel() {
     $("spStatus").textContent = "Checking…";
     $("spDot").className = "sp-dot dot-checking";
     $("spRange").innerHTML =
-      "Contacting NPUU exam server…<br><span class='sp-uz'>NPUU imtihon serveri bilan bog'lanish…</span>";
+      "Contacting NPUU exam server…" +
+      "<br><span class='sp-uz uz'>NPUU imtihon serveri bilan bog'lanish…</span>" +
+      "<br><span class='sp-ru ru'>Подключение к серверу экзамена NPUU…</span>";
     $("spNote").textContent = " ";
     return;
   }
@@ -335,10 +466,12 @@ function renderSchedulePanel() {
     $("spDot").className = "sp-dot dot-notset";
     $("spRange").innerHTML =
       "Schedule for <b>" + studentInfo.group + "</b> has not been set by the instructor yet." +
-      "<br><span class='sp-uz'><b>" + studentInfo.group + "</b> guruhi uchun jadval hali o'qituvchi tomonidan belgilanmagan.</span>";
+      "<br><span class='sp-uz uz'><b>" + studentInfo.group + "</b> guruhi uchun jadval hali o'qituvchi tomonidan belgilanmagan.</span>" +
+      "<br><span class='sp-ru ru'>Расписание для группы <b>" + studentInfo.group + "</b> ещё не установлено преподавателем.</span>";
     $("spNote").innerHTML =
       "Please wait for your instructor to publish the exam window." +
-      "<br><span class='sp-uz'>Iltimos, o'qituvchingiz imtihon vaqtini e'lon qilishini kuting.</span>";
+      "<br><span class='sp-uz uz'>Iltimos, o'qituvchingiz imtihon vaqtini e'lon qilishini kuting.</span>" +
+      "<br><span class='sp-ru ru'>Пожалуйста, подождите, пока преподаватель опубликует окно экзамена.</span>";
   } else if (s.status === "not_started") {
     panel.className = "schedule-panel sp-pending";
     $("spStatus").textContent = "NOT OPEN YET";
@@ -346,7 +479,8 @@ function renderSchedulePanel() {
     $("spRange").textContent = range + (tz ? "   (" + tz + ")" : "");
     $("spNote").innerHTML =
       "You cannot start yet. Wait until the scheduled start time." +
-      "<br><span class='sp-uz'>Hozir boshlay olmaysiz. Belgilangan boshlanish vaqtini kuting.</span>";
+      "<br><span class='sp-uz uz'>Hozir boshlay olmaysiz. Belgilangan boshlanish vaqtini kuting.</span>" +
+      "<br><span class='sp-ru ru'>Вы пока не можете начать. Дождитесь запланированного времени начала.</span>";
   } else if (s.status === "open") {
     panel.className = "schedule-panel sp-open";
     $("spStatus").textContent = "OPEN NOW";
@@ -354,7 +488,8 @@ function renderSchedulePanel() {
     $("spRange").textContent = range + (tz ? "   (" + tz + ")" : "");
     $("spNote").innerHTML =
       "You may start when all fields are filled in." +
-      "<br><span class='sp-uz'>Barcha maydonlar to'ldirilgach boshlashingiz mumkin.</span>";
+      "<br><span class='sp-uz uz'>Barcha maydonlar to'ldirilgach boshlashingiz mumkin.</span>" +
+      "<br><span class='sp-ru ru'>Вы можете начать после заполнения всех полей.</span>";
   } else if (s.status === "ended") {
     panel.className = "schedule-panel sp-ended";
     $("spStatus").textContent = "ENDED";
@@ -362,7 +497,8 @@ function renderSchedulePanel() {
     $("spRange").textContent = range + (tz ? "   (" + tz + ")" : "");
     $("spNote").innerHTML =
       "The exam window for this group has closed. Contact your instructor." +
-      "<br><span class='sp-uz'>Ushbu guruh uchun imtihon oynasi yopilgan. O'qituvchingiz bilan bog'laning.</span>";
+      "<br><span class='sp-uz uz'>Ushbu guruh uchun imtihon oynasi yopilgan. O'qituvchingiz bilan bog'laning.</span>" +
+      "<br><span class='sp-ru ru'>Окно экзамена для этой группы закрыто. Свяжитесь с преподавателем.</span>";
   } else {
     panel.className = "schedule-panel sp-unknown";
     $("spStatus").textContent = "UNKNOWN";
@@ -370,7 +506,8 @@ function renderSchedulePanel() {
     $("spRange").textContent = " ";
     $("spNote").innerHTML =
       "Could not determine schedule. Check your internet connection." +
-      "<br><span class='sp-uz'>Jadvalni aniqlab bo'lmadi. Internet aloqangizni tekshiring.</span>";
+      "<br><span class='sp-uz uz'>Jadvalni aniqlab bo'lmadi. Internet aloqangizni tekshiring.</span>" +
+      "<br><span class='sp-ru ru'>Не удалось определить расписание. Проверьте подключение к интернету.</span>";
   }
 }
 
@@ -446,13 +583,17 @@ async function startExam() {
     if (entry.coding) codingPicks = entry.coding;
   }
 
-  // Build 30 MC questions
-  const result = selectArrangeAndShuffle(window.MC_BANK, mcSeed);
+  // Build 20 MC questions (15 from main bank + 5 from new bank)
+  const result = selectArrangeAndShuffle(
+    window.MC_BANK,
+    window.MC_BANK_NEW,
+    mcSeed,
+  );
   mcQuestions = result.selected;
   optionOrders = result.optionOrders;
   userAnswers = new Array(mcQuestions.length).fill(-1);
 
-  // Build the 3 coding problems for this version
+  // Build the 4 coding problems for this version
   const codingProblems = buildCodingForVersion(codingPicks);
   if (!codingProblems) {
     if (startBtn) {
@@ -532,6 +673,8 @@ function renderQuestions() {
     const ord = optionOrders[qIdx];
     const card = document.createElement("div");
     card.className = "q-card";
+    // For each item we render BOTH the .uz and .ru span; CSS hides one
+    // depending on the body's language class (lang-uz default vs lang-ru).
     card.innerHTML = `
       <div class="q-badge-row">
         <div class="q-badge">
@@ -540,20 +683,23 @@ function renderQuestions() {
           <span class="q-badge-total">${mcQuestions.length}</span>
         </div>
         <div class="q-badge-label">
-          Question<span class="q-badge-label-uz">Savol</span>
+          Question<span class="q-badge-label-uz uz">Savol</span><span class="q-badge-label-ru ru">Вопрос</span>
         </div>
       </div>
       <div class="q-text">${q.en}</div>
-      <div class="q-text-uz">${q.uz}</div>
+      <div class="q-text-uz uz">${q.uz}</div>
+      <div class="q-text-ru ru">${q.ru || q.uz}</div>
       <div class="opt-list">
         ${ord
           .map((origIdx, displayIdx) => {
             const letter = String.fromCharCode(65 + displayIdx);
+            const opt = q.opts[origIdx];
             return `<div class="opt" data-q="${qIdx}" data-orig="${origIdx}">
             <span class="letter">${letter})</span>
             <div class="opt-content">
-              <div class="opt-text">${q.opts[origIdx].en}</div>
-              <div class="opt-text-uz">${q.opts[origIdx].uz}</div>
+              <div class="opt-text">${opt.en}</div>
+              <div class="opt-text-uz uz">${opt.uz}</div>
+              <div class="opt-text-ru ru">${opt.ru || opt.uz}</div>
             </div>
           </div>`;
           })
@@ -585,40 +731,52 @@ function renderCoding() {
     const card = document.createElement("div");
     card.className = "code-card";
 
-    // Abstract hint bullets (no step numbers)
+    // Hints — bilingual EN/UZ/RU bullets. Some problems (the new
+    // easy/medium 10-pt problem) deliberately have NO hints, so we
+    // only render the panel when the array is non-empty.
     const hintsHtml = (cp.hints || [])
       .map(
         (h) => `
       <div class="hint-item">
         <div class="hint-en">${h.en}</div>
-        <div class="hint-uz">${h.uz}</div>
+        <div class="hint-uz uz">${h.uz}</div>
+        <div class="hint-ru ru">${h.ru || h.uz}</div>
       </div>
     `,
       )
       .join("");
 
+    // Pick the right requirements arrays — fall back to UZ if RU absent
+    const enReqs = cp.en || [];
+    const uzReqs = cp.uz || [];
+    const ruReqs = cp.ru && cp.ru.length ? cp.ru : uzReqs;
+
     card.innerHTML = `
       <div class="code-header-row">
         <div class="code-badge">
           <span class="code-badge-num">${i + 1}</span>
-          <span class="code-badge-label">Problem ${i + 1}<span class="uz">${i + 1}-Masala</span></span>
+          <span class="code-badge-label">Problem ${i + 1}<span class="uz">${i + 1}-Masala</span><span class="ru">Задача ${i + 1}</span></span>
         </div>
-        <div class="code-points-pill">Max ${cp.maxPoints || 20} points<span class="pill-uz"> · ${cp.maxPoints || 20} ball</span></div>
+        <div class="code-points-pill">Max ${cp.maxPoints || 20} points<span class="pill-uz uz"> · ${cp.maxPoints || 20} ball</span><span class="pill-ru ru"> · ${cp.maxPoints || 20} баллов</span></div>
       </div>
-      <h3>${cp.title_en}<span class="uz">${cp.title_uz}</span></h3>
+      <h3>${cp.title_en}<span class="uz">${cp.title_uz}</span><span class="ru">${cp.title_ru || cp.title_uz}</span></h3>
       <div class="lang-label">Requirements (English):</div>
       <p>Write a C++ program that:</p>
-      <ol>${cp.en.map((s) => `<li>${s}</li>`).join("")}</ol>
+      <ol>${enReqs.map((s) => `<li>${s}</li>`).join("")}</ol>
       <div class="lang-label uz">Talablar (O'zbekcha):</div>
-      <p style="font-style:italic;color:var(--ink-medium)">Quyidagilarni bajaradigan C++ dastur yozing:</p>
-      <ol class="uz">${cp.uz.map((s) => `<li>${s}</li>`).join("")}</ol>
+      <p class="uz" style="font-style:italic;color:var(--ink-medium)">Quyidagilarni bajaradigan C++ dastur yozing:</p>
+      <ol class="uz">${uzReqs.map((s) => `<li>${s}</li>`).join("")}</ol>
+      <div class="lang-label ru">Требования (на русском):</div>
+      <p class="ru" style="font-style:italic;color:var(--ink-medium)">Напишите программу на C++, которая:</p>
+      <ol class="ru">${ruReqs.map((s) => `<li>${s}</li>`).join("")}</ol>
       ${
         hintsHtml
           ? `
         <div class="hints-panel">
           <div class="hints-title">
             <span class="hints-title-en">Hints to Solve the Problem</span>
-            <span class="hints-title-uz">Masalani Yechish uchun Maslahatlar</span>
+            <span class="hints-title-uz uz">Masalani Yechish uchun Maslahatlar</span>
+            <span class="hints-title-ru ru">Подсказки для решения задачи</span>
           </div>
           ${hintsHtml}
         </div>
@@ -637,15 +795,15 @@ function renderCoding() {
           <div class="run-panel-head">
             <button type="button" class="run-btn" data-run-idx="${i}">
               <span class="run-ico">▶</span>
-              <span class="run-label">Run Code · Kodni Ishga Tushirish</span>
+              <span class="run-label">Run Code<span class="uz"> · Kodni Ishga Tushirish</span><span class="ru"> · Запустить код</span></span>
             </button>
             <span class="run-meta count" id="runCount${i}">Runs used: 0 / 30</span>
           </div>
           <div class="stdin-wrap">
-            <label for="stdin${i}">Input (stdin) / Qiymat Kiritish</label>
-            <textarea id="stdin${i}" placeholder="If your program reads input with cin, type it here - one value per line. / Agar dasturingiz cin bilan kiritish o'qisa, har bir qiymatni yangi qatorga yozing."></textarea>
+            <label for="stdin${i}">Input (stdin)<span class="uz"> / Qiymat Kiritish</span><span class="ru"> / Ввод (stdin)</span></label>
+            <textarea id="stdin${i}" placeholder="If your program reads input with cin, type it here - one value per line."></textarea>
           </div>
-          <div class="run-output empty" id="runOutput${i}"><div class="empty-msg-en">Click <b>Run Code</b> to compile and execute your code. This is for your own testing — the instructor grades the code you submit, not the run result.</div><div class="empty-msg-uz">Natijani tekshirish uchun <b>Kodni Ishga Tushirish</b> tugmasini bosing. Bu faqat sizning sinovingiz uchun — o'qituvchi siz yuborgan kodni baholaydi, ishga tushirish natijasini emas.</div></div>
+          <div class="run-output empty" id="runOutput${i}"><div class="empty-msg-en">Click <b>Run Code</b> to compile and execute your code. This is for your own testing — the instructor grades the code you submit, not the run result.</div><div class="empty-msg-uz uz">Natijani tekshirish uchun <b>Kodni Ishga Tushirish</b> tugmasini bosing. Bu faqat sizning sinovingiz uchun — o'qituvchi siz yuborgan kodni baholaydi, ishga tushirish natijasini emas.</div><div class="empty-msg-ru ru">Нажмите <b>Запустить код</b>, чтобы скомпилировать и выполнить ваш код. Это только для вашего тестирования — преподаватель оценивает отправленный код, а не результат запуска.</div></div>
         </div>
       </div>
     `;
@@ -684,13 +842,13 @@ async function handleRunClick(idx) {
 
   // Track consecutive failures per problem
   if (!window._consecutiveFailures) {
-    window._consecutiveFailures = { 0: 0, 1: 0, 2: 0 };
+    window._consecutiveFailures = { 0: 0, 1: 0, 2: 0, 3: 0 };
   }
 
   if (!window.CodeRunner.canRun(idx)) {
     outputEl.className = "run-output error";
     outputEl.innerHTML =
-      '<div class="run-status-row"><span class="run-status-dot"></span>Run limit reached</div>' +
+      '<div class="run-status-row"><span class="run-status-dot"></span>Run limit reached · Ishga tushirish chegarasiga yetdi · Лимит запусков исчерпан</div>' +
       "You've used all " +
       window.CodeRunner.RUN_CAP +
       " runs for this problem. Your code is still submitted when you finish the exam — the instructor grades the code itself, not the run result.";
@@ -699,10 +857,10 @@ async function handleRunClick(idx) {
 
   // Disable button + flash "running" state
   btn.disabled = true;
-  btn.querySelector(".run-label").textContent = "Running… · Ishlayapti…";
+  btn.querySelector(".run-label").textContent = "Running… · Ishlayapti… · Выполнение…";
   outputEl.className = "run-output running";
   outputEl.innerHTML =
-    '<div class="run-status-row"><span class="run-status-dot"></span>COMPILING & RUNNING · KOMPILYATSIYA VA ISHGA TUSHIRISH</div>' +
+    '<div class="run-status-row"><span class="run-status-dot"></span>COMPILING & RUNNING · KOMPILYATSIYA VA ISHGA TUSHIRISH · КОМПИЛЯЦИЯ И ЗАПУСК</div>' +
     "<span style=\"font-style:italic\">Please wait — this usually takes 1–3 seconds.</span>";
 
   const result = await window.CodeRunner.runCppCode(code, stdin);
@@ -713,7 +871,7 @@ async function handleRunClick(idx) {
     "Runs used: " + window.CodeRunner.getRunCount(idx) + " / " + window.CodeRunner.RUN_CAP;
   btn.disabled = false;
   btn.querySelector(".run-label").textContent =
-    "Run Code · Kodni Ishga Tushirish";
+    "Run Code · Kodni Ishga Tushirish · Запустить код";
 
   // Classify the outcome as success or failure for consecutive-fail tracking.
   //   Success = kind === "success"
@@ -735,7 +893,7 @@ async function handleRunClick(idx) {
   if (!result.ok) {
     outputEl.className = "run-output error";
     outputEl.innerHTML =
-      '<div class="run-status-row"><span class="run-status-dot"></span>CANNOT RUN RIGHT NOW · HOZIR ISHGA TUSHIRIB BO\'LMAYDI</div>' +
+      '<div class="run-status-row"><span class="run-status-dot"></span>CANNOT RUN RIGHT NOW · HOZIR ISHGA TUSHIRIB BO\'LMAYDI · СЕЙЧАС НЕЛЬЗЯ ЗАПУСТИТЬ</div>' +
       escapeHtmlText(result.message) +
       '<br><br><span style="font-style:italic;color:#5a6470">You can still continue the exam and submit normally — code execution is optional.</span>' +
       renderFailureNote(idx);
@@ -751,7 +909,7 @@ async function handleRunClick(idx) {
   if (result.kind === "compile_error") {
     outputEl.className = "run-output error";
     outputEl.innerHTML =
-      '<div class="run-status-row"><span class="run-status-dot"></span>COMPILATION ERROR · KOMPILYATSIYA XATOSI</div>' +
+      '<div class="run-status-row"><span class="run-status-dot"></span>COMPILATION ERROR · KOMPILYATSIYA XATOSI · ОШИБКА КОМПИЛЯЦИИ</div>' +
       '<div class="run-output-block">' +
       '<div class="run-output-label">STDERR</div>' +
       "<div>" +
@@ -771,7 +929,7 @@ async function handleRunClick(idx) {
   if (result.kind === "runtime_error") {
     outputEl.className = "run-output error";
     outputEl.innerHTML =
-      '<div class="run-status-row"><span class="run-status-dot"></span>RUNTIME ERROR · BAJARILISH XATOSI</div>' +
+      '<div class="run-status-row"><span class="run-status-dot"></span>RUNTIME ERROR · BAJARILISH XATOSI · ОШИБКА ВЫПОЛНЕНИЯ</div>' +
       (result.stdout
         ? '<div class="run-output-block"><div class="run-output-label">STDOUT (before error)</div><div>' +
           escapeHtmlText(result.stdout) +
@@ -824,16 +982,22 @@ async function handleRunClick(idx) {
       'This means you have not written any solution yet. The compiler still ran it, ' +
       'but running the starter does not count as solving the problem. ' +
       'Replace the <code>// TODO</code> comments with your actual solution.' +
-      '<div class="uz-inline">' +
+      '<div class="uz-inline uz">' +
       '<b>⚠ Kodingiz boshlang\'ich shablon bilan bir xil ko\'rinadi.</b> ' +
       'Bu siz hali yechim yozmaganingizni anglatadi. Kompilyator uni baribir ishga tushirdi, ' +
       'lekin boshlang\'ich shablonni ishga tushirish masalani yechish hisoblanmaydi. ' +
       '<code>// TODO</code> izohlari o\'rniga haqiqiy yechimingizni yozing.' +
+      '</div>' +
+      '<div class="ru-inline ru">' +
+      '<b>⚠ Ваш код выглядит так же, как стартовый шаблон.</b> ' +
+      'Это означает, что вы ещё не написали решение. Компилятор всё равно его выполнил, ' +
+      'но запуск стартового шаблона не считается решением задачи. ' +
+      'Замените комментарии <code>// TODO</code> вашим реальным решением.' +
       '</div></div>'
     : '';
 
   outputEl.innerHTML =
-    '<div class="run-status-row"><span class="run-status-dot"></span>PROGRAM RAN SUCCESSFULLY · DASTUR MUVAFFAQIYATLI ISHLADI</div>' +
+    '<div class="run-status-row"><span class="run-status-dot"></span>PROGRAM RAN SUCCESSFULLY · DASTUR MUVAFFAQIYATLI ISHLADI · ПРОГРАММА УСПЕШНО ВЫПОЛНЕНА</div>' +
     warningBanner +
     '<div class="run-output-block">' +
     '<div class="run-output-label">STDOUT</div>' +
@@ -863,9 +1027,12 @@ function renderFailureNote(idx) {
     '<div class="run-failure-note">' +
     "Several runs have failed. That's okay — you can still submit your exam. " +
     "The instructor grades manually the code you wrote, not the run results." +
-    '<span class="rfn-uz">Bir nechta ishga tushirish muvaffaqiyatsiz bo\'ldi. ' +
+    '<span class="rfn-uz uz">Bir nechta ishga tushirish muvaffaqiyatsiz bo\'ldi. ' +
     "Bu muammo emas — siz imtihonni baribir yubora olasiz. O'qituvchi siz " +
     "yozgan kodni qo'lda o'qib baholaydi, ishga tushirish natijasini emas.</span>" +
+    '<span class="rfn-ru ru">Несколько запусков не удались. ' +
+    "Это нормально — вы всё равно можете отправить экзамен. Преподаватель " +
+    "вручную оценивает написанный вами код, а не результаты запуска.</span>" +
     "</div>"
   );
 }
@@ -1064,12 +1231,21 @@ function findLineCommentStart(line) {
 // ---------------- Progress ----------------
 function updateProgress() {
   const answered = userAnswers.filter((a) => a !== -1).length;
-  const pct = (answered / mcQuestions.length) * 100;
+  const total = mcQuestions.length;
+  const pct = (answered / total) * 100;
   $("progress-fill").style.width = pct + "%";
-  $("progress-text").textContent =
-    `Answered ${answered} / ${mcQuestions.length} test questions · ${answered} / ${mcQuestions.length} test savoliga javob berildi`;
-  $("answered-count").textContent = answered;
-  $("answered-count-uz").textContent = answered;
+  // Build a tri-lingual progress text — show one language at a time
+  // depending on which language span is visible (CSS toggles them).
+  const ptEl = $("progress-text");
+  if (ptEl) {
+    ptEl.innerHTML =
+      `<span>Answered ${answered} / ${total} test questions</span>` +
+      ` <span class="uz">· ${answered} / ${total} test savoliga javob berildi</span>` +
+      ` <span class="ru">· отвечено на ${answered} из ${total} вопросов теста</span>`;
+  }
+  if ($("answered-count")) $("answered-count").textContent = answered;
+  if ($("answered-count-uz")) $("answered-count-uz").textContent = answered;
+  if ($("answered-count-ru")) $("answered-count-ru").textContent = answered;
 }
 
 // ---------------- Timer ----------------
@@ -1087,8 +1263,11 @@ function updateTimer() {
       type: "warning",
       title: "Time's Up!",
       titleUz: "Vaqt tugadi!",
+      titleRu: "Время вышло!",
       message:
-        "Your time has expired. The exam is being submitted automatically. <span class='uz'>Vaqtingiz tugadi. Imtihon avtomatik yuborilmoqda.</span>",
+        "Your time has expired. The exam is being submitted automatically." +
+        " <span class='uz'>Vaqtingiz tugadi. Imtihon avtomatik yuborilmoqda.</span>" +
+        " <span class='ru'>Ваше время истекло. Экзамен отправляется автоматически.</span>",
       okText: "OK",
     }).then(() => performSubmit("auto"));
     setTimeout(() => {
@@ -1121,7 +1300,7 @@ function registerTabSwitch() {
   if ($("tabcount-val")) $("tabcount-val").textContent = tabSwitches;
   if ($("tabcount")) $("tabcount").classList.add("flagged");
   flash(
-    `Warning: Tab switch detected! (${tabSwitches}) / Ogohlantirish: Yorliq almashtirish aniqlandi!`,
+    `Warning: Tab switch detected! (${tabSwitches}) / Ogohlantirish: Yorliq almashtirish aniqlandi! / Внимание: обнаружена смена вкладки!`,
   );
 }
 
@@ -1133,7 +1312,7 @@ document.addEventListener("contextmenu", (e) => {
   e.preventDefault();
   if (examStarted())
     flash(
-      "Mouse Right-click is disabled! / Sichqoncha o'ng tugmasini bosish ruxsat etilmaydi!",
+      "Mouse Right-click is disabled! / Sichqoncha o'ng tugmasini bosish ruxsat etilmaydi! / Правый клик мышью отключён!",
     );
   return false;
 });
@@ -1153,7 +1332,7 @@ document.addEventListener("paste", (e) => {
   if (t.tagName === "TEXTAREA" && examStarted()) {
     e.preventDefault();
     flash(
-      "Copy-Pasting is disabled in the code editor area! / Kod yozish xududiga nusxalar joylashtirish mumkin emas!",
+      "Copy-Pasting is disabled in the code editor area! / Kod yozish xududiga nusxalar joylashtirish mumkin emas! / Вставка отключена в области редактора кода!",
     );
   }
 });
@@ -1197,7 +1376,7 @@ document.addEventListener("keydown", (e) => {
   ) {
     e.preventDefault();
     flash(
-      "Developer tools are disabled! / Ishlab chiqaruvchi vositalari o'chirilgan!",
+      "Developer tools are disabled! / Ishlab chiqaruvchi vositalari o'chirilgan! / Инструменты разработчика отключены!",
     );
   }
 
@@ -1207,7 +1386,7 @@ document.addEventListener("keydown", (e) => {
     if (t.tagName === "TEXTAREA") {
       e.preventDefault();
       flash(
-        "Copy-Pasting is disabled in the code editor area! / Kod yozish xududiga nusxalar joylashtirish mumkin emas!",
+        "Copy-Pasting is disabled in the code editor area! / Kod yozish xududiga nusxalar joylashtirish mumkin emas! / Вставка отключена в области редактора кода!",
       );
     }
   }
@@ -1216,7 +1395,7 @@ document.addEventListener("keydown", (e) => {
   if ((e.ctrlKey || e.metaKey) && k === "p") {
     e.preventDefault();
     flash(
-      "Printing is disabled during the exam! / Imtihon paytida chop etish mumkin emas!",
+      "Printing is disabled during the exam! / Imtihon paytida chop etish mumkin emas! / Печать отключена во время экзамена!",
     );
   }
 
@@ -1224,7 +1403,7 @@ document.addEventListener("keydown", (e) => {
   if ((e.ctrlKey || e.metaKey) && k === "s") {
     e.preventDefault();
     flash(
-      "Saving is disabled during the exam! / Imtihon paytida saqlash mumkin emas!",
+      "Saving is disabled during the exam! / Imtihon paytida saqlash mumkin emas! / Сохранение отключено во время экзамена!",
     );
   }
 
@@ -1252,15 +1431,20 @@ function showReloadWarningModal() {
     type: "warning",
     title: "Reload the exam page?",
     titleUz: "Imtihon sahifasini qayta yuklashni istaysizmi?",
+    titleRu: "Перезагрузить страницу экзамена?",
     message:
       "<b>Warning:</b> If you reload this page, ALL your current answers and code will be erased. You will have to start the exam from the beginning. Your time remaining will also reset.<br><br>" +
       "<b>Only reload if you really need to.</b> If your internet briefly disconnected, the exam still works — you can keep answering and submit when you're done. There is no need to reload.<br><br>" +
       '<span class="uz">' +
       "<b>Ogohlantirish:</b> Agar siz bu sahifani qayta yuklasangiz, HAMMA joriy javoblaringiz va kodingiz o'chib ketadi. Imtihonni boshidan boshlashga majbur bo'lasiz. Qolgan vaqtingiz ham qayta tiklanadi.<br><br>" +
       "<b>Faqat haqiqatan kerak bo'lsa qayta yukalang.</b> Agar internetingiz qisqa vaqtga uzilgan bo'lsa, imtihon baribir ishlaydi — javob berishni davom ettiring va tugatganingizda topshiring. Qayta yuklash shart emas." +
+      "</span>" +
+      '<span class="ru">' +
+      "<b>Внимание:</b> Если вы перезагрузите эту страницу, ВСЕ ваши текущие ответы и код будут удалены. Вам придётся начать экзамен сначала. Оставшееся время также обнулится.<br><br>" +
+      "<b>Перезагружайте только в случае крайней необходимости.</b> Если у вас на короткое время пропал интернет, экзамен всё равно работает — продолжайте отвечать и отправьте, когда закончите. Нет необходимости перезагружать страницу." +
       "</span>",
-    okText: "Yes, reload anyway / Ha, baribir qayta yuklash",
-    cancelText: "Cancel — keep my work / Bekor qilish — ishimni saqlash",
+    okText: "Yes, reload anyway / Ha, baribir qayta yuklash / Да, всё равно перезагрузить",
+    cancelText: "Cancel — keep my work / Bekor qilish — ishimni saqlash / Отмена — сохранить работу",
   }).then((confirmed) => {
     _reloadModalOpen = false;
     if (confirmed) {
@@ -1296,6 +1480,7 @@ function showModal({
   type = "warning",
   title,
   titleUz,
+  titleRu,
   message,
   progress,
   okText = "OK",
@@ -1318,11 +1503,17 @@ function showModal({
     titleEl.childNodes.forEach((n) => {
       if (n.nodeType === 3) n.nodeValue = "";
     });
+    // Build the language-aware title:
+    //   "Title <span class='uz'>Sarlavha</span><span class='ru'>Заголовок</span>"
+    // Both .uz and .ru spans are present; CSS hides one based on body class.
+    const titleUzEl = $("modal-title-uz");
+    const titleRuEl = $("modal-title-ru");
     titleEl.insertBefore(
       document.createTextNode(title + " "),
-      $("modal-title-uz"),
+      titleUzEl,
     );
-    $("modal-title-uz").textContent = titleUz || "";
+    if (titleUzEl) titleUzEl.textContent = titleUz || "";
+    if (titleRuEl) titleRuEl.textContent = titleRu || titleUz || "";
     $("modal-text").innerHTML = message;
     if (progress) {
       $("modal-progress").style.display = "block";
@@ -1351,14 +1542,19 @@ async function trySubmit() {
     type: incomplete ? "warning" : "info",
     title: incomplete ? "Incomplete Submission" : "Submit Exam?",
     titleUz: incomplete ? "To'liq emas" : "Imtihonni yakunlaysizmi?",
+    titleRu: incomplete ? "Неполная отправка" : "Завершить экзамен?",
     message: incomplete
-      ? `You have not answered all test questions. Are you sure you want to submit?<span class="uz">Siz hamma test savollariga javob bermadingiz. Yuborishni xohlaysizmi?</span>`
-      : `All test questions answered. Are you sure you want to submit?<span class="uz">Hamma test savollariga javob berildi. Yuborishni xohlaysizmi?</span>`,
+      ? `You have not answered all test questions. Are you sure you want to submit?` +
+        `<span class="uz">Siz hamma test savollariga javob bermadingiz. Yuborishni xohlaysizmi?</span>` +
+        `<span class="ru">Вы ответили не на все вопросы теста. Вы уверены, что хотите отправить?</span>`
+      : `All test questions answered. Are you sure you want to submit?` +
+        `<span class="uz">Hamma test savollariga javob berildi. Yuborishni xohlaysizmi?</span>` +
+        `<span class="ru">Все вопросы теста отвечены. Вы уверены, что хотите отправить?</span>`,
     progress: incomplete
-      ? `<b>Answered / Javob berildi:</b> ${answered} / ${mcQuestions.length}`
+      ? `<b>Answered / Javob berildi / Отвечено:</b> ${answered} / ${mcQuestions.length}`
       : null,
-    okText: "Submit / Yuborish",
-    cancelText: "Cancel / Bekor qilish",
+    okText: "Submit / Yuborish / Отправить",
+    cancelText: "Cancel / Bekor qilish / Отмена",
   });
   if (!confirmed) return;
   performSubmit("manual");
@@ -1377,15 +1573,22 @@ function performSubmit(trigger) {
   userAnswers.forEach((ans, idx) => {
     if (ans === mcQuestions[idx].correct) correct++;
   });
+  // Each correct MC question = 2 points. With 20 questions, max = 40.
   const mcScore = correct * 2;
 
   const code1 = $("code1").value || "(No code submitted)";
   const code2 = $("code2").value || "(No code submitted)";
   const code3 = $("code3").value || "(No code submitted)";
+  const code4 = $("code4").value || "(No code submitted)";
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
   const mins = Math.floor(elapsed / 60);
   const secs = elapsed % 60;
   const timeStr = mins + "m " + secs + "s";
+
+  // Default max points for each slot (10/15/15/20). The actual values
+  // come from the resolved coding problem objects.
+  const codingArr = (versionData && versionData.coding) || [];
+  const defaultMax = [10, 15, 15, 20];
 
   window._submissionData = {
     correct,
@@ -1393,40 +1596,37 @@ function performSubmit(trigger) {
     code1,
     code2,
     code3,
+    code4,
     // Starter code for each problem — PDF gen uses these to highlight
     // lines the student actually wrote (vs. unchanged boilerplate).
-    starter1:
-      (versionData && versionData.coding && versionData.coding[0] && versionData.coding[0].starter) || "",
-    starter2:
-      (versionData && versionData.coding && versionData.coding[1] && versionData.coding[1].starter) || "",
-    starter3:
-      (versionData && versionData.coding && versionData.coding[2] && versionData.coding[2].starter) || "",
-    // Max points per problem (15/15/20)
-    max1:
-      (versionData && versionData.coding && versionData.coding[0] && versionData.coding[0].maxPoints) || 15,
-    max2:
-      (versionData && versionData.coding && versionData.coding[1] && versionData.coding[1].maxPoints) || 15,
-    max3:
-      (versionData && versionData.coding && versionData.coding[2] && versionData.coding[2].maxPoints) || 20,
+    starter1: (codingArr[0] && codingArr[0].starter) || "",
+    starter2: (codingArr[1] && codingArr[1].starter) || "",
+    starter3: (codingArr[2] && codingArr[2].starter) || "",
+    starter4: (codingArr[3] && codingArr[3].starter) || "",
+    // Max points per problem (10/15/15/20 by default)
+    max1: (codingArr[0] && codingArr[0].maxPoints) || defaultMax[0],
+    max2: (codingArr[1] && codingArr[1].maxPoints) || defaultMax[1],
+    max3: (codingArr[2] && codingArr[2].maxPoints) || defaultMax[2],
+    max4: (codingArr[3] && codingArr[3].maxPoints) || defaultMax[3],
     // Last run result for each problem (from CodeRunner). null if the
     // student never hit Run, an object otherwise.
-    lastRun1:
-      (window._lastRunResults && window._lastRunResults[0]) || null,
-    lastRun2:
-      (window._lastRunResults && window._lastRunResults[1]) || null,
-    lastRun3:
-      (window._lastRunResults && window._lastRunResults[2]) || null,
+    lastRun1: (window._lastRunResults && window._lastRunResults[0]) || null,
+    lastRun2: (window._lastRunResults && window._lastRunResults[1]) || null,
+    lastRun3: (window._lastRunResults && window._lastRunResults[2]) || null,
+    lastRun4: (window._lastRunResults && window._lastRunResults[3]) || null,
     runCount1: (window._runCounts && window._runCounts[0]) || 0,
     runCount2: (window._runCounts && window._runCounts[1]) || 0,
     runCount3: (window._runCounts && window._runCounts[2]) || 0,
+    runCount4: (window._runCounts && window._runCounts[3]) || 0,
     // Coding problem titles for the PDF
-    codingTitles: (versionData && versionData.coding && versionData.coding.map((c) => ({
+    codingTitles: codingArr.map((c) => ({
       en: c.title_en,
       uz: c.title_uz,
+      ru: c.title_ru,
       maxPoints: c.maxPoints,
-    }))) || [],
+    })),
     // Full problem descriptions (so PDF can print them instead of a solution)
-    codingProblems: (versionData && versionData.coding) || [],
+    codingProblems: codingArr,
     timeStr,
     mcQuestions,
     userAnswers,
@@ -1472,9 +1672,10 @@ function performSubmit(trigger) {
 }
 
 // ---------- Upload UI helpers ----------
-function setUploadStatus(titleEn, titleUz, sub, iconChar, spin) {
+function setUploadStatus(titleEn, titleUz, sub, iconChar, spin, titleRu) {
   if ($("usTitle")) $("usTitle").textContent = titleEn;
   if ($("usTitleUz")) $("usTitleUz").textContent = titleUz;
+  if ($("usTitleRu")) $("usTitleRu").textContent = titleRu || titleUz || "";
   if ($("usSub")) $("usSub").textContent = sub || "";
   const icon = $("usIcon");
   if (icon) {
@@ -1521,11 +1722,13 @@ function showFallbackBlock(reason) {
     type: "warning",
     title: "Automatic upload failed",
     titleUz: "Avtomatik yuklash muvaffaqiyatsiz",
+    titleRu: "Автоматическая загрузка не удалась",
     message:
       "We could not reach the NPUU exam server after 3 attempts. " +
       "Your PDF is being downloaded to your computer. Please open the Google Form shown below and upload your PDF to complete your submission." +
-      '<span class="uz">NPUU imtihon serveri bilan 3 urinishdan so\'ng bog\'lanib bo\'lmadi. PDF kompyuteringizga yuklanmoqda. Iltimos, quyida ko\'rsatilgan Google Formani oching va topshiruvni yakunlash uchun PDF ni yuklang.</span>',
-    okText: "I understand / Tushundim",
+      '<span class="uz">NPUU imtihon serveri bilan 3 urinishdan so\'ng bog\'lanib bo\'lmadi. PDF kompyuteringizga yuklanmoqda. Iltimos, quyida ko\'rsatilgan Google Formani oching va topshiruvni yakunlash uchun PDF ni yuklang.</span>' +
+      '<span class="ru">Не удалось связаться с сервером экзамена NPUU после 3 попыток. PDF загружается на ваш компьютер. Пожалуйста, откройте показанную ниже форму Google Form и загрузите PDF, чтобы завершить отправку.</span>',
+    okText: "I understand / Tushundim / Понятно",
   });
 }
 
@@ -1542,6 +1745,7 @@ async function runUploadFlow(pdfResult) {
     "Attempt 1 of 3",
     "⟳",
     true,
+    "Загрузка вашего экзамена на сервер NPUU…",
   );
 
   const onProgress = (evt) => {
@@ -1552,14 +1756,16 @@ async function runUploadFlow(pdfResult) {
         "",
         "⟳",
         true,
+        "Подключение к серверу NPUU…",
       );
     } else if (evt.phase === "uploading") {
       setUploadStatus(
         "Uploading your exam to the NPUU server…",
         "Imtihoningiz NPUU serveriga yuklanmoqda…",
-        "Attempt " + evt.attempt + " of 3 · " + evt.attempt + "-urinish",
+        "Attempt " + evt.attempt + " of 3 · " + evt.attempt + "-urinish · попытка " + evt.attempt,
         "⟳",
         true,
+        "Загрузка вашего экзамена на сервер NPUU…",
       );
     } else if (evt.phase === "attempt_failed") {
       if (evt.attempt < 3) {
@@ -1570,6 +1776,7 @@ async function runUploadFlow(pdfResult) {
           "",
           "⚠",
           false,
+          "Попытка " + evt.attempt + " не удалась. Повтор через " + wait + " с…",
         );
       }
     } else if (evt.phase === "success") {
@@ -1579,6 +1786,7 @@ async function runUploadFlow(pdfResult) {
         "",
         "✓",
         false,
+        "Загрузка завершена.",
       );
     }
   };
@@ -1603,23 +1811,23 @@ async function runUploadFlow(pdfResult) {
 function renderScorecardHtml(timeStr) {
   return `
     <div class="success-check">✓</div>
-    <div class="score-eyebrow">Exam Finished · Imtihon Tugadi</div>
+    <div class="score-eyebrow">Exam Finished<span class="uz"> · Imtihon Tugadi</span><span class="ru"> · Экзамен завершён</span></div>
 
     <div class="student-info-box">
       <div class="sinfo-row">
-        <div class="sinfo-label">Student Full Name<span class="sinfo-uz">Talabaning To'liq Ismi</span></div>
+        <div class="sinfo-label">Student Full Name<span class="sinfo-uz uz">Talabaning To'liq Ismi</span><span class="sinfo-ru ru">ФИО студента</span></div>
         <div class="sinfo-value">${studentInfo.firstName} ${studentInfo.lastName}</div>
       </div>
       <div class="sinfo-row">
-        <div class="sinfo-label">Student Group<span class="sinfo-uz">Talaba Guruhi</span></div>
+        <div class="sinfo-label">Student Group<span class="sinfo-uz uz">Talaba Guruhi</span><span class="sinfo-ru ru">Группа студента</span></div>
         <div class="sinfo-value">${studentInfo.group}</div>
       </div>
       <div class="sinfo-row">
-        <div class="sinfo-label">Student ID<span class="sinfo-uz">Talaba ID</span></div>
+        <div class="sinfo-label">Student ID<span class="sinfo-uz uz">Talaba ID</span><span class="sinfo-ru ru">ID студента</span></div>
         <div class="sinfo-value">${studentInfo.id}</div>
       </div>
       <div class="sinfo-row">
-        <div class="sinfo-label">Exam Version<span class="sinfo-uz">Imtihon Versiyasi</span></div>
+        <div class="sinfo-label">Exam Version<span class="sinfo-uz uz">Imtihon Versiyasi</span><span class="sinfo-ru ru">Вариант экзамена</span></div>
         <div class="sinfo-value">Version ${examVersion}</div>
       </div>
     </div>
@@ -1628,16 +1836,17 @@ function renderScorecardHtml(timeStr) {
       <p class="confirm-main">
         Thank you! You finished the exam.<br>
         <span class="uz">Rahmat! Siz imtihonni tugatdingiz.</span>
+        <span class="ru">Спасибо! Вы завершили экзамен.</span>
       </p>
     </div>
 
     <div class="summary-stats">
       <div class="stat-item">
-        <div class="stat-label">Time Used<span class="sinfo-uz">Sarflangan Vaqt</span></div>
+        <div class="stat-label">Time Used<span class="sinfo-uz uz">Sarflangan Vaqt</span><span class="sinfo-ru ru">Затраченное время</span></div>
         <div class="stat-value">${timeStr}</div>
       </div>
       <div class="stat-item ${tabSwitches > 0 ? "stat-warn" : ""}">
-        <div class="stat-label">Tab Switches<span class="sinfo-uz">Yorliq Almashish</span></div>
+        <div class="stat-label">Tab Switches<span class="sinfo-uz uz">Yorliq Almashish</span><span class="sinfo-ru ru">Смена вкладок</span></div>
         <div class="stat-value">${tabSwitches}</div>
       </div>
     </div>
@@ -1645,6 +1854,7 @@ function renderScorecardHtml(timeStr) {
     <p class="grading-note">
       Your results will be shared by the instructor after grading is complete.<br>
       <span class="uz">Natijalaringiz baholash yakunlangandan so'ng o'qituvchi tomonidan taqdim etiladi.</span>
+      <span class="ru">Ваши результаты будут предоставлены преподавателем после завершения проверки.</span>
     </p>
   `;
 }
@@ -1652,6 +1862,9 @@ function renderScorecardHtml(timeStr) {
 // ---------------- Entry points ----------------
 // Wire up on DOM ready for welcome page
 document.addEventListener("DOMContentLoaded", () => {
+  // Language switcher (works on every page that has a .lang-switcher select)
+  wireLangSwitcher();
+
   // Welcome page
   if ($("welcome")) {
     // --- Detect master override from URL ---
@@ -1706,13 +1919,17 @@ document.addEventListener("DOMContentLoaded", () => {
           type: "info",
           title: "Instructor Area",
           titleUz: "O'qituvchilar Bo'limi",
+          titleRu: "Раздел для преподавателей",
           message:
             "This page is for authorized instructors only. " +
             "If you are an instructor, click <b>I am an Instructor</b> to continue. " +
             "If you are a student, click <b>Go Back</b> to return." +
             "<span class='uz'>Ushbu sahifa faqat vakolatli o'qituvchilar uchun. " +
             "Agar siz o'qituvchi bo'lsangiz, davom etish uchun <b>Men O'qituvchiman</b> tugmasini bosing. " +
-            "Agar siz talaba bo'lsangiz, qaytish uchun <b>Ortga</b> tugmasini bosing.</span>",
+            "Agar siz talaba bo'lsangiz, qaytish uchun <b>Ortga</b> tugmasini bosing.</span>" +
+            "<span class='ru'>Эта страница только для авторизованных преподавателей. " +
+            "Если вы преподаватель, нажмите <b>Я преподаватель</b>, чтобы продолжить. " +
+            "Если вы студент, нажмите <b>Назад</b>, чтобы вернуться.</span>",
           okText: "I am an Instructor",
           cancelText: "Go Back",
         });
