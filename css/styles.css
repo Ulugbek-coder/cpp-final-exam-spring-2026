@@ -3,6 +3,61 @@
    Academic/editorial theme for NPUU
    ============================================================= */
 
+/* -------------------------------------------------------------
+   LANGUAGE TOGGLE (May 2026)
+   The body class lang-uz | lang-ru hides the inactive language
+   spans throughout every page. Default is lang-uz (set via
+   wireLangSwitcher in app.js). When lang-uz, all .ru spans are
+   hidden; when lang-ru, all .uz spans are hidden.
+   ------------------------------------------------------------- */
+body.lang-uz .ru,
+html.lang-uz .ru { display: none !important; }
+body.lang-ru .uz,
+html.lang-ru .uz { display: none !important; }
+
+/* The language switcher dropdown sits at top of the page. Compact,
+   neutral styling — does not compete with primary content. */
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 0 6px 0;
+  font-size: 0.88rem;
+  color: #4a5568;
+}
+.lang-switcher label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+}
+.lang-switcher .lang-icon {
+  font-size: 1rem;
+  opacity: 0.85;
+}
+.lang-switcher select {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  padding: 5px 10px;
+  border: 1px solid #d0c8b6;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.lang-switcher select:hover {
+  border-color: #8b3a2f;
+}
+.lang-switcher select:focus {
+  outline: none;
+  border-color: #8b3a2f;
+  box-shadow: 0 0 0 3px rgba(139, 58, 47, 0.12);
+}
+
 :root{
   --bg:          #f4f1ea;
   --bg-panel:    #ffffff;
