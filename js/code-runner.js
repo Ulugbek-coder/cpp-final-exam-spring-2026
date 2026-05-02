@@ -24,8 +24,8 @@ window.CodeRunner = (function () {
   const RUN_CAP = 30;
 
   // Track runs per problem (in-memory, resets on page refresh)
-  if (!window._runCounts) window._runCounts = { 0: 0, 1: 0, 2: 0 };
-  if (!window._lastRunResults) window._lastRunResults = { 0: null, 1: null, 2: null };
+  if (!window._runCounts) window._runCounts = { 0: 0, 1: 0, 2: 0, 3: 0 };
+  if (!window._lastRunResults) window._lastRunResults = { 0: null, 1: null, 2: null, 3: null };
 
   function getRunCount(idx) {
     return window._runCounts[idx] || 0;
