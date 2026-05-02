@@ -162,14 +162,14 @@ function generatePDFReport() {
   doc.setFontSize(9);
   doc.setTextColor(40, 40, 40);
   doc.text(
-    "This exam contains 25 test questions and 3 coding problems.",
+    "This exam contains 20 test questions and 4 coding problems.",
     margin + 14,
     y + 30,
   );
   doc.setFont("helvetica", "italic");
   doc.setTextColor(80, 80, 80);
   doc.text(
-    "Bu imtihon 25 ta test savoli va 3 ta kodlash masalasidan iborat.",
+    "Bu imtihon 20 ta test savoli va 4 ta kodlash masalasidan iborat.",
     margin + 14,
     y + 42,
   );
@@ -178,16 +178,16 @@ function generatePDFReport() {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9.5);
   doc.setTextColor(30, 58, 95);
-  doc.text("25 tests  x  2 pts", margin + 14, y + 62);
+  doc.text("20 tests  x  2 pts", margin + 14, y + 62);
   doc.text("=", margin + 130, y + 62);
   doc.setTextColor(45, 122, 58);
-  doc.text("50 points", margin + 144, y + 62);
+  doc.text("40 points", margin + 144, y + 62);
 
   doc.setTextColor(30, 58, 95);
-  doc.text("3 coding (15+15+20)", margin + 220, y + 62);
-  doc.text("=", margin + 336, y + 62);
+  doc.text("4 coding (10+15+15+20)", margin + 220, y + 62);
+  doc.text("=", margin + 350, y + 62);
   doc.setTextColor(45, 122, 58);
-  doc.text("50 points", margin + 350, y + 62);
+  doc.text("60 points", margin + 364, y + 62);
 
   // Total line
   doc.setDrawColor(30, 58, 95);
@@ -213,7 +213,7 @@ function generatePDFReport() {
 
   const halfW = contentW / 2;
 
-  // Left half: score /50
+  // Left half: score /40
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
   doc.setTextColor(139, 58, 47);
@@ -224,14 +224,14 @@ function generatePDFReport() {
   const scoreStrW = doc.getTextWidth(String(data.mcScore));
   doc.setFontSize(12);
   doc.setTextColor(120, 120, 120);
-  doc.text(" / 50 points", margin + 16 + scoreStrW + 4, y + 48);
+  doc.text(" / 40 points", margin + 16 + scoreStrW + 4, y + 48);
 
   // Divider
   doc.setDrawColor(220, 210, 190);
   doc.setLineWidth(0.5);
   doc.line(margin + halfW, y + 10, margin + halfW, y + scoreBoxH - 10);
 
-  // Right half: correct count /25
+  // Right half: correct count /20
   doc.setFont("helvetica", "bold");
   doc.setFontSize(10);
   doc.setTextColor(45, 122, 58);
@@ -242,7 +242,7 @@ function generatePDFReport() {
   const corrStrW = doc.getTextWidth(String(data.correct));
   doc.setFontSize(12);
   doc.setTextColor(120, 120, 120);
-  doc.text(" / 25 questions", margin + halfW + 16 + corrStrW + 4, y + 48);
+  doc.text(" / 20 questions", margin + halfW + 16 + corrStrW + 4, y + 48);
 
   doc.setTextColor(0, 0, 0);
   y += scoreBoxH + 14;
@@ -271,7 +271,7 @@ function generatePDFReport() {
   }
 
   // ============================================================
-  // 4) ANSWER BREAKDOWN TABLE (5 cols x 6 rows = 30 cells)
+  // 4) ANSWER BREAKDOWN TABLE (5 cols x 4 rows = 20 cells for 20 MC questions)
   // ============================================================
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
@@ -401,31 +401,37 @@ function generatePDFReport() {
   doc.setTextColor(0, 0, 0);
   y += 16;
 
-  // Per-problem helper accessors
+  // Per-problem helper accessors (4 coding problems: indices 0..3)
   function getStudentCode(i) {
     if (i === 0) return data.code1 || "(No code submitted)";
     if (i === 1) return data.code2 || "(No code submitted)";
-    return data.code3 || "(No code submitted)";
+    if (i === 2) return data.code3 || "(No code submitted)";
+    return data.code4 || "(No code submitted)";
   }
   function getStarter(i) {
     if (i === 0) return data.starter1 || "";
     if (i === 1) return data.starter2 || "";
-    return data.starter3 || "";
+    if (i === 2) return data.starter3 || "";
+    return data.starter4 || "";
   }
   function getMaxPoints(i) {
-    if (i === 0) return data.max1 || 15;
+    // Defaults: 10 / 15 / 15 / 20 (matches new exam format)
+    if (i === 0) return data.max1 || 10;
     if (i === 1) return data.max2 || 15;
-    return data.max3 || 20;
+    if (i === 2) return data.max3 || 15;
+    return data.max4 || 20;
   }
   function getLastRun(i) {
     if (i === 0) return data.lastRun1;
     if (i === 1) return data.lastRun2;
-    return data.lastRun3;
+    if (i === 2) return data.lastRun3;
+    return data.lastRun4;
   }
   function getRunCount(i) {
     if (i === 0) return data.runCount1 || 0;
     if (i === 1) return data.runCount2 || 0;
-    return data.runCount3 || 0;
+    if (i === 2) return data.runCount3 || 0;
+    return data.runCount4 || 0;
   }
   function getProblemTitleEn(i) {
     const p =
@@ -483,7 +489,7 @@ function generatePDFReport() {
   }
 
   // Each coding problem: problem-title row → requirements bullets → full-width student code → Last Run block
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 4; i++) {
     checkPage(80);
 
     // Problem title row (bilingual), right-aligned max-points pill
@@ -952,26 +958,27 @@ function generatePDFReport() {
   }
 
   // Layout:
-  //   Row 1: Problem 1 (/15)  |  Problem 2 (/15)  |  Problem 3 (/20)  (three side-by-side fields)
+  //   Row 1: Problem 1 (/10) | Problem 2 (/15) | Problem 3 (/15) | Problem 4 (/20)  (4 boxes side-by-side)
   //   Row 2: Comments (wide multiline field)
-  //   Row 3: MC (auto, read-only)  |  Total coding (/50, editable)  |  Final grade (/100, editable)
-  //   Row 4: Graded by  |  Date
+  //   Row 3: MC (auto, read-only) | Total coding (/60, editable) | Final grade (/100, editable)
+  //   Row 4: Graded by | Date
   doc.setTextColor(0, 0, 0);
 
-  // Row 1: three score boxes
-  const thirdColW = (contentW - 20) / 3;
-  const thirdCol1X = margin;
-  const thirdCol2X = margin + thirdColW + 10;
-  const thirdCol3X = margin + 2 * thirdColW + 20;
+  // Row 1: four score boxes
+  const quarterW = (contentW - 30) / 4;  // 4 columns with 3 gaps of 10
+  const quarter1X = margin;
+  const quarter2X = margin + quarterW + 10;
+  const quarter3X = margin + 2 * quarterW + 20;
+  const quarter4X = margin + 3 * quarterW + 30;
   const smallH = 28;
 
   let bottomY;
   bottomY = addFormField(
-    "Coding Problem 1 (out of 15)",
-    "1-Kodlash masalasi (15 dan)",
-    thirdCol1X,
+    "Coding Problem 1 (out of 10)",
+    "1-Kodlash masalasi (10 dan)",
+    quarter1X,
     y,
-    thirdColW,
+    quarterW,
     smallH,
     "coding1_score",
     "",
@@ -980,22 +987,33 @@ function generatePDFReport() {
   addFormField(
     "Coding Problem 2 (out of 15)",
     "2-Kodlash masalasi (15 dan)",
-    thirdCol2X,
+    quarter2X,
     y,
-    thirdColW,
+    quarterW,
     smallH,
     "coding2_score",
     "",
     false,
   );
   addFormField(
-    "Coding Problem 3 (out of 20)",
-    "3-Kodlash masalasi (20 dan)",
-    thirdCol3X,
+    "Coding Problem 3 (out of 15)",
+    "3-Kodlash masalasi (15 dan)",
+    quarter3X,
     y,
-    thirdColW,
+    quarterW,
     smallH,
     "coding3_score",
+    "",
+    false,
+  );
+  addFormField(
+    "Coding Problem 4 (out of 20)",
+    "4-Kodlash masalasi (20 dan)",
+    quarter4X,
+    y,
+    quarterW,
+    smallH,
+    "coding4_score",
     "",
     false,
   );
@@ -1039,15 +1057,15 @@ function generatePDFReport() {
   doc.setFontSize(14);
   doc.setTextColor(30, 58, 95);
   doc.text(
-    String(data.mcScore) + " / 50",
+    String(data.mcScore) + " / 40",
     margin + 10,
     y + 28 + smallH / 2 + 5,
   );
 
-  // Middle — Total coding (editable, /50)
+  // Middle — Total coding (editable, /60)
   addFormField(
-    "Total coding score (out of 50)",
-    "Jami kodlash ballari (50 dan)",
+    "Total coding score (out of 60)",
+    "Jami kodlash ballari (60 dan)",
     margin + summary3W + 10,
     y,
     summary3W,
