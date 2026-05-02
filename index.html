@@ -13,17 +13,29 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/styles.css?v=20260422o" />
+    <link rel="stylesheet" href="css/styles.css?v=20260502a" />
     <!-- Firebase SDK (compat build for no-bundler vanilla JS) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
-    <script src="js/firebase-config.js?v=20260422o"></script>
-    <script src="js/firebase-client.js?v=20260422o"></script>
+    <script src="js/firebase-config.js?v=20260502a"></script>
+    <script src="js/firebase-client.js?v=20260502a"></script>
   </head>
   <body>
     <div class="wrap">
+      <!-- Language Switcher -->
+      <div class="lang-switcher" role="region" aria-label="Language switcher">
+        <label for="langSwitcher">
+          <span class="lang-icon" aria-hidden="true">🌐</span>
+          Language:
+        </label>
+        <select id="langSwitcher" aria-label="Choose secondary language">
+          <option value="uz">English &amp; Uzbek</option>
+          <option value="ru">English &amp; Russian</option>
+        </select>
+      </div>
+
       <section id="welcome">
         <!-- NPUU Logo Block -->
         <div class="logo-block">
@@ -71,16 +83,16 @@
 
         <div class="meta-grid">
           <div class="meta-item m1">
-            <div class="k">Multiple Choice<br />Testlar</div>
-            <div class="v">25</div>
+            <div class="k">Multiple Choice<br /><span class="uz">Testlar</span><span class="ru">Тесты</span></div>
+            <div class="v">20</div>
           </div>
           <div class="meta-item m2">
-            <div class="k">Coding Problems<br />Kodlash bo'yicha masalalar</div>
-            <div class="v">3</div>
+            <div class="k">Coding Problems<br /><span class="uz">Kodlash bo'yicha masalalar</span><span class="ru">Задачи по программированию</span></div>
+            <div class="v">4</div>
           </div>
           <div class="meta-item m3">
-            <div class="k">Exam duration<br />Imtihon uchun ajratilgan vaqt</div>
-            <div class="v">90 <span class="v-unit">mins</span></div>
+            <div class="k">Exam duration<br /><span class="uz">Imtihon uchun ajratilgan vaqt</span><span class="ru">Время на экзамен</span></div>
+            <div class="v">100 <span class="v-unit">mins</span></div>
           </div>
         </div>
 
@@ -89,30 +101,38 @@
             <span class="eg-icon" aria-hidden="true">📋</span>
             <div class="eg-title">
               <strong>Exam Guide</strong>
-              <span class="eg-title-uz">Imtihon Yo'riqnomasi</span>
+              <span class="eg-title-uz uz">Imtihon Yo'riqnomasi</span>
+              <span class="eg-title-ru ru">Инструкция к экзамену</span>
             </div>
           </div>
           <ul>
             <li>
-              <b>Total:</b> 25 multiple-choice (50 pts) + 3 coding problems (15
-              + 15 + 20 = 50 pts) = 100 points.
+              <b>Total:</b> 20 multiple-choice (40 pts) + 4 coding problems (10 + 15 + 15 + 20 = 60 pts) = 100 points.
               <span class="uz"
-                >Jami: 25 ta test (50 ball) + 3 ta kodlash masalasi (15 + 15 +
-                20 = 50 ball) = 100 ball.</span
+                >Jami: 20 ta test (40 ball) + 4 ta kodlash masalasi (10 + 15 + 15 + 20 = 60 ball) = 100 ball.</span
+              >
+              <span class="ru"
+                >Итого: 20 тестов (40 баллов) + 4 задачи по программированию (10 + 15 + 15 + 20 = 60 баллов) = 100 баллов.</span
               >
             </li>
             <li>
-              You have <b>90 minutes</b>. The timer appears top-right and
+              You have <b>100 minutes</b>. The timer appears top-right and
               auto-submits at 00:00.
               <span class="uz"
-                >Sizga <b>90 daqiqa</b> vaqt beriladi. Taymer yuqori-o'ngda
+                >Sizga <b>100 daqiqa</b> vaqt beriladi. Taymer yuqori-o'ngda
                 ko'rinadi va 00:00 da avtomatik yuboriladi.</span
+              >
+              <span class="ru"
+                >У вас <b>100 минут</b>. Таймер отображается справа сверху, при 00:00 работа отправляется автоматически.</span
               >
             </li>
             <li>
               Each multiple-choice question has exactly one correct answer.
               <span class="uz"
                 >Har bir test savolida aniq bitta to'g'ri javob bor.</span
+              >
+              <span class="ru"
+                >У каждого тестового вопроса ровно один правильный ответ.</span
               >
             </li>
             <li class="rule-critical">
@@ -122,6 +142,9 @@
                 >Brauzer yorliqlarini almashtirmang yoki boshqa oynalarni
                 ochmang. Almashtirishlar qayd etiladi.</span
               >
+              <span class="ru"
+                >НЕ переключайте вкладки браузера и не открывайте другие окна. Переключения фиксируются и отмечаются.</span
+              >
             </li>
             <li class="rule-critical">
               Copy-paste and right-click are <b>disabled</b>. Write your code
@@ -129,6 +152,9 @@
               <span class="uz"
                 >Nusxa ko'chirish va o'ng-tugmacha o'chirilgan. Kodingizni
                 o'zingiz yozing.</span
+              >
+              <span class="ru"
+                >Копирование-вставка и правая кнопка мыши отключены. Пишите код самостоятельно.</span
               >
             </li>
             <li>
@@ -139,6 +165,9 @@
                 saqlanadi. Avto-saqlash muvaffaqiyatsiz bo'lsa, zaxira Google
                 Form ko'rsatiladi.</span
               >
+              <span class="ru"
+                >После нажатия «Отправить» ваша работа автоматически сохраняется на сервер. Если автосохранение не сработает, появится резервная Google-форма.</span
+              >
             </li>
           </ul>
         </div>
@@ -148,6 +177,7 @@
           <h3>
             Select Your Exam Version
             <span class="uz">Imtihon Versiyangizni Tanlang</span>
+            <span class="ru">Выберите вашу версию экзамена</span>
           </h3>
           <div class="version-grid">
             <div class="version-card" data-version="A">
@@ -166,6 +196,7 @@
           <h3>
             Student Information
             <span class="uz">Talaba Ma'lumoti</span>
+            <span class="ru">Информация о студенте</span>
           </h3>
           <hr />
 
@@ -173,7 +204,7 @@
             <label>Group <span class="req">*</span></label>
             <select id="studentGroup">
               <option value="">
-                -- Select your group / Guruhingizni tanlang --
+                -- Select your group / Guruhingizni tanlang / Выберите группу --
               </option>
               <option value="FM1">FM1</option>
               <option value="FM2">FM2</option>
@@ -205,8 +236,7 @@
               autocomplete="off"
             />
             <div class="hint" id="idHint">
-              Student ID must be exactly 6 digits. / Talaba ID aynan 6 raqamdan
-              iborat bo'lishi kerak.
+              Student ID must be exactly 6 digits. <span class="uz">Talaba ID aynan 6 raqamdan iborat bo'lishi kerak.</span><span class="ru">ID студента должен содержать ровно 6 цифр.</span>
             </div>
           </div>
 
@@ -240,6 +270,9 @@
             >Master rejimi faol — jadval tekshiruvi chetlab o'tilmoqda. Faqat
             imtihon kunida Firebase ishlamasa foydalaning.</span
           >
+          <span class="ru"
+            >Активирован режим Master — проверка расписания пропущена. Используйте только в случае недоступности Firebase в день экзамена.</span
+          >
         </div>
 
         <!-- Schedule status panel (populated after group is selected) -->
@@ -251,7 +284,7 @@
         >
           <div class="sp-head">
             <div class="sp-label">
-              Exam Window · Imtihon Oynasi
+              Exam Window <span class="uz">· Imtihon Oynasi</span><span class="ru">· Окно экзамена</span>
               <span class="sp-dot" id="spDot"></span>
             </div>
             <div class="sp-status" id="spStatus">Checking…</div>
@@ -296,7 +329,7 @@
           <div class="ic-body">
             <div class="ic-title">Instructor Login</div>
             <div class="ic-sub">
-              O'qituvchilar uchun kirish · Manage exam schedules &amp;
+              <span class="uz">O'qituvchilar uchun kirish · </span><span class="ru">Вход для преподавателей · </span>Manage exam schedules &amp;
               submissions
             </div>
           </div>
@@ -313,6 +346,7 @@
           <h3 id="modal-title">
             Title
             <span class="uz" id="modal-title-uz">Sarlavha</span>
+            <span class="ru" id="modal-title-ru">Заголовок</span>
           </h3>
           <p id="modal-text">Message</p>
           <div
@@ -333,10 +367,11 @@
     </div>
 
     <!-- Load scripts -->
-    <script src="js/questions/question-bank.js"></script>
-    <script src="js/questions/coding-bank.js"></script>
-    <script src="js/questions/version-a.js"></script>
-    <script src="js/questions/version-b.js"></script>
-    <script src="js/app.js?v=20260422o"></script>
+    <script src="js/questions/question-bank.js?v=20260502a"></script>
+    <script src="js/questions/question-bank-new.js?v=20260502a"></script>
+    <script src="js/questions/coding-bank.js?v=20260502a"></script>
+    <script src="js/questions/version-a.js?v=20260502a"></script>
+    <script src="js/questions/version-b.js?v=20260502a"></script>
+    <script src="js/app.js?v=20260502a"></script>
   </body>
 </html>
