@@ -1,5 +1,5 @@
 // ===============================================================
-// MC Question Bank — 98 trilingual questions (EN / UZ / RU)
+// MC Question Bank - 98 trilingual questions (EN / UZ / RU)
 // May 2026 update:
 //   - 2 ASCII questions removed on instructor request
 //   - Russian translation added to every question and option
@@ -32,7 +32,7 @@ window.MC_BANK = [
       { en: "MAX can change any time", uz: "MAX istalgan vaqtda o'zgarishi mumkin", ru: "MAX можно изменить в любое время" },
       { en: "MAX is 100 and cannot be changed", uz: "MAX 100 ga teng va o'zgartirib bo'lmaydi", ru: "MAX равен 100 и не может быть изменён" },
       { en: "MAX is deleted later", uz: "MAX keyinroq o'chiriladi", ru: "MAX будет удалён позже" },
-      { en: "MAX is a function name", uz: "MAX funksiya nomi", ru: "MAX — это имя функции" },
+      { en: "MAX is a function name", uz: "MAX funksiya nomi", ru: "MAX - это имя функции" },
     ],
     correct: 1,
   },
@@ -87,7 +87,7 @@ window.MC_BANK = [
   {
     en: "Which is the BEST type for a person's age (0-120)?",
     uz: "Inson yoshi (0-120) uchun ENG YAXSHI tur qaysi?",
-    ru: "Какой тип ЛУЧШЕ всего подходит для возраста человека (0–120)?",
+    ru: "Какой тип ЛУЧШЕ всего подходит для возраста человека (0-120)?",
     opts: [
       { en: "double", uz: "double", ru: "double" },
       { en: "string", uz: "string", ru: "string" },
@@ -431,7 +431,7 @@ window.MC_BANK = [
     uz: "Xatolik nimada? <code>for (int i = 0; i < 5; ) { cout << i; }</code>",
     ru: "В чём ошибка? <code>for (int i = 0; i < 5; ) { cout << i; }</code>",
     opts: [
-      { en: "No update — infinite loop", uz: "Yangilash yo'q — cheksiz sikl", ru: "Нет обновления — бесконечный цикл" },
+      { en: "No update - infinite loop", uz: "Yangilash yo'q - cheksiz sikl", ru: "Нет обновления - бесконечный цикл" },
       { en: "Wrong syntax", uz: "Noto'g'ri sintaksis", ru: "Неверный синтаксис" },
       { en: "Cannot use cout", uz: "cout ni ishlatib bo'lmaydi", ru: "Нельзя использовать cout" },
       { en: "Nothing wrong", uz: "Xatolik yo'q", ru: "Ошибки нет" },
@@ -578,7 +578,7 @@ window.MC_BANK = [
     ru: "Может ли функция НЕ иметь параметров?",
     opts: [
       { en: "No, must have at least 1", uz: "Yo'q, kamida 1 ta bo'lishi kerak", ru: "Нет, должен быть хотя бы 1" },
-      { en: "Yes — declare with empty ()", uz: "Ha — bo'sh () bilan e'lon qiling", ru: "Да — объявить с пустыми ()" },
+      { en: "Yes - declare with empty ()", uz: "Ha - bo'sh () bilan e'lon qiling", ru: "Да - объявить с пустыми ()" },
       { en: "Only main can", uz: "Faqat main qila oladi", ru: "Только main может" },
       { en: "No, must have 2+", uz: "Yo'q, 2+ bo'lishi kerak", ru: "Нет, должно быть 2+" },
     ],
@@ -663,7 +663,7 @@ window.MC_BANK = [
     uz: "Xatolik nimada? <code>int a[5]; a[5] = 10;</code>",
     ru: "В чём ошибка? <code>int a[5]; a[5] = 10;</code>",
     opts: [
-      { en: "Out of bounds — valid indices are 0-4", uz: "Chegaradan chiqgan — yaroqli 0-4", ru: "Вне границ — допустимы 0–4" },
+      { en: "Out of bounds - valid indices are 0-4", uz: "Chegaradan chiqgan - yaroqli 0-4", ru: "Вне границ - допустимы 0-4" },
       { en: "Wrong syntax", uz: "Noto'g'ri sintaksis", ru: "Неверный синтаксис" },
       { en: "Need 'new'", uz: "'new' kerak", ru: "Нужно 'new'" },
       { en: "Nothing wrong", uz: "Xatolik yo'q", ru: "Ошибки нет" },
