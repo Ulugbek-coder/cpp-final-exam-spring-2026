@@ -544,6 +544,15 @@ async function generatePDFReport() {
       ? p.title_uz
       : (i + 1) + "-Kodlash Masalasi";
   }
+  function getProblemTitleRu(i) {
+    const p =
+      data.codingProblems && data.codingProblems[i]
+        ? data.codingProblems[i]
+        : null;
+    return p
+      ? p.title_ru || ""
+      : "";
+  }
   function getProblemRequirementsEn(i) {
     const p =
       data.codingProblems && data.codingProblems[i]
@@ -557,6 +566,13 @@ async function generatePDFReport() {
         ? data.codingProblems[i]
         : null;
     return p && p.uz ? p.uz : [];
+  }
+  function getProblemRequirementsRu(i) {
+    const p =
+      data.codingProblems && data.codingProblems[i]
+        ? data.codingProblems[i]
+        : null;
+    return p && p.ru ? p.ru : [];
   }
   // Look up sample solution by problem title. Returns null if not found.
   //
@@ -585,7 +601,7 @@ async function generatePDFReport() {
   for (let i = 0; i < 4; i++) {
     checkPage(80);
 
-    // Problem title row (bilingual), right-aligned max-points pill
+    // Problem title row (bilingual+Russian), right-aligned max-points pill
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
     doc.setTextColor(30, 58, 95);
@@ -610,45 +626,95 @@ async function generatePDFReport() {
     doc.setTextColor(110, 110, 110);
     doc.text(getProblemTitleUz(i), margin, y + 22);
     y += 32;
+    // Russian subtitle (Cyrillic font) under the Uzbek subtitle
+    const titleRu = getProblemTitleRu(i);
+    if (titleRu) {
+      withCyr("normal", function () {
+        doc.setFontSize(9.5);
+        doc.setTextColor(110, 110, 110);
+        doc.text(titleRu, margin, y);
+      });
+      y += 14;
+    }
 
-    // Problem description + requirements bullets (English, then Uzbek) — gives
-    // instructor the full spec to grade against without needing a separate
-    // reference solution. Black text per instructor request.
+    // Problem description + requirements bullets (English, Uzbek, Russian).
+    // Gives the instructor the full spec to grade against. Each bullet is
+    // page-bounds-checked so trilingual text never overflows under the
+    // page footer.
     const reqsEn = getProblemRequirementsEn(i);
     const reqsUz = getProblemRequirementsUz(i);
-    if (reqsEn.length > 0) {
+    const reqsRu = getProblemRequirementsRu(i);
+
+    // Helper: render a sequence of bullets with the supplied font/style,
+    // checking the page bottom before EACH wrapped line so we never overflow.
+    function renderBullets(bullets, lineHeight, options) {
+      options = options || {};
+      bullets.forEach(function (r) {
+        const plain = String(r).replace(/<[^>]+>/g, "");
+        // First decide font based on options.cyrillic
+        if (options.cyrillic) {
+          withCyr(options.bold ? "bold" : "normal", function () {
+            doc.setFontSize(options.size || 9);
+          });
+        } else {
+          doc.setFont(
+            "helvetica",
+            options.italic ? "italic" : options.bold ? "bold" : "normal",
+          );
+          doc.setFontSize(options.size || 9);
+        }
+        doc.setTextColor(0, 0, 0);
+        const lines = doc.splitTextToSize("• " + plain, contentW - 12);
+        lines.forEach(function (ln) {
+          // Page break protection: leave 32pt of room for the page footer
+          checkPage(lineHeight + 32);
+          // Re-apply font after a possible page break
+          if (options.cyrillic) {
+            if (hasCyrFont) {
+              doc.setFont("NotoSans", options.bold ? "bold" : "normal");
+            } else {
+              doc.setFont("helvetica", options.bold ? "bold" : "normal");
+            }
+          } else {
+            doc.setFont(
+              "helvetica",
+              options.italic ? "italic" : options.bold ? "bold" : "normal",
+            );
+          }
+          doc.setFontSize(options.size || 9);
+          doc.setTextColor(0, 0, 0);
+          doc.text(ln, margin + 4, y + 8);
+          y += lineHeight;
+        });
+      });
+    }
+
+    if (reqsEn.length > 0 || reqsUz.length > 0 || reqsRu.length > 0) {
+      // Section header
+      checkPage(20);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9.5);
       doc.setTextColor(0, 0, 0);
-      doc.text("Problem Requirements / Masala Talablari:", margin, y + 8);
+      doc.text("Problem Requirements / Masala Talablari / Требования к задаче:", margin, y + 8);
       y += 14;
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
-      doc.setTextColor(0, 0, 0);
-      reqsEn.forEach(function (r) {
-        // Strip HTML tags for the PDF
-        const plain = String(r).replace(/<[^>]+>/g, "");
-        const lines = doc.splitTextToSize("• " + plain, contentW - 12);
-        lines.forEach(function (ln) {
-          doc.text(ln, margin + 4, y + 8);
-          y += 11;
-        });
-      });
-      // Uzbek version below, still in black but italic for differentiation
+
+      // English bullets — normal weight, 9pt
+      if (reqsEn.length > 0) {
+        renderBullets(reqsEn, 11, { size: 9 });
+      }
+
+      // Uzbek bullets — italic, smaller (8.5pt)
       if (reqsUz.length > 0) {
         y += 3;
-        doc.setFont("helvetica", "italic");
-        doc.setFontSize(8.5);
-        doc.setTextColor(0, 0, 0);
-        reqsUz.forEach(function (r) {
-          const plain = String(r).replace(/<[^>]+>/g, "");
-          const lines = doc.splitTextToSize("• " + plain, contentW - 12);
-          lines.forEach(function (ln) {
-            doc.text(ln, margin + 4, y + 8);
-            y += 10;
-          });
-        });
+        renderBullets(reqsUz, 10, { size: 8.5, italic: true });
       }
+
+      // Russian bullets — Cyrillic font, normal weight, 8.5pt
+      if (reqsRu.length > 0) {
+        y += 3;
+        renderBullets(reqsRu, 10, { size: 8.5, cyrillic: true });
+      }
+
       y += 6;
     }
 
