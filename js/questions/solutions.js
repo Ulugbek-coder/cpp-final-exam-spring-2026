@@ -5,7 +5,7 @@
 // with the student's submitted code in the exam PDF so the
 // instructor can grade by visual comparison.
 //
-// These are REFERENCE solutions — one reasonable way to solve each
+// These are REFERENCE solutions - one reasonable way to solve each
 // problem. The instructor's grading should still account for valid
 // alternative approaches the student may have used.
 // ===============================================================
@@ -502,7 +502,7 @@ int main() {
     return 0;
 }`,
 
-  "Sort Array in Ascending Order (Partial)": `#include <iostream>
+  "Sort Array in Ascending Order": `#include <iostream>
 using namespace std;
 
 int main() {
@@ -634,7 +634,7 @@ int main() {
     return 0;
 }`,
 
-  // ---------- easy_medium_starter (15) — added May 2026 ----------
+  // ---------- easy_medium_starter (15) - added May 2026 ----------
 
   "Print Multiples of 3 up to N": `#include <iostream>
 using namespace std;
