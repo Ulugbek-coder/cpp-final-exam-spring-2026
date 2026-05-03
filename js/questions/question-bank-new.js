@@ -1,8 +1,9 @@
 // ===============================================================
-// MC Question Bank — NEW SET (May 2026)
-// 30 bilingual questions in EN / UZ / RU :
-//   - 20 "What is the output?" code-snippet questions (data types,
-//     operators, control flow, loops, functions, arrays, strings)
+// MC Question Bank - NEW SET (May 2026)
+// 30 trilingual questions in EN / UZ / RU :
+//   - 20 "What will be the output of the following C++ code snippet?"
+//     code-snippet questions (data types, operators, control flow,
+//     loops, functions, arrays, strings)
 //   - 10 questions on POINTERS in C++
 //
 // At exam time, 5 of these are picked (combined with 15 from the
@@ -12,16 +13,16 @@
 
 window.MC_BANK_NEW = [
   // =================================================================
-  // PART A — 20 CODE-SNIPPET OUTPUT QUESTIONS
+  // PART A - 20 CODE-SNIPPET OUTPUT QUESTIONS
   // (cover: data types, operators, control flow, loops, functions,
-  //  arrays, strings — all from already-taught lecture topics)
+  //  arrays, strings - all from already-taught lecture topics)
   // =================================================================
 
   // -- (1) integer division
   {
-    en: "What is the output?<br><pre><code>int a = 17, b = 5;\ncout &lt;&lt; a / b;</code></pre>",
-    uz: "Natija nima?<br><pre><code>int a = 17, b = 5;\ncout &lt;&lt; a / b;</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>int a = 17, b = 5;\ncout &lt;&lt; a / b;</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>int a = 17, b = 5;\ncout &lt;&lt; a / b;</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>int a = 17, b = 5;\ncout &lt;&lt; a / b;</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>int a = 17, b = 5;\ncout &lt;&lt; a / b;</code></pre>",
     opts: [
       { en: "3", uz: "3", ru: "3" },
       { en: "3.4", uz: "3.4", ru: "3.4" },
@@ -32,9 +33,9 @@ window.MC_BANK_NEW = [
   },
   // -- (2) modulo
   {
-    en: "What is the output?<br><pre><code>cout &lt;&lt; (23 % 4);</code></pre>",
-    uz: "Natija nima?<br><pre><code>cout &lt;&lt; (23 % 4);</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>cout &lt;&lt; (23 % 4);</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>cout &lt;&lt; (23 % 4);</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>cout &lt;&lt; (23 % 4);</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>cout &lt;&lt; (23 % 4);</code></pre>",
     opts: [
       { en: "5", uz: "5", ru: "5" },
       { en: "3", uz: "3", ru: "3" },
@@ -45,9 +46,9 @@ window.MC_BANK_NEW = [
   },
   // -- (3) operator precedence
   {
-    en: "What is the output?<br><pre><code>cout &lt;&lt; 2 + 3 * 4;</code></pre>",
-    uz: "Natija nima?<br><pre><code>cout &lt;&lt; 2 + 3 * 4;</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>cout &lt;&lt; 2 + 3 * 4;</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>cout &lt;&lt; 2 + 3 * 4;</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>cout &lt;&lt; 2 + 3 * 4;</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>cout &lt;&lt; 2 + 3 * 4;</code></pre>",
     opts: [
       { en: "20", uz: "20", ru: "20" },
       { en: "11", uz: "11", ru: "11" },
@@ -58,9 +59,9 @@ window.MC_BANK_NEW = [
   },
   // -- (4) post-increment in expression
   {
-    en: "What is the output?<br><pre><code>int x = 5;\ncout &lt;&lt; x++ &lt;&lt; \" \" &lt;&lt; x;</code></pre>",
-    uz: "Natija nima?<br><pre><code>int x = 5;\ncout &lt;&lt; x++ &lt;&lt; \" \" &lt;&lt; x;</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>int x = 5;\ncout &lt;&lt; x++ &lt;&lt; \" \" &lt;&lt; x;</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>int x = 5;\ncout &lt;&lt; x++ &lt;&lt; \" \" &lt;&lt; x;</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>int x = 5;\ncout &lt;&lt; x++ &lt;&lt; \" \" &lt;&lt; x;</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>int x = 5;\ncout &lt;&lt; x++ &lt;&lt; \" \" &lt;&lt; x;</code></pre>",
     opts: [
       { en: "5 6", uz: "5 6", ru: "5 6" },
       { en: "6 6", uz: "6 6", ru: "6 6" },
@@ -71,9 +72,9 @@ window.MC_BANK_NEW = [
   },
   // -- (5) compound assignment
   {
-    en: "What is the output?<br><pre><code>int n = 10;\nn += 5;\nn *= 2;\ncout &lt;&lt; n;</code></pre>",
-    uz: "Natija nima?<br><pre><code>int n = 10;\nn += 5;\nn *= 2;\ncout &lt;&lt; n;</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>int n = 10;\nn += 5;\nn *= 2;\ncout &lt;&lt; n;</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>int n = 10;\nn += 5;\nn *= 2;\ncout &lt;&lt; n;</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>int n = 10;\nn += 5;\nn *= 2;\ncout &lt;&lt; n;</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>int n = 10;\nn += 5;\nn *= 2;\ncout &lt;&lt; n;</code></pre>",
     opts: [
       { en: "25", uz: "25", ru: "25" },
       { en: "20", uz: "20", ru: "20" },
@@ -84,9 +85,9 @@ window.MC_BANK_NEW = [
   },
   // -- (6) if-else simple
   {
-    en: "What is the output?<br><pre><code>int a = 7;\nif (a % 2 == 0) cout &lt;&lt; \"even\";\nelse cout &lt;&lt; \"odd\";</code></pre>",
-    uz: "Natija nima?<br><pre><code>int a = 7;\nif (a % 2 == 0) cout &lt;&lt; \"even\";\nelse cout &lt;&lt; \"odd\";</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>int a = 7;\nif (a % 2 == 0) cout &lt;&lt; \"even\";\nelse cout &lt;&lt; \"odd\";</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>int a = 7;\nif (a % 2 == 0) cout &lt;&lt; \"even\";\nelse cout &lt;&lt; \"odd\";</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>int a = 7;\nif (a % 2 == 0) cout &lt;&lt; \"even\";\nelse cout &lt;&lt; \"odd\";</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>int a = 7;\nif (a % 2 == 0) cout &lt;&lt; \"even\";\nelse cout &lt;&lt; \"odd\";</code></pre>",
     opts: [
       { en: "even", uz: "even", ru: "even" },
       { en: "0", uz: "0", ru: "0" },
@@ -97,9 +98,9 @@ window.MC_BANK_NEW = [
   },
   // -- (7) if-else if-else
   {
-    en: "What is the output?<br><pre><code>int s = 75;\nif (s &gt;= 90) cout &lt;&lt; \"A\";\nelse if (s &gt;= 70) cout &lt;&lt; \"B\";\nelse cout &lt;&lt; \"C\";</code></pre>",
-    uz: "Natija nima?<br><pre><code>int s = 75;\nif (s &gt;= 90) cout &lt;&lt; \"A\";\nelse if (s &gt;= 70) cout &lt;&lt; \"B\";\nelse cout &lt;&lt; \"C\";</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>int s = 75;\nif (s &gt;= 90) cout &lt;&lt; \"A\";\nelse if (s &gt;= 70) cout &lt;&lt; \"B\";\nelse cout &lt;&lt; \"C\";</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>int s = 75;\nif (s &gt;= 90) cout &lt;&lt; \"A\";\nelse if (s &gt;= 70) cout &lt;&lt; \"B\";\nelse cout &lt;&lt; \"C\";</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>int s = 75;\nif (s &gt;= 90) cout &lt;&lt; \"A\";\nelse if (s &gt;= 70) cout &lt;&lt; \"B\";\nelse cout &lt;&lt; \"C\";</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>int s = 75;\nif (s &gt;= 90) cout &lt;&lt; \"A\";\nelse if (s &gt;= 70) cout &lt;&lt; \"B\";\nelse cout &lt;&lt; \"C\";</code></pre>",
     opts: [
       { en: "A", uz: "A", ru: "A" },
       { en: "C", uz: "C", ru: "C" },
@@ -110,9 +111,9 @@ window.MC_BANK_NEW = [
   },
   // -- (8) for loop sum
   {
-    en: "What is the output?<br><pre><code>int sum = 0;\nfor (int i = 1; i &lt;= 4; i++) sum += i;\ncout &lt;&lt; sum;</code></pre>",
-    uz: "Natija nima?<br><pre><code>int sum = 0;\nfor (int i = 1; i &lt;= 4; i++) sum += i;\ncout &lt;&lt; sum;</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>int sum = 0;\nfor (int i = 1; i &lt;= 4; i++) sum += i;\ncout &lt;&lt; sum;</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>int sum = 0;\nfor (int i = 1; i &lt;= 4; i++) sum += i;\ncout &lt;&lt; sum;</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>int sum = 0;\nfor (int i = 1; i &lt;= 4; i++) sum += i;\ncout &lt;&lt; sum;</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>int sum = 0;\nfor (int i = 1; i &lt;= 4; i++) sum += i;\ncout &lt;&lt; sum;</code></pre>",
     opts: [
       { en: "10", uz: "10", ru: "10" },
       { en: "9", uz: "9", ru: "9" },
@@ -123,9 +124,9 @@ window.MC_BANK_NEW = [
   },
   // -- (9) while loop count
   {
-    en: "What is the output?<br><pre><code>int i = 0, c = 0;\nwhile (i &lt; 6) { c++; i += 2; }\ncout &lt;&lt; c;</code></pre>",
-    uz: "Natija nima?<br><pre><code>int i = 0, c = 0;\nwhile (i &lt; 6) { c++; i += 2; }\ncout &lt;&lt; c;</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>int i = 0, c = 0;\nwhile (i &lt; 6) { c++; i += 2; }\ncout &lt;&lt; c;</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>int i = 0, c = 0;\nwhile (i &lt; 6) { c++; i += 2; }\ncout &lt;&lt; c;</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>int i = 0, c = 0;\nwhile (i &lt; 6) { c++; i += 2; }\ncout &lt;&lt; c;</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>int i = 0, c = 0;\nwhile (i &lt; 6) { c++; i += 2; }\ncout &lt;&lt; c;</code></pre>",
     opts: [
       { en: "2", uz: "2", ru: "2" },
       { en: "4", uz: "4", ru: "4" },
@@ -136,9 +137,9 @@ window.MC_BANK_NEW = [
   },
   // -- (10) for loop with break
   {
-    en: "What is the output?<br><pre><code>for (int i = 1; i &lt;= 10; i++) {\n    if (i == 4) break;\n    cout &lt;&lt; i;\n}</code></pre>",
-    uz: "Natija nima?<br><pre><code>for (int i = 1; i &lt;= 10; i++) {\n    if (i == 4) break;\n    cout &lt;&lt; i;\n}</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>for (int i = 1; i &lt;= 10; i++) {\n    if (i == 4) break;\n    cout &lt;&lt; i;\n}</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>for (int i = 1; i &lt;= 10; i++) {\n    if (i == 4) break;\n    cout &lt;&lt; i;\n}</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>for (int i = 1; i &lt;= 10; i++) {\n    if (i == 4) break;\n    cout &lt;&lt; i;\n}</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>for (int i = 1; i &lt;= 10; i++) {\n    if (i == 4) break;\n    cout &lt;&lt; i;\n}</code></pre>",
     opts: [
       { en: "1234", uz: "1234", ru: "1234" },
       { en: "12345678910", uz: "12345678910", ru: "12345678910" },
@@ -149,9 +150,9 @@ window.MC_BANK_NEW = [
   },
   // -- (11) continue in loop
   {
-    en: "What is the output?<br><pre><code>for (int i = 1; i &lt;= 5; i++) {\n    if (i % 2 == 0) continue;\n    cout &lt;&lt; i;\n}</code></pre>",
-    uz: "Natija nima?<br><pre><code>for (int i = 1; i &lt;= 5; i++) {\n    if (i % 2 == 0) continue;\n    cout &lt;&lt; i;\n}</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>for (int i = 1; i &lt;= 5; i++) {\n    if (i % 2 == 0) continue;\n    cout &lt;&lt; i;\n}</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>for (int i = 1; i &lt;= 5; i++) {\n    if (i % 2 == 0) continue;\n    cout &lt;&lt; i;\n}</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>for (int i = 1; i &lt;= 5; i++) {\n    if (i % 2 == 0) continue;\n    cout &lt;&lt; i;\n}</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>for (int i = 1; i &lt;= 5; i++) {\n    if (i % 2 == 0) continue;\n    cout &lt;&lt; i;\n}</code></pre>",
     opts: [
       { en: "12345", uz: "12345", ru: "12345" },
       { en: "135", uz: "135", ru: "135" },
@@ -162,9 +163,9 @@ window.MC_BANK_NEW = [
   },
   // -- (12) nested loop product
   {
-    en: "What is the output?<br><pre><code>int p = 1;\nfor (int i = 1; i &lt;= 3; i++)\n    for (int j = 1; j &lt;= 2; j++)\n        p *= 2;\ncout &lt;&lt; p;</code></pre>",
-    uz: "Natija nima?<br><pre><code>int p = 1;\nfor (int i = 1; i &lt;= 3; i++)\n    for (int j = 1; j &lt;= 2; j++)\n        p *= 2;\ncout &lt;&lt; p;</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>int p = 1;\nfor (int i = 1; i &lt;= 3; i++)\n    for (int j = 1; j &lt;= 2; j++)\n        p *= 2;\ncout &lt;&lt; p;</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>int p = 1;\nfor (int i = 1; i &lt;= 3; i++)\n    for (int j = 1; j &lt;= 2; j++)\n        p *= 2;\ncout &lt;&lt; p;</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>int p = 1;\nfor (int i = 1; i &lt;= 3; i++)\n    for (int j = 1; j &lt;= 2; j++)\n        p *= 2;\ncout &lt;&lt; p;</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>int p = 1;\nfor (int i = 1; i &lt;= 3; i++)\n    for (int j = 1; j &lt;= 2; j++)\n        p *= 2;\ncout &lt;&lt; p;</code></pre>",
     opts: [
       { en: "32", uz: "32", ru: "32" },
       { en: "6", uz: "6", ru: "6" },
@@ -175,9 +176,9 @@ window.MC_BANK_NEW = [
   },
   // -- (13) function returning sum
   {
-    en: "What is the output?<br><pre><code>int f(int a, int b) { return a + b * 2; }\nint main() { cout &lt;&lt; f(3, 4); return 0; }</code></pre>",
-    uz: "Natija nima?<br><pre><code>int f(int a, int b) { return a + b * 2; }\nint main() { cout &lt;&lt; f(3, 4); return 0; }</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>int f(int a, int b) { return a + b * 2; }\nint main() { cout &lt;&lt; f(3, 4); return 0; }</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>int f(int a, int b) { return a + b * 2; }\nint main() { cout &lt;&lt; f(3, 4); return 0; }</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>int f(int a, int b) { return a + b * 2; }\nint main() { cout &lt;&lt; f(3, 4); return 0; }</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>int f(int a, int b) { return a + b * 2; }\nint main() { cout &lt;&lt; f(3, 4); return 0; }</code></pre>",
     opts: [
       { en: "14", uz: "14", ru: "14" },
       { en: "11", uz: "11", ru: "11" },
@@ -188,9 +189,9 @@ window.MC_BANK_NEW = [
   },
   // -- (14) pass-by-value vs original
   {
-    en: "What is the output?<br><pre><code>void g(int x) { x = x + 10; }\nint main() {\n    int a = 5;\n    g(a);\n    cout &lt;&lt; a;\n}</code></pre>",
-    uz: "Natija nima?<br><pre><code>void g(int x) { x = x + 10; }\nint main() {\n    int a = 5;\n    g(a);\n    cout &lt;&lt; a;\n}</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>void g(int x) { x = x + 10; }\nint main() {\n    int a = 5;\n    g(a);\n    cout &lt;&lt; a;\n}</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>void g(int x) { x = x + 10; }\nint main() {\n    int a = 5;\n    g(a);\n    cout &lt;&lt; a;\n}</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>void g(int x) { x = x + 10; }\nint main() {\n    int a = 5;\n    g(a);\n    cout &lt;&lt; a;\n}</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>void g(int x) { x = x + 10; }\nint main() {\n    int a = 5;\n    g(a);\n    cout &lt;&lt; a;\n}</code></pre>",
     opts: [
       { en: "15", uz: "15", ru: "15" },
       { en: "10", uz: "10", ru: "10" },
@@ -201,9 +202,9 @@ window.MC_BANK_NEW = [
   },
   // -- (15) recursive call result
   {
-    en: "What is the output?<br><pre><code>int t(int n) { if (n &lt;= 0) return 0; return n + t(n - 1); }\nint main() { cout &lt;&lt; t(4); }</code></pre>",
-    uz: "Natija nima?<br><pre><code>int t(int n) { if (n &lt;= 0) return 0; return n + t(n - 1); }\nint main() { cout &lt;&lt; t(4); }</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>int t(int n) { if (n &lt;= 0) return 0; return n + t(n - 1); }\nint main() { cout &lt;&lt; t(4); }</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>int t(int n) { if (n &lt;= 0) return 0; return n + t(n - 1); }\nint main() { cout &lt;&lt; t(4); }</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>int t(int n) { if (n &lt;= 0) return 0; return n + t(n - 1); }\nint main() { cout &lt;&lt; t(4); }</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>int t(int n) { if (n &lt;= 0) return 0; return n + t(n - 1); }\nint main() { cout &lt;&lt; t(4); }</code></pre>",
     opts: [
       { en: "10", uz: "10", ru: "10" },
       { en: "4", uz: "4", ru: "4" },
@@ -214,9 +215,9 @@ window.MC_BANK_NEW = [
   },
   // -- (16) array index access
   {
-    en: "What is the output?<br><pre><code>int a[5] = {10, 20, 30, 40, 50};\ncout &lt;&lt; a[3];</code></pre>",
-    uz: "Natija nima?<br><pre><code>int a[5] = {10, 20, 30, 40, 50};\ncout &lt;&lt; a[3];</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>int a[5] = {10, 20, 30, 40, 50};\ncout &lt;&lt; a[3];</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>int a[5] = {10, 20, 30, 40, 50};\ncout &lt;&lt; a[3];</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>int a[5] = {10, 20, 30, 40, 50};\ncout &lt;&lt; a[3];</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>int a[5] = {10, 20, 30, 40, 50};\ncout &lt;&lt; a[3];</code></pre>",
     opts: [
       { en: "30", uz: "30", ru: "30" },
       { en: "50", uz: "50", ru: "50" },
@@ -227,9 +228,9 @@ window.MC_BANK_NEW = [
   },
   // -- (17) sum array via loop
   {
-    en: "What is the output?<br><pre><code>int v[] = {2, 4, 6, 8};\nint s = 0;\nfor (int i = 0; i &lt; 4; i++) s += v[i];\ncout &lt;&lt; s;</code></pre>",
-    uz: "Natija nima?<br><pre><code>int v[] = {2, 4, 6, 8};\nint s = 0;\nfor (int i = 0; i &lt; 4; i++) s += v[i];\ncout &lt;&lt; s;</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>int v[] = {2, 4, 6, 8};\nint s = 0;\nfor (int i = 0; i &lt; 4; i++) s += v[i];\ncout &lt;&lt; s;</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>int v[] = {2, 4, 6, 8};\nint s = 0;\nfor (int i = 0; i &lt; 4; i++) s += v[i];\ncout &lt;&lt; s;</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>int v[] = {2, 4, 6, 8};\nint s = 0;\nfor (int i = 0; i &lt; 4; i++) s += v[i];\ncout &lt;&lt; s;</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>int v[] = {2, 4, 6, 8};\nint s = 0;\nfor (int i = 0; i &lt; 4; i++) s += v[i];\ncout &lt;&lt; s;</code></pre>",
     opts: [
       { en: "20", uz: "20", ru: "20" },
       { en: "16", uz: "16", ru: "16" },
@@ -240,9 +241,9 @@ window.MC_BANK_NEW = [
   },
   // -- (18) string length
   {
-    en: "What is the output?<br><pre><code>string s = \"Hello\";\ncout &lt;&lt; s.length();</code></pre>",
-    uz: "Natija nima?<br><pre><code>string s = \"Hello\";\ncout &lt;&lt; s.length();</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>string s = \"Hello\";\ncout &lt;&lt; s.length();</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>string s = \"Hello\";\ncout &lt;&lt; s.length();</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>string s = \"Hello\";\ncout &lt;&lt; s.length();</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>string s = \"Hello\";\ncout &lt;&lt; s.length();</code></pre>",
     opts: [
       { en: "4", uz: "4", ru: "4" },
       { en: "6", uz: "6", ru: "6" },
@@ -253,9 +254,9 @@ window.MC_BANK_NEW = [
   },
   // -- (19) string concatenation
   {
-    en: "What is the output?<br><pre><code>string a = \"Hi \", b = \"Cpp\";\ncout &lt;&lt; a + b;</code></pre>",
-    uz: "Natija nima?<br><pre><code>string a = \"Hi \", b = \"Cpp\";\ncout &lt;&lt; a + b;</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>string a = \"Hi \", b = \"Cpp\";\ncout &lt;&lt; a + b;</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>string a = \"Hi \", b = \"Cpp\";\ncout &lt;&lt; a + b;</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>string a = \"Hi \", b = \"Cpp\";\ncout &lt;&lt; a + b;</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>string a = \"Hi \", b = \"Cpp\";\ncout &lt;&lt; a + b;</code></pre>",
     opts: [
       { en: "HiCpp", uz: "HiCpp", ru: "HiCpp" },
       { en: "Hi Cpp", uz: "Hi Cpp", ru: "Hi Cpp" },
@@ -266,9 +267,9 @@ window.MC_BANK_NEW = [
   },
   // -- (20) array decrementing index in for
   {
-    en: "What is the output?<br><pre><code>int a[] = {1, 2, 3, 4, 5};\nfor (int i = 4; i &gt;= 2; i--) cout &lt;&lt; a[i];</code></pre>",
-    uz: "Natija nima?<br><pre><code>int a[] = {1, 2, 3, 4, 5};\nfor (int i = 4; i &gt;= 2; i--) cout &lt;&lt; a[i];</code></pre>",
-    ru: "Что выведет программа?<br><pre><code>int a[] = {1, 2, 3, 4, 5};\nfor (int i = 4; i &gt;= 2; i--) cout &lt;&lt; a[i];</code></pre>",
+    en: "What will be the output of the following C++ code snippet?<br><pre><code>int a[] = {1, 2, 3, 4, 5};\nfor (int i = 4; i &gt;= 2; i--) cout &lt;&lt; a[i];</code></pre>",
+    uz: "Quyidagi C++ kod parchasining natijasi nima chiqadi?<br><pre><code>int a[] = {1, 2, 3, 4, 5};\nfor (int i = 4; i &gt;= 2; i--) cout &lt;&lt; a[i];</code></pre>",
+    ru: "Что выведет следующий фрагмент кода C++?<br><pre><code>int a[] = {1, 2, 3, 4, 5};\nfor (int i = 4; i &gt;= 2; i--) cout &lt;&lt; a[i];</code></pre>",
     opts: [
       { en: "543", uz: "543", ru: "543" },
       { en: "12345", uz: "12345", ru: "12345" },
@@ -279,7 +280,7 @@ window.MC_BANK_NEW = [
   },
 
   // =================================================================
-  // PART B — 10 POINTER QUESTIONS (provided by instructor)
+  // PART B - 10 POINTER QUESTIONS (provided by instructor)
   // =================================================================
 
   // -- P1
