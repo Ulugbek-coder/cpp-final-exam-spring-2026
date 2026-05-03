@@ -68,7 +68,26 @@ window.setExamLang = function (lang) {
   document.querySelectorAll(".lang-switcher select").forEach(function (sel) {
     if (sel.value !== lang) sel.value = lang;
   });
+  // Swap localized placeholders on any element carrying data-placeholder-*
+  // attributes. Used by the stdin textareas in the coding section so the
+  // placeholder text matches the chosen language.
+  applyLocalizedPlaceholders(lang);
 };
+
+// Walks the DOM and updates `placeholder` on every element that has
+// data-placeholder-en / -uz / -ru attributes. EN is always shown alongside
+// the secondary language, so we render "<EN> / <SECONDARY>".
+function applyLocalizedPlaceholders(lang) {
+  document
+    .querySelectorAll("[data-placeholder-en]")
+    .forEach(function (el) {
+      const en = el.getAttribute("data-placeholder-en") || "";
+      const uz = el.getAttribute("data-placeholder-uz") || "";
+      const ru = el.getAttribute("data-placeholder-ru") || "";
+      const secondary = lang === "ru" ? ru : uz;
+      el.placeholder = secondary ? en + "  /  " + secondary : en;
+    });
+}
 
 // Wire any .lang-switcher dropdown on this page to call setExamLang.
 function wireLangSwitcher() {
@@ -79,6 +98,8 @@ function wireLangSwitcher() {
       window.setExamLang(this.value);
     });
   });
+  // Apply placeholders for the initial language as well
+  applyLocalizedPlaceholders(initial);
 }
 
 let studentInfo = { group: "", id: "", firstName: "", lastName: "" };
@@ -800,8 +821,12 @@ function renderCoding() {
             <span class="run-meta count" id="runCount${i}">Runs used: 0 / 30</span>
           </div>
           <div class="stdin-wrap">
-            <label for="stdin${i}">Input (stdin)<span class="uz"> / Qiymat Kiritish</span><span class="ru"> / Ввод (stdin)</span></label>
-            <textarea id="stdin${i}" placeholder="If your program reads input with cin, type it here - one value per line."></textarea>
+            <label for="stdin${i}">INPUT<span class="uz"> / QIYMAT KIRITISH</span><span class="ru"> / ВВОД</span> (Cin&gt;&gt;)</label>
+            <textarea id="stdin${i}"
+              data-placeholder-en="If your program reads input with cin, type it here - one value per line."
+              data-placeholder-uz="Agar dasturingiz cin orqali qiymat o'qisa, bu yerga yozing - har qatorda bitta qiymat."
+              data-placeholder-ru="Если ваша программа считывает данные через cin, вводите здесь - по одному значению в строке."
+              placeholder="If your program reads input with cin, type it here - one value per line."></textarea>
           </div>
           <div class="run-output empty" id="runOutput${i}"><div class="empty-msg-en">Click <b>Run Code</b> to compile and execute your code. This is for your own testing — the instructor grades the code you submit, not the run result.</div><div class="empty-msg-uz uz">Natijani tekshirish uchun <b>Kodni Ishga Tushirish</b> tugmasini bosing. Bu faqat sizning sinovingiz uchun — o'qituvchi siz yuborgan kodni baholaydi, ishga tushirish natijasini emas.</div><div class="empty-msg-ru ru">Нажмите <b>Запустить код</b>, чтобы скомпилировать и выполнить ваш код. Это только для вашего тестирования — преподаватель оценивает отправленный код, а не результат запуска.</div></div>
         </div>
@@ -829,6 +854,12 @@ function renderCoding() {
       });
     }
   });
+
+  // After all coding cards are in the DOM, apply localized placeholders to
+  // the stdin textareas (which carry data-placeholder-en/uz/ru attributes).
+  if (typeof applyLocalizedPlaceholders === "function") {
+    applyLocalizedPlaceholders(window.getExamLang ? window.getExamLang() : "uz");
+  }
 }
 
 // ---------------- Code execution handler ----------------
@@ -1560,7 +1591,7 @@ async function trySubmit() {
   performSubmit("manual");
 }
 
-function performSubmit(trigger) {
+async function performSubmit(trigger) {
   if (examEnded) return;
   examEnded = true;
   clearInterval(timerInterval);
@@ -1653,9 +1684,10 @@ function performSubmit(trigger) {
 
   // Generate the PDF NOW (in memory) but do NOT auto-download.
   // We download only if all 3 Firebase upload attempts fail.
+  // generatePDFReport is async (it lazy-loads a Cyrillic-capable font).
   let pdfResult = null;
   try {
-    pdfResult = window.generatePDFReport();
+    pdfResult = await window.generatePDFReport();
     window._pdfResult = pdfResult;
   } catch (err) {
     console.error("PDF generation failed:", err);
