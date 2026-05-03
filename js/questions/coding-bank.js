@@ -1,9 +1,9 @@
 // =============================================================
-// Coding Problem Bank — 49 trilingual problems (May 2026 update)
+// Coding Problem Bank - 49 trilingual problems (May 2026 update)
 // - 12 "control_loop_function" (if-else / loops / functions)
 // - 12 "array_or_string" (1D / 2D arrays / strings)
 // - 10 "array_or_string_hard" (multi-part array & string)
-// - 15 "easy_medium_starter" (NEW May 2026 — 10 pt slot, no hints)
+// - 15 "easy_medium_starter" (NEW May 2026 - 10 pt slot, no hints)
 // All problems are trilingual: en / uz / ru.
 //
 // Each version picks one from each category via a codingSeed.
@@ -92,7 +92,7 @@ int main() {
     ],
     hints: [
       { en: "Use two <code>if</code> statements or a ternary operator.", uz: "Ikki <code>if</code> yoki shartli operatordan foydalaning.", ru: "Внутри функции сравните a с b и сохраните больший в локальную переменную." },
-      { en: "Remember to RETURN a value — not just <code>cout</code> it.", uz: "Qiymatni QAYTARISH kerak — faqat <code>cout</code> qilib qo'yish emas.", ru: "Затем сравните эту переменную с c и при необходимости обновите её." },
+      { en: "Remember to RETURN a value - not just <code>cout</code> it.", uz: "Qiymatni QAYTARISH kerak - faqat <code>cout</code> qilib qo'yish emas.", ru: "Затем сравните эту переменную с c и при необходимости обновите её." },
       { en: "The function signature is <code>int findMax(int a, int b, int c)</code>.", uz: "Funksiya imzosi: <code>int findMax(int a, int b, int c)</code>.", ru: "Верните локальную переменную с помощью <code>return</code>; <code>main</code> выведет её." },
     ],
     starter: `#include <iostream>
@@ -137,19 +137,19 @@ int main() {
       "Read a positive integer from the user.",
       "Use a <code>while</code> loop to compute the sum of its digits.",
       "Display the sum.",
-      "Example: input <code>1234</code> → output <code>Sum of digits = 10</code>",
+      "Example: input <code>1234</code> -> output <code>Sum of digits = 10</code>",
     ],
     uz: [
       "Foydalanuvchidan musbat butun son o'qing.",
       "Uning raqamlari yig'indisini hisoblash uchun <code>while</code> siklidan foydalaning.",
       "Yig'indini ko'rsating.",
-      "Misol: kirish <code>1234</code> → natija <code>Sum of digits = 10</code>",
+      "Misol: kirish <code>1234</code> -> natija <code>Sum of digits = 10</code>",
     ],
     ru: [
       "Прочитайте положительное целое число <code>n</code> от пользователя.",
       "Вычислите сумму его цифр с помощью цикла <code>while</code>.",
       "Выведите её.",
-      "Пример: ввод <code>1234</code> → вывод <code>Sum = 10</code>",
+      "Пример: ввод <code>1234</code> -> вывод <code>Sum = 10</code>",
     ],
     hints: [
       { en: "The operation <code>n % 10</code> gives the last digit.", uz: "<code>n % 10</code> amali oxirgi raqamni beradi.", ru: "Извлекайте последнюю цифру с помощью <code>n % 10</code> и прибавляйте её к сумме." },
@@ -200,19 +200,19 @@ int main() {
       "Read an integer <code>n</code> from the user.",
       "Use a <code>for</code> loop to print the multiplication table of <code>n</code> from 1 to 10.",
       "Each line must be formatted like <code>n x i = result</code>.",
-      "Example: input <code>5</code> → 10 lines, first is <code>5 x 1 = 5</code>, last is <code>5 x 10 = 50</code>",
+      "Example: input <code>5</code> -> 10 lines, first is <code>5 x 1 = 5</code>, last is <code>5 x 10 = 50</code>",
     ],
     uz: [
       "Foydalanuvchidan <code>n</code> butun sonini o'qing.",
       "<code>n</code> ning 1 dan 10 gacha ko'paytirish jadvalini <code>for</code> sikli bilan chiqaring.",
       "Har bir qator <code>n x i = natija</code> ko'rinishida bo'lsin.",
-      "Misol: kirish <code>5</code> → 10 qator, birinchi <code>5 x 1 = 5</code>, oxirgi <code>5 x 10 = 50</code>",
+      "Misol: kirish <code>5</code> -> 10 qator, birinchi <code>5 x 1 = 5</code>, oxirgi <code>5 x 10 = 50</code>",
     ],
     ru: [
       "Прочитайте число <code>n</code> от пользователя.",
       "Используйте цикл <code>for</code>, чтобы вывести таблицу умножения для <code>n</code> от 1 до 10.",
       "Каждая строка должна выглядеть так: <code>n x i = result</code>",
-      "Пример: ввод <code>3</code> → вывод <code>3 x 1 = 3</code> ... <code>3 x 10 = 30</code> (10 строк)",
+      "Пример: ввод <code>3</code> -> вывод <code>3 x 1 = 3</code> ... <code>3 x 10 = 30</code> (10 строк)",
     ],
     hints: [
       { en: "Loop <code>i</code> from 1 to 10 inclusive.", uz: "<code>i</code> ni 1 dan 10 gacha (qo'shib) aylantiring.", ru: "Используйте цикл <code>for</code>, в котором счётчик <code>i</code> идёт от 1 до 10." },
@@ -255,24 +255,24 @@ int main() {
     title_ru: "Факториал числа N",
     en: [
       "Read a non-negative integer <code>n</code> from the user.",
-      "Compute <code>n!</code> (n factorial = 1 × 2 × 3 × ... × n) using a loop.",
+      "Compute <code>n!</code> (n factorial = 1 x 2 x 3 x ... x n) using a loop.",
       "Display the result.",
-      "Example: input <code>5</code> → output <code>5! = 120</code>",
+      "Example: input <code>5</code> -> output <code>5! = 120</code>",
     ],
     uz: [
       "Foydalanuvchidan manfiy bo'lmagan <code>n</code> butun sonini o'qing.",
-      "Sikl yordamida <code>n!</code> (n faktorial = 1 × 2 × 3 × ... × n) ni hisoblang.",
+      "Sikl yordamida <code>n!</code> (n faktorial = 1 x 2 x 3 x ... x n) ni hisoblang.",
       "Natijani ko'rsating.",
-      "Misol: kirish <code>5</code> → natija <code>5! = 120</code>",
+      "Misol: kirish <code>5</code> -> natija <code>5! = 120</code>",
     ],
     ru: [
       "Прочитайте неотрицательное целое число <code>n</code> от пользователя.",
       "Используйте цикл <code>for</code> или <code>while</code>, чтобы вычислить <code>n!</code> (факториал).",
       "Выведите результат.",
-      "Пример: ввод <code>5</code> → вывод <code>Factorial = 120</code>",
+      "Пример: ввод <code>5</code> -> вывод <code>Factorial = 120</code>",
     ],
     hints: [
-      { en: "Initialize your accumulator to 1 (NOT 0 — multiplying by 0 zeros it).", uz: "Akkumulyatorni 1 ga tenglang (0 emas — 0 ga ko'paytirish natijani 0 qiladi).", ru: "Начните с переменной <code>fact = 1</code>." },
+      { en: "Initialize your accumulator to 1 (NOT 0 - multiplying by 0 zeros it).", uz: "Akkumulyatorni 1 ga tenglang (0 emas - 0 ga ko'paytirish natijani 0 qiladi).", ru: "Начните с переменной <code>fact = 1</code>." },
       { en: "Use <code>long long</code> for the result since factorials grow fast.", uz: "Faktorial tez o'sadi, shuning uchun natija uchun <code>long long</code> turidan foydalaning.", ru: "Умножайте <code>fact</code> на каждое целое число от 1 до n включительно." },
       { en: "For n = 0, the answer is 1.", uz: "n = 0 bo'lsa, javob 1.", ru: "Не забудьте крайний случай: 0! = 1." },
     ],
@@ -320,24 +320,24 @@ int main() {
       "Read a positive integer <code>n</code> from the user.",
       "Check if <code>n</code> is prime using a loop (try divisors from 2 up to <code>n-1</code>).",
       "Print <code>\"Prime\"</code> or <code>\"Not prime\"</code>.",
-      "Example: input <code>7</code> → output <code>Prime</code>. Input <code>9</code> → output <code>Not prime</code>.",
+      "Example: input <code>7</code> -> output <code>Prime</code>. Input <code>9</code> -> output <code>Not prime</code>.",
     ],
     uz: [
       "Foydalanuvchidan musbat <code>n</code> butun sonini o'qing.",
       "<code>n</code> ning tub ekanligini sikl yordamida tekshiring (bo'luvchilarni 2 dan <code>n-1</code> gacha sinab ko'ring).",
       "<code>\"Prime\"</code> yoki <code>\"Not prime\"</code> ni chiqaring.",
-      "Misol: kirish <code>7</code> → natija <code>Prime</code>. Kirish <code>9</code> → natija <code>Not prime</code>.",
+      "Misol: kirish <code>7</code> -> natija <code>Prime</code>. Kirish <code>9</code> -> natija <code>Not prime</code>.",
     ],
     ru: [
       "Прочитайте целое число <code>n</code> от пользователя.",
       "Определите, является ли оно простым (делится только на 1 и на само себя).",
       "Выведите <code>Prime</code> или <code>Not Prime</code>.",
-      "Числа меньше 2 НЕ простые. Пример: ввод <code>13</code> → вывод <code>Prime</code>",
+      "Числа меньше 2 НЕ простые. Пример: ввод <code>13</code> -> вывод <code>Prime</code>",
     ],
     hints: [
       { en: "Keep a <code>bool isPrime = true;</code> flag.", uz: "<code>bool isPrime = true;</code> bayrog'ini saqlang.", ru: "Числа меньше 2 (например, 0, 1, отрицательные) считаются НЕ простыми." },
       { en: "Inside the loop, if <code>n % i == 0</code>, set <code>isPrime = false;</code> and <code>break;</code>.", uz: "Sikl ichida <code>n % i == 0</code> bo'lsa, <code>isPrime = false;</code> qiling va <code>break;</code> bering.", ru: "Пройдите циклом по делителям от 2 до <code>n - 1</code> и проверьте, делится ли n нацело." },
-      { en: "Special cases: 0 and 1 are NOT prime.", uz: "Maxsus holatlar: 0 va 1 TUB EMAS.", ru: "Если делитель найден, число составное; иначе — простое." },
+      { en: "Special cases: 0 and 1 are NOT prime.", uz: "Maxsus holatlar: 0 va 1 TUB EMAS.", ru: "Если делитель найден, число составное; иначе - простое." },
     ],
     starter: `#include <iostream>
 using namespace std;
@@ -383,24 +383,24 @@ int main() {
       "Read a positive integer from the user.",
       "Use a <code>while</code> loop to count how many digits it has.",
       "Display the count.",
-      "Example: input <code>70235</code> → output <code>Digit count = 5</code>",
+      "Example: input <code>70235</code> -> output <code>Digit count = 5</code>",
     ],
     uz: [
       "Foydalanuvchidan musbat butun son o'qing.",
       "Uning nechta raqami borligini sanash uchun <code>while</code> siklidan foydalaning.",
       "Sonni ko'rsating.",
-      "Misol: kirish <code>70235</code> → natija <code>Digit count = 5</code>",
+      "Misol: kirish <code>70235</code> -> natija <code>Digit count = 5</code>",
     ],
     ru: [
       "Прочитайте положительное целое число <code>n</code> от пользователя.",
       "Подсчитайте количество цифр в нём с помощью цикла <code>while</code>.",
       "Выведите количество.",
-      "Пример: ввод <code>54321</code> → вывод <code>Digits = 5</code>",
+      "Пример: ввод <code>54321</code> -> вывод <code>Digits = 5</code>",
     ],
     hints: [
       { en: "Each iteration, divide the number by 10 and increment a counter.", uz: "Har bir qadamda sonni 10 ga bo'ling va hisoblagichni oshiring.", ru: "Используйте счётчик, начиная с 0." },
       { en: "Loop while <code>n > 0</code>.", uz: "<code>n > 0</code> bo'lguncha davom eting.", ru: "Увеличивайте счётчик при каждом выполнении <code>n /= 10</code>." },
-      { en: "Be careful with <code>n = 0</code> — that has 1 digit.", uz: "<code>n = 0</code> ga ehtiyot bo'ling — unda 1 ta raqam bor.", ru: "Цикл должен продолжаться, пока <code>n</code> не станет 0." },
+      { en: "Be careful with <code>n = 0</code> - that has 1 digit.", uz: "<code>n = 0</code> ga ehtiyot bo'ling - unda 1 ta raqam bor.", ru: "Цикл должен продолжаться, пока <code>n</code> не станет 0." },
     ],
     starter: `#include <iostream>
 using namespace std;
@@ -446,19 +446,19 @@ int main() {
       "Read a positive integer <code>n</code> from the user.",
       "Use a <code>for</code> loop to compute the sum of all EVEN numbers from 1 to <code>n</code>.",
       "Display the sum.",
-      "Example: input <code>10</code> → output <code>Sum of evens = 30</code>",
+      "Example: input <code>10</code> -> output <code>Sum of evens = 30</code>",
     ],
     uz: [
       "Foydalanuvchidan musbat <code>n</code> butun sonini o'qing.",
       "1 dan <code>n</code> gacha BARCHA JUFT sonlar yig'indisini <code>for</code> sikli bilan hisoblang.",
       "Yig'indini ko'rsating.",
-      "Misol: kirish <code>10</code> → natija <code>Sum of evens = 30</code>",
+      "Misol: kirish <code>10</code> -> natija <code>Sum of evens = 30</code>",
     ],
     ru: [
       "Прочитайте положительное целое число <code>n</code> от пользователя.",
       "Используйте цикл <code>for</code>, чтобы пройти числа от 1 до n.",
       "Накапливайте сумму ТОЛЬКО чётных чисел.",
-      "Пример: ввод <code>10</code> → вывод <code>Sum of evens = 30</code>",
+      "Пример: ввод <code>10</code> -> вывод <code>Sum of evens = 30</code>",
     ],
     hints: [
       { en: "An even number has remainder 0 when divided by 2.", uz: "Juft son 2 ga bo'linganda qoldig'i 0 bo'ladi.", ru: "Чётное число удовлетворяет условию <code>i % 2 == 0</code>." },
@@ -506,22 +506,22 @@ int main() {
     title_uz: "Fibonachchi Birinchi N Hadi",
     title_ru: "Первые N членов последовательности Фибоначчи",
     en: [
-      "Read a positive integer <code>n</code> (n ≥ 2) from the user.",
+      "Read a positive integer <code>n</code> (n >= 2) from the user.",
       "Print the first <code>n</code> terms of the Fibonacci sequence, space-separated, starting with 0 1.",
-      "Example: input <code>7</code> → output <code>0 1 1 2 3 5 8</code>",
+      "Example: input <code>7</code> -> output <code>0 1 1 2 3 5 8</code>",
       "Use a loop. Do NOT use recursion.",
     ],
     uz: [
-      "Foydalanuvchidan musbat <code>n</code> butun sonini (n ≥ 2) o'qing.",
+      "Foydalanuvchidan musbat <code>n</code> butun sonini (n >= 2) o'qing.",
       "Fibonachchi ketma-ketligining birinchi <code>n</code> ta hadi 0 1 dan boshlab, bo'sh joy bilan ajratilgan holda chiqaring.",
-      "Misol: kirish <code>7</code> → natija <code>0 1 1 2 3 5 8</code>",
+      "Misol: kirish <code>7</code> -> natija <code>0 1 1 2 3 5 8</code>",
       "Sikldan foydalaning. Rekursiya ishlatmang.",
     ],
     ru: [
       "Прочитайте положительное целое число <code>n</code> от пользователя.",
       "Выведите первые <code>n</code> чисел Фибоначчи через пробел.",
       "Последовательность начинается с 0 и 1.",
-      "Пример: ввод <code>7</code> → вывод <code>0 1 1 2 3 5 8</code>",
+      "Пример: ввод <code>7</code> -> вывод <code>0 1 1 2 3 5 8</code>",
     ],
     hints: [
       { en: "Keep two variables <code>a = 0, b = 1</code> for the two previous terms.", uz: "Oldingi ikki had uchun <code>a = 0, b = 1</code> o'zgaruvchilarini saqlang.", ru: "Сохраняйте ДВА предыдущих числа в переменных, например <code>a = 0</code> и <code>b = 1</code>." },
@@ -571,17 +571,17 @@ int main() {
     en: [
       "Define a function <code>double toFahrenheit(double c)</code> that returns <code>c * 9.0 / 5.0 + 32.0</code>.",
       "In <code>main</code>, read a temperature in Celsius from the user, call the function, and print the result.",
-      "Example: input <code>25</code> → output <code>77</code>",
+      "Example: input <code>25</code> -> output <code>77</code>",
     ],
     uz: [
       "<code>double toFahrenheit(double c)</code> funksiyasini yarating, u <code>c * 9.0 / 5.0 + 32.0</code> ni qaytaradigan qilib.",
       "<code>main</code> da foydalanuvchidan Selsiydagi haroratni o'qing, funksiyani chaqiring va natijani chop eting.",
-      "Misol: kirish <code>25</code> → natija <code>77</code>",
+      "Misol: kirish <code>25</code> -> natija <code>77</code>",
     ],
     ru: [
       "Определите функцию <code>double cToF(double c)</code>, которая возвращает <code>c * 9/5 + 32</code>.",
       "В <code>main</code> прочитайте температуру в градусах Цельсия от пользователя.",
-      "Вызовите функцию и выведите результат. Пример: ввод <code>100</code> → вывод <code>Fahrenheit = 212</code>",
+      "Вызовите функцию и выведите результат. Пример: ввод <code>100</code> -> вывод <code>Fahrenheit = 212</code>",
     ],
     hints: [
       { en: "Use <code>double</code>, not <code>int</code>, so the decimals aren't lost.", uz: "Kasr qismi yo'qolmasligi uchun <code>int</code> emas, <code>double</code> dan foydalaning.", ru: "Не забудьте использовать <code>double</code> для дробных значений." },
@@ -634,23 +634,23 @@ int main() {
       "Read two positive integers <code>a</code> and <code>b</code>.",
       "Compute their Greatest Common Divisor using a <code>while</code> loop.",
       "Display the GCD.",
-      "Example: input <code>12 18</code> → output <code>GCD = 6</code>",
+      "Example: input <code>12 18</code> -> output <code>GCD = 6</code>",
     ],
     uz: [
       "Ikki musbat butun son <code>a</code> va <code>b</code> ni o'qing.",
       "Ularning eng katta umumiy bo'luvchisini (EKUB) <code>while</code> sikli bilan toping.",
       "EKUB ni ko'rsating.",
-      "Misol: kirish <code>12 18</code> → natija <code>GCD = 6</code>",
+      "Misol: kirish <code>12 18</code> -> natija <code>GCD = 6</code>",
     ],
     ru: [
       "Определите функцию <code>int gcd(int a, int b)</code>, которая возвращает наибольший общий делитель.",
       "В <code>main</code> прочитайте два положительных целых числа от пользователя.",
       "Вызовите <code>gcd</code> и выведите результат.",
-      "Пример: ввод <code>48 18</code> → вывод <code>GCD = 6</code>",
+      "Пример: ввод <code>48 18</code> -> вывод <code>GCD = 6</code>",
     ],
     hints: [
       { en: "Use Euclid's algorithm: while <code>b != 0</code>, set <code>t = b; b = a % b; a = t;</code>.", uz: "Evklid algoritmi: <code>b != 0</code> bo'lguncha, <code>t = b; b = a % b; a = t;</code> qiling.", ru: "Алгоритм Евклида: пока <code>b != 0</code>, заменяйте (a, b) на (b, a % b)." },
-      { en: "When the loop ends, <code>a</code> holds the GCD.", uz: "Sikl tugagach, <code>a</code> EKUB ni saqlaydi.", ru: "Когда <code>b</code> становится 0, ответ — это <code>a</code>." },
+      { en: "When the loop ends, <code>a</code> holds the GCD.", uz: "Sikl tugagach, <code>a</code> EKUB ni saqlaydi.", ru: "Когда <code>b</code> становится 0, ответ - это <code>a</code>." },
       { en: "Remember to use <code>%</code> (modulo), not division.", uz: "<code>%</code> (modulo) dan foydalaning, bo'lish emas.", ru: "Можно реализовать циклом <code>while</code> или с помощью рекурсии." },
     ],
     starter: `#include <iostream>
@@ -705,7 +705,7 @@ int main() {
       "Определите функцию <code>int power(int base, int exp)</code>, которая возвращает <code>base</code> в степени <code>exp</code>.",
       "Используйте цикл (НЕ <code>pow()</code>).",
       "В <code>main</code> прочитайте основание и показатель степени от пользователя, вызовите функцию, выведите результат.",
-      "Пример: ввод <code>2 10</code> → вывод <code>Result = 1024</code>",
+      "Пример: ввод <code>2 10</code> -> вывод <code>Result = 1024</code>",
     ],
     hints: [
       { en: "Start with <code>result = 1</code>, then multiply by <code>base</code> inside the loop <code>exp</code> times.", uz: "<code>result = 1</code> dan boshlang va siklda <code>base</code> ga <code>exp</code> marta ko'paytiring.", ru: "Начните с <code>result = 1</code>." },
@@ -752,18 +752,18 @@ int main() {
       "Declare an integer array of size 6.",
       "Read 6 numbers from the user into the array.",
       "Print the array elements in REVERSE order (from last to first).",
-      "Example: input <code>1 2 3 4 5 6</code> → output <code>6 5 4 3 2 1</code>",
+      "Example: input <code>1 2 3 4 5 6</code> -> output <code>6 5 4 3 2 1</code>",
     ],
     uz: [
       "6 o'lchamli butun sonli massiv e'lon qiling.",
       "Foydalanuvchidan 6 ta sonni massivga o'qing.",
       "Massiv elementlarini TESKARI tartibda chop eting (oxirgidan birinchigacha).",
-      "Misol: kirish <code>1 2 3 4 5 6</code> → natija <code>6 5 4 3 2 1</code>",
+      "Misol: kirish <code>1 2 3 4 5 6</code> -> natija <code>6 5 4 3 2 1</code>",
     ],
     ru: [
       "Объявите целочисленный массив размера 6: <code>{10, 20, 30, 40, 50, 60}</code>.",
       "Используйте цикл <code>for</code>, чтобы вывести его элементы в ОБРАТНОМ порядке через пробел.",
-      "<b>НЕ</b> модифицируйте массив — просто выводите с конца к началу.",
+      "<b>НЕ</b> модифицируйте массив - просто выводите с конца к началу.",
       "Ожидаемый вывод: <code>60 50 40 30 20 10</code>",
     ],
     hints: [
@@ -832,7 +832,7 @@ int main() {
     ru: [
       "Прочитайте одну строку <code>line</code> от пользователя с помощью <code>getline(cin, line)</code>.",
       "Подсчитайте, сколько в ней ЗАГЛАВНЫХ букв (от <code>'A'</code> до <code>'Z'</code>).",
-      "Выведите количество. Пример: ввод <code>Hello World</code> → вывод <code>Uppercase = 2</code>",
+      "Выведите количество. Пример: ввод <code>Hello World</code> -> вывод <code>Uppercase = 2</code>",
     ],
     hints: [
       { en: "You can check if a character is uppercase using the ASCII range: <code>c >= 'A' && c <= 'Z'</code>.", uz: "Belgining katta harfligini ASCII oraliq orqali tekshirishingiz mumkin: <code>c >= 'A' && c <= 'Z'</code>.", ru: "Пройдите циклом по строке: <code>for (int i = 0; i &lt; line.length(); i++)</code>." },
@@ -877,7 +877,7 @@ int main() {
 
 
         // TODO: If the character is uppercase (A-Z), increment count
-        // TODO: Если символ — заглавная буква (A-Z), увеличьте count
+        // TODO: Если символ - заглавная буква (A-Z), увеличьте count
 
 
     cout << "Uppercase: " << count << endl;
@@ -893,13 +893,13 @@ int main() {
       "Declare an integer array of size 5.",
       "Read 5 numbers from the user.",
       "Compute the average (as a <code>double</code>) and display it.",
-      "Example: input <code>10 20 30 40 50</code> → output <code>Average = 30</code>",
+      "Example: input <code>10 20 30 40 50</code> -> output <code>Average = 30</code>",
     ],
     uz: [
       "5 o'lchamli butun sonli massiv e'lon qiling.",
       "Foydalanuvchidan 5 ta sonni o'qing.",
       "O'rtachasini (<code>double</code> sifatida) hisoblab, ko'rsating.",
-      "Misol: kirish <code>10 20 30 40 50</code> → natija <code>Average = 30</code>",
+      "Misol: kirish <code>10 20 30 40 50</code> -> natija <code>Average = 30</code>",
     ],
     ru: [
       "Объявите массив <code>double</code> размера 5 со значениями <code>{4.5, 8.0, 6.5, 9.0, 7.5}</code>.",
@@ -968,8 +968,8 @@ int main() {
     ],
     ru: [
       "Прочитайте одно слово <code>word</code> от пользователя через <code>cin</code>.",
-      "Подсчитайте количество гласных (a, e, i, o, u — нижний регистр).",
-      "Выведите количество. Пример: ввод <code>programming</code> → вывод <code>Vowels = 3</code>",
+      "Подсчитайте количество гласных (a, e, i, o, u - нижний регистр).",
+      "Выведите количество. Пример: ввод <code>programming</code> -> вывод <code>Vowels = 3</code>",
     ],
     hints: [
       { en: "Check each character: <code>c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'</code>.", uz: "Har bir belgini tekshiring: <code>c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'</code>.", ru: "Используйте цикл <code>for</code>, чтобы пройти каждый символ строки." },
@@ -1022,13 +1022,13 @@ int main() {
       "Declare an integer array of size 6.",
       "Read 6 numbers from the user.",
       "Use a <code>for</code> loop to find the minimum value.",
-      "Display it. Example: input <code>12 5 8 3 15 7</code> → output <code>Minimum = 3</code>",
+      "Display it. Example: input <code>12 5 8 3 15 7</code> -> output <code>Minimum = 3</code>",
     ],
     uz: [
       "6 o'lchamli butun sonli massiv e'lon qiling.",
       "Foydalanuvchidan 6 ta sonni o'qing.",
       "Eng kichik qiymatni topish uchun <code>for</code> siklidan foydalaning.",
-      "Uni chiqaring. Misol: kirish <code>12 5 8 3 15 7</code> → natija <code>Minimum = 3</code>",
+      "Uni chiqaring. Misol: kirish <code>12 5 8 3 15 7</code> -> natija <code>Minimum = 3</code>",
     ],
     ru: [
       "Объявите целочисленный массив размера 7: <code>{14, 3, 27, 8, 19, 5, 22}</code>.",
@@ -1039,7 +1039,7 @@ int main() {
     hints: [
       { en: "Initialize <code>min</code> to the FIRST element of the array (not 0).", uz: "<code>min</code> ni BIRINCHI elementga tenglang (0 emas).", ru: "Сохраните первый элемент в переменной <code>min</code>." },
       { en: "Loop from index 1 to size - 1 and update <code>min</code> when you see a smaller value.", uz: "1 dan size-1 gacha yurib, kichikroq qiymat ko'rsangiz <code>min</code> ni yangilang.", ru: "Пройдите циклом по остальным элементам; если элемент меньше <code>min</code>, обновите её." },
-      { en: "Don't use <code>INT_MIN</code> — it's the wrong direction.", uz: "<code>INT_MIN</code> dan foydalanmang — noto'g'ri tomon.", ru: "Выведите <code>min</code> после цикла." },
+      { en: "Don't use <code>INT_MIN</code> - it's the wrong direction.", uz: "<code>INT_MIN</code> dan foydalanmang - noto'g'ri tomon.", ru: "Выведите <code>min</code> после цикла." },
     ],
     starter: `#include <iostream>
 using namespace std;
@@ -1093,24 +1093,24 @@ int main() {
       "Declare an integer array of size 8 with values <code>{4, 7, 4, 2, 4, 9, 1, 4}</code>.",
       "Read a target number <code>t</code> from the user.",
       "Use a loop to count how many times <code>t</code> appears in the array.",
-      "Display the count. Example: input <code>4</code> → output <code>Occurrences = 4</code>",
+      "Display the count. Example: input <code>4</code> -> output <code>Occurrences = 4</code>",
     ],
     uz: [
       "<code>{4, 7, 4, 2, 4, 9, 1, 4}</code> qiymatlari bilan 8 o'lchamli butun sonli massiv e'lon qiling.",
       "Foydalanuvchidan <code>t</code> nishon sonini o'qing.",
       "<code>t</code> ning massivda necha marta uchrashini sikl bilan sanang.",
-      "Sonni chiqaring. Misol: kirish <code>4</code> → natija <code>Occurrences = 4</code>",
+      "Sonni chiqaring. Misol: kirish <code>4</code> -> natija <code>Occurrences = 4</code>",
     ],
     ru: [
       "Объявите целочисленный массив размера 8: <code>{2, 5, 2, 7, 2, 3, 5, 2}</code>.",
       "Прочитайте число <code>target</code> от пользователя.",
       "Подсчитайте, сколько раз <code>target</code> встречается в массиве.",
-      "Пример: ввод <code>2</code> → вывод <code>Count = 4</code>",
+      "Пример: ввод <code>2</code> -> вывод <code>Count = 4</code>",
     ],
     hints: [
       { en: "Initialize a counter to 0.", uz: "Hisoblagichni 0 ga tenglang.", ru: "Пройдите циклом по массиву, индекс от 0 до 7." },
       { en: "Inside the loop, compare each element to <code>t</code>.", uz: "Sikl ichida har bir elementni <code>t</code> bilan taqqoslang.", ru: "Сравнивайте каждый элемент с <code>target</code>." },
-      { en: "Increment the counter only when they match.", uz: "Mos kelganda gina hisoblagichni oshiring.", ru: "Если совпадает — увеличивайте счётчик. Выведите итог после цикла." },
+      { en: "Increment the counter only when they match.", uz: "Mos kelganda gina hisoblagichni oshiring.", ru: "Если совпадает - увеличивайте счётчик. Выведите итог после цикла." },
     ],
     starter: `#include <iostream>
 using namespace std;
@@ -1160,19 +1160,19 @@ int main() {
       "Ask the user to enter a word (no spaces).",
       "Use a <code>for</code> loop to print the string from LAST to FIRST character.",
       "Do not use the built-in <code>reverse</code> function.",
-      "Example: input <code>hello</code> → output <code>olleh</code>",
+      "Example: input <code>hello</code> -> output <code>olleh</code>",
     ],
     uz: [
       "Foydalanuvchidan so'z kiritishni so'rang (bo'shliqsiz).",
       "<code>for</code> sikli bilan satrni OXIRGI belgidan BIRINCHI ga qadar chop eting.",
       "Ichki <code>reverse</code> funksiyasidan foydalanmang.",
-      "Misol: kirish <code>hello</code> → natija <code>olleh</code>",
+      "Misol: kirish <code>hello</code> -> natija <code>olleh</code>",
     ],
     ru: [
       "Прочитайте строку <code>word</code> через <code>cin</code>.",
       "Используйте цикл <code>for</code>, чтобы вывести её символы в ОБРАТНОМ порядке (без пробелов).",
       "<b>НЕ</b> используйте функцию <code>reverse</code>.",
-      "Пример: ввод <code>Hello</code> → вывод <code>Reversed = olleH</code>",
+      "Пример: ввод <code>Hello</code> -> вывод <code>Reversed = olleH</code>",
     ],
     hints: [
       { en: "Start loop counter at <code>s.length() - 1</code>.", uz: "Sikl hisoblagichini <code>s.length() - 1</code> dan boshlang.", ru: "Получите длину: <code>word.length()</code>." },
@@ -1227,12 +1227,12 @@ int main() {
     ],
     ru: [
       "Прочитайте строку <code>word</code> через <code>cin</code>.",
-      "Определите, является ли она палиндромом (читается одинаково в обе стороны). Выведите <code>Yes</code> или <code>No</code>. Пример: ввод <code>level</code> → вывод <code>Yes</code>",
+      "Определите, является ли она палиндромом (читается одинаково в обе стороны). Выведите <code>Yes</code> или <code>No</code>. Пример: ввод <code>level</code> -> вывод <code>Yes</code>",
     ],
     hints: [
       { en: "Compare <code>s[i]</code> with <code>s[s.length()-1-i]</code> in a loop.", uz: "<code>s[i]</code> ni <code>s[s.length()-1-i]</code> bilan sikl ichida taqqoslang.", ru: "Сравните первый и последний символ, затем второй и предпоследний и так далее." },
       { en: "You only need to loop up to <code>s.length()/2</code>.", uz: "<code>s.length()/2</code> gacha yurish kifoya.", ru: "Достаточно проверить только первую половину строки." },
-      { en: "If ANY pair doesn't match, it's not a palindrome — break early.", uz: "Agar BIRORTA juftlik mos kelmasa, palindrom emas — oldindan break qiling.", ru: "Если все пары совпадают — палиндром, иначе нет." },
+      { en: "If ANY pair doesn't match, it's not a palindrome - break early.", uz: "Agar BIRORTA juftlik mos kelmasa, palindrom emas - oldindan break qiling.", ru: "Если все пары совпадают - палиндром, иначе нет." },
     ],
     starter: `#include <iostream>
 #include <string>
@@ -1289,7 +1289,7 @@ int main() {
     ru: [
       "Прочитайте полную строку с помощью <code>getline(cin, sentence)</code>.",
       "Подсчитайте количество слов в ней (слова разделены одиночными пробелами).",
-      "Выведите количество. Пример: ввод <code>I love programming a lot</code> → вывод <code>Words = 5</code>",
+      "Выведите количество. Пример: ввод <code>I love programming a lot</code> -> вывод <code>Words = 5</code>",
     ],
     hints: [
       { en: "Count the number of spaces, then add 1 (assuming no trailing/leading spaces and single spaces between words).", uz: "Bo'shliqlar sonini sanang, keyin 1 qo'shing (oxirida/boshida bo'shliqsiz, so'zlar orasida bir bo'shliq deb faraz qiling).", ru: "Количество слов = количество пробелов + 1 (для непустой строки)." },
@@ -1342,24 +1342,24 @@ int main() {
       "Declare an integer array of size 6.",
       "Read 6 distinct numbers from the user.",
       "Find the SECOND largest value in the array.",
-      "Display it. Example: input <code>3 8 5 12 2 10</code> → output <code>Second largest = 10</code>",
+      "Display it. Example: input <code>3 8 5 12 2 10</code> -> output <code>Second largest = 10</code>",
     ],
     uz: [
       "6 o'lchamli butun sonli massiv e'lon qiling.",
       "Foydalanuvchidan 6 ta turli sonni o'qing.",
       "Massivdagi IKKINCHI eng katta qiymatni toping.",
-      "Uni ko'rsating. Misol: kirish <code>3 8 5 12 2 10</code> → natija <code>Second largest = 10</code>",
+      "Uni ko'rsating. Misol: kirish <code>3 8 5 12 2 10</code> -> natija <code>Second largest = 10</code>",
     ],
     ru: [
       "Объявите целочисленный массив размера 8: <code>{14, 22, 7, 19, 22, 31, 8, 11}</code>.",
-      "Найдите ВТОРОЙ по величине УНИКАЛЬНЫЙ элемент (т.е. первый максимум — 31, второй — 22).",
+      "Найдите ВТОРОЙ по величине УНИКАЛЬНЫЙ элемент (т.е. первый максимум - 31, второй - 22).",
       "Выведите его.",
       "Ожидаемый вывод: <code>Second largest = 22</code>",
     ],
     hints: [
       { en: "Track two variables: <code>largest</code> and <code>second</code>.", uz: "Ikki o'zgaruvchini kuzatib boring: <code>largest</code> va <code>second</code>.", ru: "Используйте две переменные: <code>max1</code> (наибольший) и <code>max2</code> (второй)." },
       { en: "When you find a new largest, the OLD largest becomes the new second.", uz: "Yangi eng kattani topsangiz, ESKI eng katta yangi ikkinchi bo'ladi.", ru: "Инициализируйте оба самым маленьким значением." },
-      { en: "When a value is between <code>second</code> and <code>largest</code>, update ONLY <code>second</code>.", uz: "Qiymat <code>second</code> va <code>largest</code> oralig'ida bo'lsa, FAQAT <code>second</code> ni yangilang.", ru: "При обходе обновляйте обе при необходимости — следите, чтобы дубликат самого большого не записался во второй." },
+      { en: "When a value is between <code>second</code> and <code>largest</code>, update ONLY <code>second</code>.", uz: "Qiymat <code>second</code> va <code>largest</code> oralig'ida bo'lsa, FAQAT <code>second</code> ni yangilang.", ru: "При обходе обновляйте обе при необходимости - следите, чтобы дубликат самого большого не записался во второй." },
     ],
     starter: `#include <iostream>
 using namespace std;
@@ -1418,7 +1418,7 @@ int main() {
     ru: [
       "Прочитайте одно слово <code>word</code> через <code>cin</code>.",
       "Преобразуйте все строчные буквы (a-z) в заглавные (A-Z).",
-      "Выведите преобразованную строку. Пример: ввод <code>HelloWorld</code> → вывод <code>HELLOWORLD</code>",
+      "Выведите преобразованную строку. Пример: ввод <code>HelloWorld</code> -> вывод <code>HELLOWORLD</code>",
     ],
     hints: [
       { en: "To convert a lowercase letter to uppercase, subtract 32: <code>s[i] = s[i] - 32;</code>.", uz: "Kichik harfni katta harfga o'tkazish uchun 32 ni ayiring: <code>s[i] = s[i] - 32;</code>.", ru: "Пройдите циклом каждый символ." },
@@ -1469,7 +1469,7 @@ int main() {
       "Find the LARGEST and SMALLEST values in the array.",
       "Compute their DIFFERENCE (largest - smallest).",
       "Display the difference.",
-      "Example: input <code>14 3 22 7 18 9</code> → output <code>Difference = 19</code>",
+      "Example: input <code>14 3 22 7 18 9</code> -> output <code>Difference = 19</code>",
     ],
     uz: [
       "6 o'lchamli butun sonli massiv e'lon qiling.",
@@ -1477,7 +1477,7 @@ int main() {
       "Massivdagi ENG KATTA va ENG KICHIK qiymatlarni toping.",
       "Ularning FARQINI hisoblang (katta - kichik).",
       "Farqni chiqaring.",
-      "Misol: kirish <code>14 3 22 7 18 9</code> → natija <code>Difference = 19</code>",
+      "Misol: kirish <code>14 3 22 7 18 9</code> -> natija <code>Difference = 19</code>",
     ],
     ru: [
       "Объявите целочисленный массив размера 6: <code>{18, 4, 27, 9, 14, 32}</code>.",
@@ -1547,14 +1547,14 @@ int main() {
       "Read 8 numbers from the user.",
       "<b>(a)</b> Find the MINIMUM value and print it.",
       "<b>(b)</b> Find the MAXIMUM value and print it.",
-      "Example: input <code>4 12 7 3 15 9 22 6</code> → output <code>Min = 3</code> and <code>Max = 22</code>",
+      "Example: input <code>4 12 7 3 15 9 22 6</code> -> output <code>Min = 3</code> and <code>Max = 22</code>",
     ],
     uz: [
       "8 o'lchamli butun sonli massiv e'lon qiling.",
       "Foydalanuvchidan 8 ta sonni o'qing.",
       "<b>(a)</b> Eng KICHIK qiymatni toping va chiqaring.",
       "<b>(b)</b> Eng KATTA qiymatni toping va chiqaring.",
-      "Misol: kirish <code>4 12 7 3 15 9 22 6</code> → natija <code>Min = 3</code> va <code>Max = 22</code>",
+      "Misol: kirish <code>4 12 7 3 15 9 22 6</code> -> natija <code>Min = 3</code> va <code>Max = 22</code>",
     ],
     ru: [
       "Объявите целочисленный массив размера 8: <code>{12, 4, 27, 9, 18, 5, 31, 7}</code>.",
@@ -1566,7 +1566,7 @@ int main() {
     hints: [
       { en: "Initialize BOTH <code>min</code> and <code>max</code> to the first element.", uz: "HAM <code>min</code> ni, HAM <code>max</code> ni birinchi elementga tenglang.", ru: "Инициализируйте обе переменные первым элементом массива." },
       { en: "Walk the array once; update min when you see a smaller value, update max when you see a larger one.", uz: "Massiv bo'ylab bir marta yurib, kichikroq ko'rsangiz min ni, kattaroq ko'rsangiz max ni yangilang.", ru: "Пройдите по остальным элементам в одном цикле; обновляйте <code>max</code> при больших значениях и <code>min</code> при меньших." },
-      { en: "One loop can handle both — no need for two passes.", uz: "Bitta sikl ikkalasini ham hal qiladi — ikki marta o'tish shart emas.", ru: "Выведите обе переменные в формате примера." },
+      { en: "One loop can handle both - no need for two passes.", uz: "Bitta sikl ikkalasini ham hal qiladi - ikki marta o'tish shart emas.", ru: "Выведите обе переменные в формате примера." },
     ],
     starter: `#include <iostream>
 using namespace std;
@@ -1624,15 +1624,15 @@ int main() {
       "Declare an integer array of size 8.",
       "Read 8 numbers from the user.",
       "<b>(a)</b> Compute and print the SUM of all elements.",
-      "<b>(b)</b> Compute and print the AVERAGE as a <code>double</code> (sum ÷ 8).",
-      "Example: input <code>10 20 30 40 50 60 70 80</code> → output <code>Sum = 360</code> and <code>Average = 45</code>",
+      "<b>(b)</b> Compute and print the AVERAGE as a <code>double</code> (sum / 8).",
+      "Example: input <code>10 20 30 40 50 60 70 80</code> -> output <code>Sum = 360</code> and <code>Average = 45</code>",
     ],
     uz: [
       "8 o'lchamli butun sonli massiv e'lon qiling.",
       "Foydalanuvchidan 8 ta sonni o'qing.",
       "<b>(a)</b> Barcha elementlar YIG'INDISINI hisoblab, chiqaring.",
-      "<b>(b)</b> O'RTACHANI <code>double</code> sifatida hisoblab (yig'indi ÷ 8), chiqaring.",
-      "Misol: kirish <code>10 20 30 40 50 60 70 80</code> → natija <code>Sum = 360</code> va <code>Average = 45</code>",
+      "<b>(b)</b> O'RTACHANI <code>double</code> sifatida hisoblab (yig'indi / 8), chiqaring.",
+      "Misol: kirish <code>10 20 30 40 50 60 70 80</code> -> natija <code>Sum = 360</code> va <code>Average = 45</code>",
     ],
     ru: [
       "Объявите массив <code>double</code> размера 6: <code>{4.5, 8.0, 6.5, 9.0, 7.5, 3.5}</code>.",
@@ -1707,14 +1707,14 @@ int main() {
       "Use a <code>for</code> loop to go through each character.",
       "<b>(a)</b> Count how many characters are VOWELS (a, e, i, o, u).",
       "<b>(b)</b> Count how many characters are CONSONANTS (everything else that's a letter).",
-      "Example: input <code>programming</code> → output <code>Vowels: 3</code> and <code>Consonants: 8</code>",
+      "Example: input <code>programming</code> -> output <code>Vowels: 3</code> and <code>Consonants: 8</code>",
     ],
     uz: [
       "Foydalanuvchidan kichik harflar bilan yozilgan so'zni so'rang (bo'shliqsiz, faqat harflar).",
       "Har bir belgi bo'ylab <code>for</code> siklini yuring.",
       "<b>(a)</b> Qancha belgi UNLI (a, e, i, o, u) ekanligini sanang.",
       "<b>(b)</b> Qancha belgi UNDOSH (harf bo'lib, lekin unli bo'lmagan) ekanligini sanang.",
-      "Misol: kirish <code>programming</code> → natija <code>Vowels: 3</code> va <code>Consonants: 8</code>",
+      "Misol: kirish <code>programming</code> -> natija <code>Vowels: 3</code> va <code>Consonants: 8</code>",
     ],
     ru: [
       "Прочитайте полную строку с помощью <code>getline(cin, line)</code>.",
@@ -1725,8 +1725,8 @@ int main() {
     ],
     hints: [
       { en: "Check each <code>s[i]</code> against the 5 vowel characters.", uz: "Har bir <code>s[i]</code> ni 5 ta unli harf bilan solishtiring.", ru: "Пройдите циклом по строке: <code>for (int i = 0; i &lt; line.length(); i++)</code>." },
-      { en: "If a character is a letter (a–z) and NOT a vowel, it's a consonant.", uz: "Agar belgi harf (a–z) bo'lib, unli bo'lmasa, u undosh.", ru: "Сначала проверьте, что символ находится в диапазоне 'a'..'z'." },
-      { en: "Use two separate counter variables.", uz: "Ikki alohida hisoblagich o'zgaruvchidan foydalaning.", ru: "Если так — определите, гласная это (a/e/i/o/u) или согласная." },
+      { en: "If a character is a letter (a-z) and NOT a vowel, it's a consonant.", uz: "Agar belgi harf (a-z) bo'lib, unli bo'lmasa, u undosh.", ru: "Сначала проверьте, что символ находится в диапазоне 'a'..'z'." },
+      { en: "Use two separate counter variables.", uz: "Ikki alohida hisoblagich o'zgaruvchidan foydalaning.", ru: "Если так - определите, гласная это (a/e/i/o/u) или согласная." },
     ],
     starter: `#include <iostream>
 #include <string>
@@ -1769,22 +1769,22 @@ int main() {
   },
   {
     category: "array_or_string_hard",
-    title_en: "Sort Array in Ascending Order (Partial)",
-    title_uz: "Massivni O'sish Tartibida Saralash (Qisman)",
-    title_ru: "Сортировать массив по возрастанию (частично)",
+    title_en: "Sort Array in Ascending Order",
+    title_uz: "Massivni O'sish Tartibida Saralash",
+    title_ru: "Сортировать массив по возрастанию",
     en: [
       "Declare an integer array of size 6.",
       "Read 6 numbers from the user.",
       "<b>(a)</b> Sort the array in ASCENDING order using bubble sort (nested loops).",
       "<b>(b)</b> Print the sorted array, space-separated.",
-      "Example: input <code>5 2 8 1 9 3</code> → output <code>Sorted: 1 2 3 5 8 9</code>",
+      "Example: input <code>5 2 8 1 9 3</code> -> output <code>Sorted: 1 2 3 5 8 9</code>",
     ],
     uz: [
       "6 o'lchamli butun sonli massiv e'lon qiling.",
       "Foydalanuvchidan 6 ta sonni o'qing.",
       "<b>(a)</b> Massivni O'SISH tartibida bubble sort yordamida (ichki-ichki sikllar) sarlang.",
       "<b>(b)</b> Sarlangan massivni bo'sh joy bilan ajratib chiqaring.",
-      "Misol: kirish <code>5 2 8 1 9 3</code> → natija <code>Sorted: 1 2 3 5 8 9</code>",
+      "Misol: kirish <code>5 2 8 1 9 3</code> -> natija <code>Sorted: 1 2 3 5 8 9</code>",
     ],
     ru: [
       "Объявите целочисленный массив размера 5: <code>{42, 17, 8, 23, 31}</code>.",
@@ -1857,14 +1857,14 @@ int main() {
       "Read 8 numbers (positive, negative, or zero) from the user.",
       "<b>(a)</b> Compute the sum of all POSITIVE numbers and print it.",
       "<b>(b)</b> Compute the sum of all NEGATIVE numbers (as a negative total) and print it.",
-      "Example: input <code>3 -2 5 -7 0 4 -1 6</code> → <code>Positives = 18 / Negatives = -10</code>",
+      "Example: input <code>3 -2 5 -7 0 4 -1 6</code> -> <code>Positives = 18 / Negatives = -10</code>",
     ],
     uz: [
       "8 o'lchamli butun sonli massiv e'lon qiling.",
       "Foydalanuvchidan 8 ta sonni o'qing (musbat, manfiy yoki nol).",
       "<b>(a)</b> Barcha MUSBAT sonlarning yig'indisini hisoblab, chiqaring.",
       "<b>(b)</b> Barcha MANFIY sonlarning yig'indisini (manfiy jami sifatida) hisoblab, chiqaring.",
-      "Misol: kirish <code>3 -2 5 -7 0 4 -1 6</code> → <code>Positives = 18 / Negatives = -10</code>",
+      "Misol: kirish <code>3 -2 5 -7 0 4 -1 6</code> -> <code>Positives = 18 / Negatives = -10</code>",
     ],
     ru: [
       "Объявите целочисленный массив размера 8: <code>{-3, 5, -8, 2, -1, 7, -4, 6}</code>.",
@@ -1876,7 +1876,7 @@ int main() {
     hints: [
       { en: "Use two accumulator variables, e.g. <code>sumPos</code> and <code>sumNeg</code>, both starting at 0.", uz: "Ikkita to'plovchi o'zgaruvchi ishlating, masalan <code>sumPos</code> va <code>sumNeg</code>, ikkalasi 0 dan boshlanadi.", ru: "Используйте две переменные: <code>posSum</code> и <code>negSum</code>, обе начинаются с 0." },
       { en: "In one loop, check <code>arr[i] > 0</code> to add to sumPos, <code>arr[i] < 0</code> to add to sumNeg.", uz: "Bitta siklda <code>arr[i] > 0</code> bo'lsa sumPos ga, <code>arr[i] < 0</code> bo'lsa sumNeg ga qo'shing.", ru: "Внутри цикла используйте <code>if (arr[i] > 0)</code> и <code>else if (arr[i] &lt; 0)</code>." },
-      { en: "Zero is neither positive nor negative — skip it.", uz: "Nol na musbat, na manfiy — uni o'tkazib yuboring.", ru: "Будьте осторожны с нулями (мы здесь их избежали)." },
+      { en: "Zero is neither positive nor negative - skip it.", uz: "Nol na musbat, na manfiy - uni o'tkazib yuboring.", ru: "Будьте осторожны с нулями (мы здесь их избежали)." },
     ],
     starter: `#include <iostream>
 using namespace std;
@@ -1892,8 +1892,8 @@ int main() {
 
     int sumPos = 0, sumNeg = 0;
 
-    // TODO (a) and (b): One loop — add positive values to sumPos, negatives to sumNeg
-    // TODO (a) va (b): Bitta sikl — musbatlarni sumPos ga, manfiylarni sumNeg ga qo'shing
+    // TODO (a) and (b): One loop - add positive values to sumPos, negatives to sumNeg
+    // TODO (a) va (b): Bitta sikl - musbatlarni sumPos ga, manfiylarni sumNeg ga qo'shing
 
 
     cout << "Positives = " << sumPos << endl;
@@ -1914,8 +1914,8 @@ int main() {
 
     int sumPos = 0, sumNeg = 0;
 
-    // TODO (a) and (b): One loop — add positive values to sumPos, negatives to sumNeg
-    // TODO (a) va (b): Один цикл — добавляйте положительные в sumPos, отрицательные в sumNeg
+    // TODO (a) and (b): One loop - add positive values to sumPos, negatives to sumNeg
+    // TODO (a) va (b): Один цикл - добавляйте положительные в sumPos, отрицательные в sumNeg
 
 
     cout << "Positives = " << sumPos << endl;
@@ -1933,21 +1933,21 @@ int main() {
       "Read two characters: <code>oldChar</code> and <code>newChar</code>.",
       "<b>(a)</b> Count how many times <code>oldChar</code> appears in the string and print the count.",
       "<b>(b)</b> Replace every occurrence of <code>oldChar</code> with <code>newChar</code> and print the resulting string.",
-      "Example: input <code>banana</code>, <code>a</code>, <code>o</code> → <code>Count = 3 / Result = bonono</code>",
+      "Example: input <code>banana</code>, <code>a</code>, <code>o</code> -> <code>Count = 3 / Result = bonono</code>",
     ],
     uz: [
       "Foydalanuvchidan bitta so'z (bo'shliqsiz) o'qing.",
       "Ikkita belgini o'qing: <code>oldChar</code> va <code>newChar</code>.",
       "<b>(a)</b> Satrda <code>oldChar</code> necha marta uchrashini sanab, chiqaring.",
       "<b>(b)</b> Har bir <code>oldChar</code> ni <code>newChar</code> bilan almashtirib, natijaviy satrni chiqaring.",
-      "Misol: kirish <code>banana</code>, <code>a</code>, <code>o</code> → <code>Count = 3 / Result = bonono</code>",
+      "Misol: kirish <code>banana</code>, <code>a</code>, <code>o</code> -> <code>Count = 3 / Result = bonono</code>",
     ],
     ru: [
       "Прочитайте одно слово <code>word</code> через <code>cin</code>.",
       "Прочитайте символ <code>oldCh</code> и символ <code>newCh</code> от пользователя.",
       "Замените КАЖДОЕ вхождение <code>oldCh</code> в <code>word</code> на <code>newCh</code>.",
-      "Выведите изменённое слово. Пример: <code>banana, a, o</code> → <code>bonono</code>",
-      "Выведите изменённое слово. Пример: <code>banana, a, o</code> → <code>bonono</code>",
+      "Выведите изменённое слово. Пример: <code>banana, a, o</code> -> <code>bonono</code>",
+      "Выведите изменённое слово. Пример: <code>banana, a, o</code> -> <code>bonono</code>",
     ],
     hints: [
       { en: "Use <code>string.length()</code> for the loop bound.", uz: "Sikl chegarasi uchun <code>string.length()</code> ishlating.", ru: "Пройдите циклом по строке и сравните каждый символ с <code>oldCh</code>." },
@@ -2023,18 +2023,18 @@ int main() {
       "Read 7 numbers from the user.",
       "<b>(a)</b> Find the LARGEST value and its INDEX in the array. Print both.",
       "<b>(b)</b> Double the largest value (multiply by 2) in place, then print the whole array on one line separated by spaces.",
-      "Example: input <code>4 12 7 9 3 15 8</code> → <code>Largest = 15 at index 5 / Array: 4 12 7 9 3 30 8</code>",
+      "Example: input <code>4 12 7 9 3 15 8</code> -> <code>Largest = 15 at index 5 / Array: 4 12 7 9 3 30 8</code>",
     ],
     uz: [
       "7 o'lchamli butun sonli massiv e'lon qiling.",
       "Foydalanuvchidan 7 ta sonni o'qing.",
       "<b>(a)</b> Massivdagi ENG KATTA qiymat va uning INDEKSINI toping. Ikkalasini chiqaring.",
       "<b>(b)</b> Eng katta qiymatni joyida ikkilantiring (2 ga ko'paytiring), so'ng butun massivni bitta qatorda, probel bilan ajratilgan holda chiqaring.",
-      "Misol: kirish <code>4 12 7 9 3 15 8</code> → <code>Largest = 15 at index 5 / Array: 4 12 7 9 3 30 8</code>",
+      "Misol: kirish <code>4 12 7 9 3 15 8</code> -> <code>Largest = 15 at index 5 / Array: 4 12 7 9 3 30 8</code>",
     ],
     ru: [
       "Объявите целочисленный массив размера 6: <code>{8, 14, 27, 9, 14, 22}</code>.",
-      "Найдите ИНДЕКС первого наибольшего элемента (если максимумов несколько — взять самый ранний).",
+      "Найдите ИНДЕКС первого наибольшего элемента (если максимумов несколько - взять самый ранний).",
       "Удвойте элемент по этому индексу прямо в массиве.",
       "Выведите все 6 элементов через пробел. Пример: <code>8 14 54 9 14 22</code>",
       "Выведите все 6 элементов через пробел. Пример: <code>8 14 54 9 14 22</code>",
@@ -2115,14 +2115,14 @@ int main() {
       "Read 8 numbers from the user.",
       "<b>(a)</b> Count how many numbers are EVEN and print the count.",
       "<b>(b)</b> Count how many numbers are ODD and print the count.",
-      "Example: input <code>1 4 7 2 9 6 3 8</code> → output <code>Even: 4</code> and <code>Odd: 4</code>",
+      "Example: input <code>1 4 7 2 9 6 3 8</code> -> output <code>Even: 4</code> and <code>Odd: 4</code>",
     ],
     uz: [
       "8 o'lchamli butun sonli massiv e'lon qiling.",
       "Foydalanuvchidan 8 ta sonni o'qing.",
       "<b>(a)</b> Qancha son JUFT ekanligini sanang va chiqaring.",
       "<b>(b)</b> Qancha son TOQ ekanligini sanang va chiqaring.",
-      "Misol: kirish <code>1 4 7 2 9 6 3 8</code> → natija <code>Even: 4</code> va <code>Odd: 4</code>",
+      "Misol: kirish <code>1 4 7 2 9 6 3 8</code> -> natija <code>Even: 4</code> va <code>Odd: 4</code>",
     ],
     ru: [
       "Объявите целочисленный массив размера 10: <code>{4, 7, 12, 9, 15, 22, 31, 6, 8, 13}</code>.",
@@ -2190,22 +2190,22 @@ int main() {
       "Ask the user to enter a word (no spaces).",
       "<b>(a)</b> Print the string's LENGTH (number of characters).",
       "<b>(b)</b> Print the string in REVERSE order (last character to first).",
-      "Do not use the built-in <code>reverse</code> function — write a loop.",
-      "Example: input <code>hello</code> → output <code>Length: 5</code> and <code>Reversed: olleh</code>",
+      "Do not use the built-in <code>reverse</code> function - write a loop.",
+      "Example: input <code>hello</code> -> output <code>Length: 5</code> and <code>Reversed: olleh</code>",
     ],
     uz: [
       "Foydalanuvchidan so'z kiritishni so'rang (bo'shliqsiz).",
       "<b>(a)</b> Satrning UZUNLIGINI (belgilar soni) chiqaring.",
       "<b>(b)</b> Satrni TESKARI tartibda chiqaring (oxirgi belgidan birinchiga).",
-      "Ichki <code>reverse</code> funksiyasidan foydalanmang — sikl yozing.",
-      "Misol: kirish <code>hello</code> → natija <code>Length: 5</code> va <code>Reversed: olleh</code>",
+      "Ichki <code>reverse</code> funksiyasidan foydalanmang - sikl yozing.",
+      "Misol: kirish <code>hello</code> -> natija <code>Length: 5</code> va <code>Reversed: olleh</code>",
     ],
     ru: [
       "Прочитайте одно слово <code>word</code> через <code>cin</code>.",
       "Используйте цикл <code>for</code>, чтобы вывести его символы в обратном порядке.",
       "Также подсчитайте длину (через <code>length()</code> ИЛИ через цикл) и выведите.",
-      "Пример: ввод <code>Programming</code> → вывод: первая строка <code>gnimmargorP</code>, вторая <code>Length = 11</code>",
-      "Пример: ввод <code>Programming</code> → вывод: первая строка <code>gnimmargorP</code>, вторая <code>Length = 11</code>",
+      "Пример: ввод <code>Programming</code> -> вывод: первая строка <code>gnimmargorP</code>, вторая <code>Length = 11</code>",
+      "Пример: ввод <code>Programming</code> -> вывод: первая строка <code>gnimmargorP</code>, вторая <code>Length = 11</code>",
     ],
     hints: [
       { en: "Use <code>s.length()</code> for part (a).", uz: "(a) qismi uchun <code>s.length()</code> dan foydalaning.", ru: "Получите <code>n = word.length()</code>." },
@@ -2265,14 +2265,14 @@ int main() {
       "Read a target number <code>t</code> from the user.",
       "<b>(a)</b> Count how many times <code>t</code> appears in the array.",
       "<b>(b)</b> Print the INDEXES (0-based) where <code>t</code> appears, space-separated.",
-      "Example: input <code>3</code> → output <code>Count = 4</code> and <code>Indexes: 0 2 5 7</code>",
+      "Example: input <code>3</code> -> output <code>Count = 4</code> and <code>Indexes: 0 2 5 7</code>",
     ],
     uz: [
       "10 o'lchamli butun massiv e'lon qiling: <code>{3, 7, 3, 2, 5, 3, 8, 3, 1, 4}</code>.",
       "Foydalanuvchidan <code>t</code> maqsadli sonini o'qing.",
       "<b>(a)</b> <code>t</code> massivda necha marta uchrashini sanang.",
       "<b>(b)</b> <code>t</code> uchragan INDEKSLARNI (0-dan boshlab) bo'sh joy bilan ajratib chiqaring.",
-      "Misol: kirish <code>3</code> → natija <code>Count = 4</code> va <code>Indexes: 0 2 5 7</code>",
+      "Misol: kirish <code>3</code> -> natija <code>Count = 4</code> va <code>Indexes: 0 2 5 7</code>",
     ],
     ru: [
       "Объявите целочисленный массив размера 10: <code>{3, 7, 3, 2, 5, 3, 8, 3, 1, 4}</code>.",
@@ -2333,9 +2333,9 @@ int main() {
   },
 
   // =================================================================
-  // CATEGORY: easy_medium_starter (15) — added May 2026
+  // CATEGORY: easy_medium_starter (15) - added May 2026
   // First-slot 10-point problems for the new exam format.
-  // No hints — these are the gentlest problems on the exam.
+  // No hints - these are the gentlest problems on the exam.
   // =================================================================
   {
     category: "easy_medium_starter",
@@ -2346,19 +2346,19 @@ int main() {
       "Read a positive integer <code>n</code> from the user.",
       "Use a <code>for</code> loop from 1 to <code>n</code>.",
       "Inside the loop, use an <code>if</code> to print numbers divisible by 3, separated by spaces.",
-      "Example: input <code>10</code> → output <code>3 6 9</code>",
+      "Example: input <code>10</code> -> output <code>3 6 9</code>",
     ],
     uz: [
       "Foydalanuvchidan musbat butun son <code>n</code> ni o'qing.",
       "1 dan <code>n</code> gacha <code>for</code> sikl yozing.",
       "Sikl ichida <code>if</code> bilan 3 ga karrali sonlarni bo'sh joy bilan chiqaring.",
-      "Misol: kirish <code>10</code> → natija <code>3 6 9</code>",
+      "Misol: kirish <code>10</code> -> natija <code>3 6 9</code>",
     ],
     ru: [
       "Прочитайте положительное целое число <code>n</code> от пользователя.",
       "Используйте цикл <code>for</code> от 1 до <code>n</code>.",
       "Внутри цикла с помощью <code>if</code> выводите числа, кратные 3, через пробел.",
-      "Пример: ввод <code>10</code> → вывод <code>3 6 9</code>",
+      "Пример: ввод <code>10</code> -> вывод <code>3 6 9</code>",
     ],
     hints: [],
     starter: `#include <iostream>
@@ -2460,19 +2460,19 @@ int main() {
       "Define a function <code>int square(int x)</code> that returns <code>x * x</code>.",
       "In <code>main</code>, read an integer from the user.",
       "Call <code>square</code> on it and print the result.",
-      "Example: input <code>7</code> → output <code>Square = 49</code>",
+      "Example: input <code>7</code> -> output <code>Square = 49</code>",
     ],
     uz: [
       "<code>x * x</code> ni qaytaradigan <code>int square(int x)</code> funksiyasini aniqlang.",
       "<code>main</code> da foydalanuvchidan butun son o'qing.",
       "<code>square</code> ni chaqiring va natijani chiqaring.",
-      "Misol: kirish <code>7</code> → natija <code>Square = 49</code>",
+      "Misol: kirish <code>7</code> -> natija <code>Square = 49</code>",
     ],
     ru: [
       "Определите функцию <code>int square(int x)</code>, возвращающую <code>x * x</code>.",
       "В <code>main</code> прочитайте целое число от пользователя.",
       "Вызовите <code>square</code> на нём и выведите результат.",
-      "Пример: ввод <code>7</code> → вывод <code>Square = 49</code>",
+      "Пример: ввод <code>7</code> -> вывод <code>Square = 49</code>",
     ],
     hints: [],
     starter: `#include <iostream>
@@ -2520,19 +2520,19 @@ int main() {
       "Define a function <code>int sumTo(int n)</code> that returns 1+2+...+n using a loop.",
       "In <code>main</code>, read <code>n</code> from the user.",
       "Call <code>sumTo(n)</code> and print the result.",
-      "Example: input <code>5</code> → output <code>Sum = 15</code>",
+      "Example: input <code>5</code> -> output <code>Sum = 15</code>",
     ],
     uz: [
       "Sikl yordamida 1+2+...+n ni qaytaradigan <code>int sumTo(int n)</code> funksiyasini aniqlang.",
       "<code>main</code> da foydalanuvchidan <code>n</code> ni o'qing.",
       "<code>sumTo(n)</code> ni chaqiring va natijani chiqaring.",
-      "Misol: kirish <code>5</code> → natija <code>Sum = 15</code>",
+      "Misol: kirish <code>5</code> -> natija <code>Sum = 15</code>",
     ],
     ru: [
       "Определите функцию <code>int sumTo(int n)</code>, которая возвращает 1+2+...+n с помощью цикла.",
       "В <code>main</code> прочитайте <code>n</code> от пользователя.",
       "Вызовите <code>sumTo(n)</code> и выведите результат.",
-      "Пример: ввод <code>5</code> → вывод <code>Sum = 15</code>",
+      "Пример: ввод <code>5</code> -> вывод <code>Sum = 15</code>",
     ],
     hints: [],
     starter: `#include <iostream>
@@ -2580,19 +2580,19 @@ int main() {
       "Define a function <code>bool isEven(int x)</code> that returns <code>true</code> if x is even.",
       "In <code>main</code>, read an integer from the user.",
       "Use <code>isEven</code> with an <code>if-else</code> to print <code>Even</code> or <code>Odd</code>.",
-      "Example: input <code>7</code> → output <code>Odd</code>",
+      "Example: input <code>7</code> -> output <code>Odd</code>",
     ],
     uz: [
       "x juft bo'lsa <code>true</code> qaytaruvchi <code>bool isEven(int x)</code> funksiyasini aniqlang.",
       "<code>main</code> da foydalanuvchidan butun son o'qing.",
       "<code>isEven</code> ni <code>if-else</code> bilan ishlating va <code>Even</code> yoki <code>Odd</code> chiqaring.",
-      "Misol: kirish <code>7</code> → natija <code>Odd</code>",
+      "Misol: kirish <code>7</code> -> natija <code>Odd</code>",
     ],
     ru: [
       "Определите функцию <code>bool isEven(int x)</code>, которая возвращает <code>true</code>, если x чётное.",
       "В <code>main</code> прочитайте целое число от пользователя.",
       "Используйте <code>isEven</code> с <code>if-else</code>, чтобы вывести <code>Even</code> или <code>Odd</code>.",
-      "Пример: ввод <code>7</code> → вывод <code>Odd</code>",
+      "Пример: ввод <code>7</code> -> вывод <code>Odd</code>",
     ],
     hints: [],
     starter: `#include <iostream>
@@ -2747,19 +2747,19 @@ int main() {
       "Define a function <code>int maxOf(int a, int b)</code> that returns the larger value.",
       "In <code>main</code>, read two integers from the user.",
       "Call <code>maxOf</code> and print: <code>Max = ...</code>",
-      "Example: input <code>15 9</code> → output <code>Max = 15</code>",
+      "Example: input <code>15 9</code> -> output <code>Max = 15</code>",
     ],
     uz: [
       "Kattaroq qiymatni qaytaruvchi <code>int maxOf(int a, int b)</code> funksiyasini aniqlang.",
       "<code>main</code> da foydalanuvchidan ikkita butun son o'qing.",
       "<code>maxOf</code> ni chaqiring va chiqaring: <code>Max = ...</code>",
-      "Misol: kirish <code>15 9</code> → natija <code>Max = 15</code>",
+      "Misol: kirish <code>15 9</code> -> natija <code>Max = 15</code>",
     ],
     ru: [
       "Определите функцию <code>int maxOf(int a, int b)</code>, возвращающую большее значение.",
       "В <code>main</code> прочитайте два целых числа от пользователя.",
       "Вызовите <code>maxOf</code> и выведите: <code>Max = ...</code>",
-      "Пример: ввод <code>15 9</code> → вывод <code>Max = 15</code>",
+      "Пример: ввод <code>15 9</code> -> вывод <code>Max = 15</code>",
     ],
     hints: [],
     starter: `#include <iostream>
@@ -2805,19 +2805,19 @@ int main() {
     en: [
       "Read a positive integer <code>n</code> (height) from the user.",
       "Print n lines: line i has i asterisks (*).",
-      "Example: input <code>4</code> → output:<br><code>*</code><br><code>**</code><br><code>***</code><br><code>****</code>",
+      "Example: input <code>4</code> -> output:<br><code>*</code><br><code>**</code><br><code>***</code><br><code>****</code>",
       "Use a nested loop or repeated print logic.",
     ],
     uz: [
       "Foydalanuvchidan musbat butun <code>n</code> (balandlik) ni o'qing.",
       "n ta qator chiqaring: i-qatorda i ta yulduz (*).",
-      "Misol: kirish <code>4</code> → natija:<br><code>*</code><br><code>**</code><br><code>***</code><br><code>****</code>",
+      "Misol: kirish <code>4</code> -> natija:<br><code>*</code><br><code>**</code><br><code>***</code><br><code>****</code>",
       "Ichma-ich sikl yoki takroriy chiqarish mantig'idan foydalaning.",
     ],
     ru: [
       "Прочитайте положительное целое число <code>n</code> (высота) от пользователя.",
-      "Выведите n строк: в i-й строке — i звёздочек (*).",
-      "Пример: ввод <code>4</code> → вывод:<br><code>*</code><br><code>**</code><br><code>***</code><br><code>****</code>",
+      "Выведите n строк: в i-й строке - i звёздочек (*).",
+      "Пример: ввод <code>4</code> -> вывод:<br><code>*</code><br><code>**</code><br><code>***</code><br><code>****</code>",
       "Используйте вложенный цикл или повторяющуюся логику вывода.",
     ],
     hints: [],
@@ -2916,19 +2916,19 @@ int main() {
       "Read exactly 5 doubles from the user (one per line).",
       "Compute their sum, then their average (sum / 5).",
       "Print: <code>Average = ...</code>",
-      "Example: inputs <code>1 2 3 4 5</code> → output <code>Average = 3</code>",
+      "Example: inputs <code>1 2 3 4 5</code> -> output <code>Average = 3</code>",
     ],
     uz: [
       "Foydalanuvchidan aniq 5 ta double o'qing (har biri yangi qatorda).",
       "Yig'indini, so'ng o'rtachani (yig'indi / 5) hisoblang.",
       "Chiqaring: <code>Average = ...</code>",
-      "Misol: kirish <code>1 2 3 4 5</code> → natija <code>Average = 3</code>",
+      "Misol: kirish <code>1 2 3 4 5</code> -> natija <code>Average = 3</code>",
     ],
     ru: [
       "Прочитайте ровно 5 значений типа double от пользователя (по одному в строке).",
       "Вычислите их сумму, затем среднее (сумма / 5).",
       "Выведите: <code>Average = ...</code>",
-      "Пример: ввод <code>1 2 3 4 5</code> → вывод <code>Average = 3</code>",
+      "Пример: ввод <code>1 2 3 4 5</code> -> вывод <code>Average = 3</code>",
     ],
     hints: [],
     starter: `#include <iostream>
@@ -2973,19 +2973,19 @@ int main() {
       "Define a function <code>int myAbs(int x)</code> that returns the absolute value (non-negative).",
       "Use an <code>if-else</code> inside the function (do not use <code>abs()</code>).",
       "In <code>main</code>, read an integer and print: <code>|n| = ...</code>",
-      "Example: input <code>-7</code> → output <code>|n| = 7</code>",
+      "Example: input <code>-7</code> -> output <code>|n| = 7</code>",
     ],
     uz: [
       "Mutlaq qiymatni (nomanfiy) qaytaruvchi <code>int myAbs(int x)</code> funksiyasini aniqlang.",
       "Funksiya ichida <code>if-else</code> dan foydalaning (<code>abs()</code> ni ishlatmang).",
       "<code>main</code> da butun son o'qing va chiqaring: <code>|n| = ...</code>",
-      "Misol: kirish <code>-7</code> → natija <code>|n| = 7</code>",
+      "Misol: kirish <code>-7</code> -> natija <code>|n| = 7</code>",
     ],
     ru: [
       "Определите функцию <code>int myAbs(int x)</code>, возвращающую абсолютное значение (неотрицательное).",
       "Используйте внутри функции <code>if-else</code> (не используйте <code>abs()</code>).",
       "В <code>main</code> прочитайте целое число и выведите: <code>|n| = ...</code>",
-      "Пример: ввод <code>-7</code> → вывод <code>|n| = 7</code>",
+      "Пример: ввод <code>-7</code> -> вывод <code>|n| = 7</code>",
     ],
     hints: [],
     starter: `#include <iostream>
@@ -3032,19 +3032,19 @@ int main() {
       "Read a positive integer <code>n</code> from the user.",
       "Then read <code>n</code> integers.",
       "Find and print the LARGEST of them.",
-      "Example: <code>n = 4</code>, inputs <code>5 9 2 7</code> → output <code>Largest = 9</code>",
+      "Example: <code>n = 4</code>, inputs <code>5 9 2 7</code> -> output <code>Largest = 9</code>",
     ],
     uz: [
       "Foydalanuvchidan musbat butun <code>n</code> ni o'qing.",
       "Keyin <code>n</code> ta butun son o'qing.",
       "Ulardan ENG KATTASINI toping va chiqaring.",
-      "Misol: <code>n = 4</code>, kirish <code>5 9 2 7</code> → natija <code>Largest = 9</code>",
+      "Misol: <code>n = 4</code>, kirish <code>5 9 2 7</code> -> natija <code>Largest = 9</code>",
     ],
     ru: [
       "Прочитайте положительное целое число <code>n</code> от пользователя.",
       "Затем прочитайте <code>n</code> целых чисел.",
       "Найдите и выведите НАИБОЛЬШЕЕ из них.",
-      "Пример: <code>n = 4</code>, ввод <code>5 9 2 7</code> → вывод <code>Largest = 9</code>",
+      "Пример: <code>n = 4</code>, ввод <code>5 9 2 7</code> -> вывод <code>Largest = 9</code>",
     ],
     hints: [],
     starter: `#include <iostream>
@@ -3092,19 +3092,19 @@ int main() {
       "Define a function <code>int cube(int x)</code> that returns <code>x * x * x</code>.",
       "In <code>main</code>, read an integer from the user.",
       "Call <code>cube</code> and print: <code>Cube = ...</code>",
-      "Example: input <code>4</code> → output <code>Cube = 64</code>",
+      "Example: input <code>4</code> -> output <code>Cube = 64</code>",
     ],
     uz: [
       "<code>x * x * x</code> ni qaytaruvchi <code>int cube(int x)</code> funksiyasini aniqlang.",
       "<code>main</code> da foydalanuvchidan butun son o'qing.",
       "<code>cube</code> ni chaqiring va chiqaring: <code>Cube = ...</code>",
-      "Misol: kirish <code>4</code> → natija <code>Cube = 64</code>",
+      "Misol: kirish <code>4</code> -> natija <code>Cube = 64</code>",
     ],
     ru: [
       "Определите функцию <code>int cube(int x)</code>, возвращающую <code>x * x * x</code>.",
       "В <code>main</code> прочитайте целое число от пользователя.",
       "Вызовите <code>cube</code> и выведите: <code>Cube = ...</code>",
-      "Пример: ввод <code>4</code> → вывод <code>Cube = 64</code>",
+      "Пример: ввод <code>4</code> -> вывод <code>Cube = 64</code>",
     ],
     hints: [],
     starter: `#include <iostream>
