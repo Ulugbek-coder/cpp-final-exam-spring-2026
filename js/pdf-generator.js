@@ -690,12 +690,33 @@ async function generatePDFReport() {
     }
 
     if (reqsEn.length > 0 || reqsUz.length > 0 || reqsRu.length > 0) {
-      // Section header
+      // Section header — split into two text() calls because the Russian
+      // "Требования к задаче" needs the Cyrillic-capable NotoSans font.
+      // Helvetica would render Cyrillic characters as garbled glyphs.
       checkPage(20);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(9.5);
       doc.setTextColor(0, 0, 0);
-      doc.text("Problem Requirements / Masala Talablari / Требования к задаче:", margin, y + 8);
+      const headEn = "Problem Requirements / Masala Talablari";
+      doc.text(headEn, margin, y + 8);
+      // Compute the X offset to place the Russian portion right after the
+      // EN/UZ portion. We add a separator " / " in helvetica too (Latin chars).
+      const sepEn = " / ";
+      const headEnW = doc.getTextWidth(headEn);
+      doc.text(sepEn, margin + headEnW, y + 8);
+      const sepW = doc.getTextWidth(sepEn);
+      // Russian part in Cyrillic font (or graceful fallback to helvetica
+      // if the Cyrillic font failed to load — at least it won't crash)
+      if (hasCyrFont) {
+        doc.setFont("NotoSans", "bold");
+      }
+      doc.setFontSize(9.5);
+      doc.setTextColor(0, 0, 0);
+      doc.text(
+        "Требования к задаче:",
+        margin + headEnW + sepW,
+        y + 8,
+      );
       y += 14;
 
       // English bullets — normal weight, 9pt
