@@ -5,14 +5,107 @@
 // - Part 1: MC score summary + 5x6 grid with Correct / Wrong / Not Answered labels
 // - Part 2: reference solution vs STUDENT SOLUTION side by side
 // - Filename: Group_ID_First_Last.pdf  (e.g. FAR1_250255_Azizbek_Mansurov.pdf)
+//
+// May 2026: PDF now contains Russian text in addition to English + Uzbek.
+// jsPDF's built-in Helvetica does not include Cyrillic glyphs, so we lazily
+// fetch a Cyrillic-capable TTF (DejaVu Sans, Roboto fallback) and register
+// it with jsPDF before drawing. Latin/Uzbek text continues to use the
+// built-in Helvetica for size/efficiency. Russian text uses the embedded
+// font through doc.setFont("Cyr", ...).
 // =============================================================
 
-function generatePDFReport() {
+// ---------------- Cyrillic font loader ----------------
+// Cached promise so we only fetch the font once per page load
+let _cyrFontLoadingPromise = null;
+function loadCyrillicFont() {
+  if (_cyrFontLoadingPromise) return _cyrFontLoadingPromise;
+  _cyrFontLoadingPromise = (async function () {
+    // Try multiple CDN sources. Roboto from Google Fonts unpkg mirror is small
+    // (~169KB regular) and includes Cyrillic.
+    const FONT_URLS = [
+      // Roboto Regular TTF (Cyrillic-capable, Apache 2.0)
+      "https://cdn.jsdelivr.net/npm/@fontsource/roboto@5.0.13/files/roboto-cyrillic-400-normal.woff",
+      "https://cdn.jsdelivr.net/npm/@fontsource/roboto@5.0.13/files/roboto-latin-400-normal.woff",
+    ];
+    // Primary: NotoSans Regular TTF from jsdelivr (Cyrillic-capable, OFL)
+    const TTF_URL =
+      "https://cdn.jsdelivr.net/gh/googlefonts/noto-fonts@main/hinted/ttf/NotoSans/NotoSans-Regular.ttf";
+    const TTF_BOLD_URL =
+      "https://cdn.jsdelivr.net/gh/googlefonts/noto-fonts@main/hinted/ttf/NotoSans/NotoSans-Bold.ttf";
+
+    async function fetchAsBase64(url) {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Font fetch failed: " + res.status);
+      const buf = await res.arrayBuffer();
+      // Convert ArrayBuffer to base64 efficiently in chunks
+      const bytes = new Uint8Array(buf);
+      let bin = "";
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk) {
+        bin += String.fromCharCode.apply(
+          null,
+          bytes.subarray(i, Math.min(i + chunk, bytes.length)),
+        );
+      }
+      return btoa(bin);
+    }
+
+    try {
+      const [b64Regular, b64Bold] = await Promise.all([
+        fetchAsBase64(TTF_URL),
+        fetchAsBase64(TTF_BOLD_URL),
+      ]);
+      return { b64Regular, b64Bold };
+    } catch (err) {
+      console.warn("Cyrillic font load failed; Russian text will fall back to Helvetica:", err);
+      return null;
+    }
+  })();
+  return _cyrFontLoadingPromise;
+}
+
+// Register the loaded font into a fresh jsPDF instance.
+function attachCyrillicFontToDoc(doc, fontPair) {
+  if (!fontPair) return false;
+  try {
+    doc.addFileToVFS("NotoSans-Regular.ttf", fontPair.b64Regular);
+    doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal");
+    doc.addFileToVFS("NotoSans-Bold.ttf", fontPair.b64Bold);
+    doc.addFont("NotoSans-Bold.ttf", "NotoSans", "bold");
+    return true;
+  } catch (err) {
+    console.warn("Cyrillic font registration failed:", err);
+    return false;
+  }
+}
+
+async function generatePDFReport() {
   const data = window._submissionData;
   if (!data) return null;
 
+  // Load Cyrillic font (cached); if it fails we proceed with Helvetica only
+  const fontPair = await loadCyrillicFont();
+
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: "pt", format: "a4" });
+  const hasCyrFont = attachCyrillicFontToDoc(doc, fontPair);
+
+  // Helper: switch to Cyrillic font for a Russian text block, then back.
+  // If the Cyrillic font failed to load, we fall back to Helvetica which
+  // will print question marks for Cyrillic glyphs — visible but degraded.
+  function withCyr(weight, fn) {
+    if (hasCyrFont) {
+      doc.setFont("NotoSans", weight === "italic" ? "normal" : weight || "normal");
+    } else {
+      doc.setFont("helvetica", weight || "normal");
+    }
+    fn();
+  }
+
+  // Expose for use elsewhere
+  doc._hasCyrFont = hasCyrFont;
+  doc._withCyr = withCyr;
+
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
   const margin = 36;
@@ -582,25 +675,32 @@ function generatePDFReport() {
     doc.setFont("courier", "normal");
     doc.setFontSize(codeFontSize);
 
-    // Tag each student line as added vs unchanged starter, and wrap for width
+    // Tag each student line:
+    //   - added: true if line content is NOT in the starter (student wrote it)
+    //   - isTodo: true if line is a `// TODO` comment from the starter
+    // We carry these flags into each wrapped piece so visual style stays
+    // consistent even on wrapped lines.
     const studentOriginalLines = studentCode.split("\n");
-    const studentEntries = []; // [{ text, added }]
+    const studentEntries = []; // [{ text, added, isTodo }]
     studentOriginalLines.forEach(function (origLine) {
       const trimmed = origLine.trim();
       const isAdded = trimmed.length > 0 && !starterSet.has(trimmed);
+      const isTodo = !isAdded && /^\s*\/\/\s*TODO/i.test(origLine);
       const wrap = doc.splitTextToSize(origLine || " ", codeInnerW);
       wrap.forEach(function (piece) {
-        studentEntries.push({ text: piece, added: isAdded });
+        studentEntries.push({ text: piece, added: isAdded, isTodo: isTodo });
       });
     });
 
-    // Wrap solution the same way (no diff highlighting — just plain)
+    // Wrap solution the same way (no diff highlighting - just plain).
+    // Tag if a line is a comment line so we can render it in gray.
     const solutionLines = solutionCode.split("\n");
-    const solutionEntries = [];
+    const solutionEntries = []; // [{ text, isComment }]
     solutionLines.forEach(function (origLine) {
+      const isComment = /^\s*\/\//.test(origLine);
       const wrap = doc.splitTextToSize(origLine || " ", codeInnerW);
       wrap.forEach(function (piece) {
-        solutionEntries.push(piece);
+        solutionEntries.push({ text: piece, isComment: isComment });
       });
     });
 
@@ -621,8 +721,11 @@ function generatePDFReport() {
     const leftX = margin;
     const rightX = margin + colW + colGap;
 
+    // STUDENT panel: dark navy header
     doc.setFillColor(30, 58, 95);
     doc.rect(leftX, y, colW, headerH, "F");
+    // SOLUTION panel: warm orange/brown header (instructor reference)
+    doc.setFillColor(184, 92, 30);
     doc.rect(rightX, y, colW, headerH, "F");
 
     // Smaller font so the full bilingual labels fit comfortably in each
@@ -645,21 +748,39 @@ function generatePDFReport() {
     y += headerH;
 
     // ----- Panel backgrounds (side-by-side) -----
-    doc.setFillColor(246, 249, 252);
+    // Left (student): cool blue-gray. Right (solution): warm cream/orange tint.
     doc.setDrawColor(30, 58, 95);
     doc.setLineWidth(0.8);
+    doc.setFillColor(246, 249, 252);
     doc.rect(leftX, y, colW, boxH, "FD");
+
+    doc.setDrawColor(184, 92, 30);
+    doc.setFillColor(253, 244, 230);
     doc.rect(rightX, y, colW, boxH, "FD");
 
+    // Helper: detect Cyrillic in a string. If present and we have the
+    // Cyrillic font loaded, switch to it for that line; otherwise fall back
+    // to courier (Latin only).
+    function hasCyrillic(s) {
+      for (let i = 0; i < s.length; i++) {
+        const code = s.charCodeAt(i);
+        if (code >= 0x0400 && code <= 0x04FF) return true;
+      }
+      return false;
+    }
+
     // ----- Left column: student code with diff highlighting -----
+    // Color rules:
+    //   - Lines the student wrote:      BLUE text + YELLOW highlight, BOLD
+    //   - TODO comment lines (starter): GRAY text, normal
+    //   - All other starter code:       BLACK text, normal
     const textStartY = y + 10;
-    doc.setFont("courier", "normal");
-    doc.setFontSize(codeFontSize);
     studentEntries.forEach(function (entry, idx) {
       const ly = textStartY + idx * lineHeight;
       if (ly > y + boxH - 6) return;
+
+      // Draw yellow highlight ONLY behind student-written lines
       if (entry.added) {
-        // Yellow highlight strip marking lines student wrote (vs. starter)
         doc.setFillColor(255, 240, 140);
         doc.rect(
           leftX + 2,
@@ -668,25 +789,51 @@ function generatePDFReport() {
           lineHeight,
           "F",
         );
-        // Same typeface (courier) as starter, but BOLD + blue color +
-        // yellow highlight to make student-written lines stand out clearly.
-        doc.setFont("courier", "bold");
-        doc.setTextColor(10, 30, 160);
+      }
+
+      // Pick font: NotoSans for Cyrillic, courier for everything else
+      const useCyr = hasCyrillic(entry.text) && hasCyrFont;
+      if (useCyr) {
+        doc.setFont("NotoSans", entry.added ? "bold" : "normal");
       } else {
-        doc.setFont("courier", "normal");
-        doc.setTextColor(60, 60, 60);
+        doc.setFont("courier", entry.added ? "bold" : "normal");
+      }
+      doc.setFontSize(codeFontSize);
+
+      // Color
+      if (entry.added) {
+        // Student-written: deep blue, bold
+        doc.setTextColor(10, 30, 160);
+      } else if (entry.isTodo) {
+        // TODO comment: gray (less prominent than student code)
+        doc.setTextColor(120, 120, 120);
+      } else {
+        // Other starter code: black
+        doc.setTextColor(0, 0, 0);
       }
       doc.text(entry.text, leftX + 6, ly);
     });
 
-    // ----- Right column: sample solution (plain black, no diff coloring) -----
-    doc.setFont("courier", "normal");
+    // ----- Right column: sample solution -----
+    // Color rules:
+    //   - Comment lines:    GRAY (helps distinguish guidance from code)
+    //   - Real code lines:  BLACK
     doc.setFontSize(codeFontSize);
-    doc.setTextColor(0, 0, 0);
-    solutionEntries.forEach(function (piece, idx) {
+    solutionEntries.forEach(function (entry, idx) {
       const ly = textStartY + idx * lineHeight;
       if (ly > y + boxH - 6) return;
-      doc.text(piece, rightX + 6, ly);
+      const useCyr = hasCyrillic(entry.text) && hasCyrFont;
+      if (useCyr) {
+        doc.setFont("NotoSans", "normal");
+      } else {
+        doc.setFont("courier", "normal");
+      }
+      if (entry.isComment) {
+        doc.setTextColor(120, 120, 120);
+      } else {
+        doc.setTextColor(0, 0, 0);
+      }
+      doc.text(entry.text, rightX + 6, ly);
     });
 
     doc.setTextColor(0, 0, 0);
@@ -848,7 +995,9 @@ function generatePDFReport() {
   );
 
   // ---------- Prominent red warning banner for students ----------
-  const warnH = 94;
+  // Banner is now trilingual (EN / UZ / RU). We expand the height so
+  // each language gets its own block.
+  const warnH = 130;
   // Dark red solid background, thick white border
   doc.setFillColor(179, 38, 30);
   doc.rect(margin, y, contentW, warnH, "F");
@@ -871,29 +1020,57 @@ function generatePDFReport() {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
   doc.setTextColor(255, 255, 255);
-  doc.text("FOR INSTRUCTOR USE ONLY  /  FAQAT O'QITUVCHI UCHUN", tx, y + 22);
+  doc.text(
+    "FOR INSTRUCTOR USE ONLY  /  FAQAT O'QITUVCHI UCHUN",
+    tx,
+    y + 16,
+  );
+  // Russian header line uses Cyrillic font
+  withCyr("bold", function () {
+    doc.setFontSize(11);
+    doc.setTextColor(255, 255, 255);
+    doc.text("ТОЛЬКО ДЛЯ ПРЕПОДАВАТЕЛЯ", tx, y + 30);
+  });
 
+  // English line
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(11);
+  doc.setFontSize(10);
   doc.text(
     "Students MUST NOT edit this section. Any student edits here will result in a total grade",
     tx,
-    y + 40,
+    y + 50,
   );
-  doc.text("of ZERO (0 points) for the entire exam.", tx, y + 52);
+  doc.text("of ZERO (0 points) for the entire exam.", tx, y + 62);
 
+  // Uzbek line (italic)
   doc.setFont("helvetica", "italic");
-  doc.setFontSize(11);
+  doc.setFontSize(10);
   doc.text(
     "Talabalar bu qismni tahrirlamasligi SHART. Bu qismga talaba tomonidan kiritilgan har qanday",
     tx,
-    y + 68,
+    y + 80,
   );
   doc.text(
     "o'zgarish butun imtihon uchun NOL (0 ball) bilan natijalanadi.",
     tx,
-    y + 80,
+    y + 92,
   );
+
+  // Russian line (Cyrillic font)
+  withCyr("normal", function () {
+    doc.setFontSize(10);
+    doc.setTextColor(255, 255, 255);
+    doc.text(
+      "Студенты НЕ должны редактировать этот раздел. Любые правки студента здесь приведут",
+      tx,
+      y + 110,
+    );
+    doc.text(
+      "к итоговой оценке НОЛЬ (0 баллов) за весь экзамен.",
+      tx,
+      y + 122,
+    );
+  });
 
   doc.setTextColor(0, 0, 0);
   y += warnH + 14;
@@ -958,27 +1135,28 @@ function generatePDFReport() {
   }
 
   // Layout:
-  //   Row 1: Problem 1 (/10) | Problem 2 (/15) | Problem 3 (/15) | Problem 4 (/20)  (4 boxes side-by-side)
-  //   Row 2: Comments (wide multiline field)
-  //   Row 3: MC (auto, read-only) | Total coding (/60, editable) | Final grade (/100, editable)
-  //   Row 4: Graded by | Date
+  //   Row 1: Problem 1 (/10)       | Problem 2 (/15)       (2 boxes side-by-side)
+  //   Row 2: Problem 3 (/15)       | Problem 4 (/20)       (2 boxes side-by-side)
+  //   Row 3: Comments (wide multiline field)
+  //   Row 4: MC (auto, read-only)  | Total coding (/60)    | Final grade (/100)
+  //   Row 5: Graded by             | Date
+  // Boxes are bigger now (half-width × taller) so labels in EN+UZ fit cleanly.
   doc.setTextColor(0, 0, 0);
 
-  // Row 1: four score boxes
-  const quarterW = (contentW - 30) / 4;  // 4 columns with 3 gaps of 10
-  const quarter1X = margin;
-  const quarter2X = margin + quarterW + 10;
-  const quarter3X = margin + 2 * quarterW + 20;
-  const quarter4X = margin + 3 * quarterW + 30;
-  const smallH = 28;
+  // Row 1 + Row 2: 2x2 grid of score boxes
+  const halfFormW = (contentW - 14) / 2;  // 2 columns with 14pt gap
+  const colLeftX = margin;
+  const colRightX = margin + halfFormW + 14;
+  const smallH = 36;
 
   let bottomY;
+  // Row 1: P1 (left), P2 (right)
   bottomY = addFormField(
     "Coding Problem 1 (out of 10)",
     "1-Kodlash masalasi (10 dan)",
-    quarter1X,
+    colLeftX,
     y,
-    quarterW,
+    halfFormW,
     smallH,
     "coding1_score",
     "",
@@ -987,20 +1165,23 @@ function generatePDFReport() {
   addFormField(
     "Coding Problem 2 (out of 15)",
     "2-Kodlash masalasi (15 dan)",
-    quarter2X,
+    colRightX,
     y,
-    quarterW,
+    halfFormW,
     smallH,
     "coding2_score",
     "",
     false,
   );
-  addFormField(
+  y = bottomY + 12;
+
+  // Row 2: P3 (left), P4 (right)
+  bottomY = addFormField(
     "Coding Problem 3 (out of 15)",
     "3-Kodlash masalasi (15 dan)",
-    quarter3X,
+    colLeftX,
     y,
-    quarterW,
+    halfFormW,
     smallH,
     "coding3_score",
     "",
@@ -1009,9 +1190,9 @@ function generatePDFReport() {
   addFormField(
     "Coding Problem 4 (out of 20)",
     "4-Kodlash masalasi (20 dan)",
-    quarter4X,
+    colRightX,
     y,
-    quarterW,
+    halfFormW,
     smallH,
     "coding4_score",
     "",
@@ -1197,14 +1378,18 @@ function generatePDFReport() {
 window.generatePDFReport = generatePDFReport;
 window.downloadPDF = function () {
   // Used by the "Re-download PDF" buttons. Reuses the last built result
-  // if available; otherwise rebuilds.
+  // if available; otherwise rebuilds (async).
   if (window._pdfResult && typeof window._pdfResult.save === "function") {
     window._pdfResult.save();
     return;
   }
-  const r = generatePDFReport();
-  if (r) {
-    window._pdfResult = r;
-    r.save();
-  }
+  // Async build path
+  Promise.resolve(generatePDFReport()).then(function (r) {
+    if (r) {
+      window._pdfResult = r;
+      r.save();
+    }
+  }).catch(function (err) {
+    console.error("PDF rebuild failed:", err);
+  });
 };
