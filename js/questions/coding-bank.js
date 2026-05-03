@@ -46,10 +46,6 @@ using namespace std;
 int main() {
     int sum = 0;
 
-    // TODO: Loop through numbers 1 to 50 and add odd numbers to sum
-    // TODO: 1 dan 50 gacha sonlar bo'ylab sikl yozing va toq sonlarni sum ga qo'shing
-
-
     cout << "Sum of odd numbers = " << sum << endl;
     return 0;
 }`,
@@ -58,10 +54,6 @@ using namespace std;
 
 int main() {
     int sum = 0;
-
-    // TODO: Loop through numbers 1 to 50 and add odd numbers to sum
-    // TODO: Пройдите циклом по числам от 1 до 50 и добавляйте нечётные числа к sum
-
 
     cout << "Sum of odd numbers = " << sum << endl;
     return 0;
@@ -100,32 +92,20 @@ using namespace std;
 
 int main() {
 
-    // TODO: Call findMax and store the result
-    // TODO: findMax ni chaqiring va natijani saqlang
-
-
     cout << "Maximum = " << /* result */ 0 << endl;
     return 0;
 }
 
-// TODO: Define the findMax function below
-// TODO: findMax funksiyasini quyida aniqlang
 `,
     starter_ru: `#include <iostream>
 using namespace std;
 
 int main() {
 
-    // TODO: Call findMax and store the result
-    // TODO: Вызовите findMax и сохраните результат
-
-
     cout << "Maximum = " << /* result */ 0 << endl;
     return 0;
 }
 
-// TODO: Define the findMax function below
-// TODO: Определите функцию findMax ниже
 `,
   },
   {
@@ -166,10 +146,6 @@ int main() {
 
     int sum = 0;
 
-    // TODO: Loop to extract and add each digit to sum
-    // TODO: Har bir raqamni ajratib, sum ga qo'shing
-
-
     cout << "Sum of digits = " << sum << endl;
     return 0;
 }`,
@@ -182,10 +158,6 @@ int main() {
     cin >> n;
 
     int sum = 0;
-
-    // TODO: Loop to extract and add each digit to sum
-    // TODO: В цикле извлекайте каждую цифру и добавляйте к sum
-
 
     cout << "Sum of digits = " << sum << endl;
     return 0;
@@ -227,10 +199,6 @@ int main() {
     cout << "Enter a number: ";
     cin >> n;
 
-    // TODO: Print multiplication table of n from 1 to 10
-    // TODO: n ning 1 dan 10 gacha ko'paytirish jadvalini chiqaring
-
-
     return 0;
 }`,
     starter_ru: `#include <iostream>
@@ -240,10 +208,6 @@ int main() {
     int n;
     cout << "Enter a number: ";
     cin >> n;
-
-    // TODO: Print multiplication table of n from 1 to 10
-    // TODO: Выведите таблицу умножения числа n от 1 до 10
-
 
     return 0;
 }`,
@@ -286,10 +250,6 @@ int main() {
 
     long long fact = 1;
 
-    // TODO: Loop from 1 to n and multiply fact by i each time
-    // TODO: 1 dan n gacha aylanib, har gal fact ni i ga ko'paytiring
-
-
     cout << n << "! = " << fact << endl;
     return 0;
 }`,
@@ -302,10 +262,6 @@ int main() {
     cin >> n;
 
     long long fact = 1;
-
-    // TODO: Loop from 1 to n and multiply fact by i each time
-    // TODO: Пройдите циклом от 1 до n и каждый раз умножайте fact на i
-
 
     cout << n << "! = " << fact << endl;
     return 0;
@@ -349,10 +305,6 @@ int main() {
 
     bool isPrime = true;
 
-    // TODO: Handle special cases (n < 2) and then loop from 2 to n-1
-    // TODO: Maxsus holatlar (n < 2) ni ko'rib chiqing va 2 dan n-1 gacha sikl yoziing
-
-
     cout << (isPrime ? "Prime" : "Not prime") << endl;
     return 0;
 }`,
@@ -365,10 +317,6 @@ int main() {
     cin >> n;
 
     bool isPrime = true;
-
-    // TODO: Handle special cases (n < 2) and then loop from 2 to n-1
-    // TODO: Обработайте особые случаи (n < 2), затем пройдите циклом от 2 до n-1
-
 
     cout << (isPrime ? "Prime" : "Not prime") << endl;
     return 0;
@@ -412,10 +360,6 @@ int main() {
 
     int count = 0;
 
-    // TODO: Count how many digits n has using a while loop
-    // TODO: while sikli yordamida n ning raqamlar sonini toping
-
-
     cout << "Digit count = " << count << endl;
     return 0;
 }`,
@@ -428,10 +372,6 @@ int main() {
     cin >> n;
 
     int count = 0;
-
-    // TODO: Count how many digits n has using a while loop
-    // TODO: Подсчитайте количество цифр в n с помощью цикла while
-
 
     cout << "Digit count = " << count << endl;
     return 0;
@@ -475,10 +415,6 @@ int main() {
 
     int sum = 0;
 
-    // TODO: Sum all even numbers from 1 to n
-    // TODO: 1 dan n gacha barcha juft sonlarni qo'shing
-
-
     cout << "Sum of evens = " << sum << endl;
     return 0;
 }`,
@@ -491,10 +427,6 @@ int main() {
     cin >> n;
 
     int sum = 0;
-
-    // TODO: Sum all even numbers from 1 to n
-    // TODO: Сложите все чётные числа от 1 до n
-
 
     cout << "Sum of evens = " << sum << endl;
     return 0;
@@ -538,10 +470,6 @@ int main() {
 
     int a = 0, b = 1;
 
-    // TODO: Print the first n Fibonacci numbers space-separated
-    // TODO: Birinchi n ta Fibonachchi sonini bo'sh joy bilan ajratib chiqaring
-
-
     cout << endl;
     return 0;
 }`,
@@ -554,10 +482,6 @@ int main() {
     cin >> n;
 
     int a = 0, b = 1;
-
-    // TODO: Print the first n Fibonacci numbers space-separated
-    // TODO: Выведите первые n чисел Фибоначчи через пробел
-
 
     cout << endl;
     return 0;
@@ -591,36 +515,20 @@ int main() {
     starter: `#include <iostream>
 using namespace std;
 
-// TODO: Define double toFahrenheit(double c) here
-// TODO: double toFahrenheit(double c) funksiyasini shu yerda aniqlang
-
-
 int main() {
     double c;
     cout << "Enter temperature in Celsius: ";
     cin >> c;
-
-    // TODO: Call toFahrenheit and print the result
-    // TODO: toFahrenheit ni chaqiring va natijani chop eting
-
 
     return 0;
 }`,
     starter_ru: `#include <iostream>
 using namespace std;
 
-// TODO: Define double toFahrenheit(double c) here
-// TODO: Определите функцию double toFahrenheit(double c) здесь
-
-
 int main() {
     double c;
     cout << "Enter temperature in Celsius: ";
     cin >> c;
-
-    // TODO: Call toFahrenheit and print the result
-    // TODO: Вызовите toFahrenheit и выведите результат
-
 
     return 0;
 }`,
@@ -661,10 +569,6 @@ int main() {
     cout << "Enter two positive integers: ";
     cin >> a >> b;
 
-    // TODO: Use Euclid's algorithm in a while loop to find the GCD
-    // TODO: EKUB ni topish uchun Evklid algoritmini while siklida qo'llang
-
-
     cout << "GCD = " << a << endl;
     return 0;
 }`,
@@ -675,10 +579,6 @@ int main() {
     int a, b;
     cout << "Enter two positive integers: ";
     cin >> a >> b;
-
-    // TODO: Use Euclid's algorithm in a while loop to find the GCD
-    // TODO: Используйте алгоритм Евклида в цикле while для нахождения НОД
-
 
     cout << "GCD = " << a << endl;
     return 0;
@@ -715,30 +615,14 @@ int main() {
     starter: `#include <iostream>
 using namespace std;
 
-// TODO: Define int power(int base, int exp) here
-// TODO: int power(int base, int exp) funksiyasini shu yerda aniqlang
-
-
 int main() {
-
-    // TODO: Call power(3, 4) and print the result
-    // TODO: power(3, 4) ni chaqiring va natijani chop eting
-
 
     return 0;
 }`,
     starter_ru: `#include <iostream>
 using namespace std;
 
-// TODO: Define int power(int base, int exp) here
-// TODO: Определите функцию int power(int base, int exp) здесь
-
-
 int main() {
-
-    // TODO: Call power(3, 4) and print the result
-    // TODO: Вызовите power(3, 4) и выведите результат
-
 
     return 0;
 }`,
@@ -779,15 +663,7 @@ int main() {
 
     cout << "Enter 6 numbers: ";
 
-    // TODO: Read 6 numbers into the array
-    // TODO: 6 ta sonni massivga o'qing
-
-
     cout << "Reversed: ";
-
-    // TODO: Print array elements from last to first
-    // TODO: Massiv elementlarini oxirgidan birinchiga chop eting
-
 
     cout << endl;
     return 0;
@@ -800,15 +676,7 @@ int main() {
 
     cout << "Enter 6 numbers: ";
 
-    // TODO: Read 6 numbers into the array
-    // TODO: Прочитайте 6 чисел в массив
-
-
     cout << "Reversed: ";
-
-    // TODO: Print array elements from last to first
-    // TODO: Выведите элементы массива с последнего до первого
-
 
     cout << endl;
     return 0;
@@ -850,14 +718,6 @@ int main() {
 
     int count = 0;
 
-    // TODO: Loop through each character of word
-    // TODO: word ning har bir belgisi bo'ylab sikl yurging
-
-
-        // TODO: If the character is uppercase (A-Z), increment count
-        // TODO: Agar belgi katta harf bo'lsa (A-Z), count ni oshiring
-
-
     cout << "Uppercase: " << count << endl;
     return 0;
 }`,
@@ -871,14 +731,6 @@ int main() {
     cin >> word;
 
     int count = 0;
-
-    // TODO: Loop through each character of word
-    // TODO: Пройдите циклом по каждому символу строки word
-
-
-        // TODO: If the character is uppercase (A-Z), increment count
-        // TODO: Если символ - заглавная буква (A-Z), увеличьте count
-
 
     cout << "Uppercase: " << count << endl;
     return 0;
@@ -920,14 +772,6 @@ int main() {
 
     cout << "Enter 5 numbers: ";
 
-    // TODO: Read 5 values into arr
-    // TODO: 5 ta qiymatni arr ga o'qing
-
-
-    // TODO: Compute the sum in a loop, then the average as a double
-    // TODO: Sikl bilan yig'indini hisoblang, keyin o'rtachani double sifatida
-
-
     cout << "Average = " << 0.0 /* replace with your computed average */ << endl;
     return 0;
 }`,
@@ -938,14 +782,6 @@ int main() {
     int arr[5];
 
     cout << "Enter 5 numbers: ";
-
-    // TODO: Read 5 values into arr
-    // TODO: Прочитайте 5 значений в arr
-
-
-    // TODO: Compute the sum in a loop, then the average as a double
-    // TODO: Посчитайте сумму в цикле, затем среднее как double
-
 
     cout << "Average = " << 0.0 /* replace with your computed average */ << endl;
     return 0;
@@ -987,10 +823,6 @@ int main() {
 
     int count = 0;
 
-    // TODO: Loop through each character and count vowels
-    // TODO: Har bir belgi bo'ylab yurib, unlilarni sanang
-
-
     cout << "Vowels: " << count << endl;
     return 0;
 }`,
@@ -1004,10 +836,6 @@ int main() {
     cin >> word;
 
     int count = 0;
-
-    // TODO: Loop through each character and count vowels
-    // TODO: Пройдите циклом по каждому символу и подсчитайте гласные
-
 
     cout << "Vowels: " << count << endl;
     return 0;
@@ -1049,15 +877,7 @@ int main() {
 
     cout << "Enter 6 numbers: ";
 
-    // TODO: Read 6 numbers into arr
-    // TODO: 6 ta sonni arr ga o'qing
-
-
     int min = arr[0];
-
-    // TODO: Loop from index 1 to 5; if arr[i] < min, update min
-    // TODO: 1 dan 5 gacha yurib, arr[i] < min bo'lsa, min ni yangilang
-
 
     cout << "Minimum = " << min << endl;
     return 0;
@@ -1070,15 +890,7 @@ int main() {
 
     cout << "Enter 6 numbers: ";
 
-    // TODO: Read 6 numbers into arr
-    // TODO: Прочитайте 6 чисел в arr
-
-
     int min = arr[0];
-
-    // TODO: Loop from index 1 to 5; if arr[i] < min, update min
-    // TODO: Пройдите циклом от индекса 1 до 5; если arr[i] < min, обновите min
-
 
     cout << "Minimum = " << min << endl;
     return 0;
@@ -1124,10 +936,6 @@ int main() {
 
     int count = 0;
 
-    // TODO: Loop through arr and count how many equal t
-    // TODO: arr bo'ylab yurib, t ga teng nechtasini sanang
-
-
     cout << "Occurrences = " << count << endl;
     return 0;
 }`,
@@ -1142,10 +950,6 @@ int main() {
     cin >> t;
 
     int count = 0;
-
-    // TODO: Loop through arr and count how many equal t
-    // TODO: Пройдите циклом по arr и подсчитайте, сколько равно t
-
 
     cout << "Occurrences = " << count << endl;
     return 0;
@@ -1188,10 +992,6 @@ int main() {
     cout << "Enter a word: ";
     cin >> s;
 
-    // TODO: Print s from last char to first char
-    // TODO: s ni oxirgi belgidan birinchi belgigacha chop eting
-
-
     cout << endl;
     return 0;
 }`,
@@ -1203,10 +1003,6 @@ int main() {
     string s;
     cout << "Enter a word: ";
     cin >> s;
-
-    // TODO: Print s from last char to first char
-    // TODO: Выведите s от последнего символа до первого
-
 
     cout << endl;
     return 0;
@@ -1245,10 +1041,6 @@ int main() {
 
     bool isPalin = true;
 
-    // TODO: Compare characters from both ends moving inward
-    // TODO: Ikki tomondan ichkariga qarab belgilarni taqqoslang
-
-
     cout << (isPalin ? "Palindrome" : "Not palindrome") << endl;
     return 0;
 }`,
@@ -1262,10 +1054,6 @@ int main() {
     cin >> s;
 
     bool isPalin = true;
-
-    // TODO: Compare characters from both ends moving inward
-    // TODO: Сравните символы с обоих концов, двигаясь к центру
-
 
     cout << (isPalin ? "Palindrome" : "Not palindrome") << endl;
     return 0;
@@ -1307,10 +1095,6 @@ int main() {
 
     int count = 0;
 
-    // TODO: Count spaces, handle the empty case, then add 1 if non-empty
-    // TODO: Bo'shliqlarni sanang, bo'sh holatni hisobga oling, keyin bo'sh bo'lmasa 1 qo'shing
-
-
     cout << "Word count = " << count << endl;
     return 0;
 }`,
@@ -1324,10 +1108,6 @@ int main() {
     getline(cin, line);
 
     int count = 0;
-
-    // TODO: Count spaces, handle the empty case, then add 1 if non-empty
-    // TODO: Подсчитайте пробелы, учтите пустой случай, затем прибавьте 1, если строка не пуста
-
 
     cout << "Word count = " << count << endl;
     return 0;
@@ -1369,14 +1149,6 @@ int main() {
 
     cout << "Enter 6 numbers: ";
 
-    // TODO: Read 6 numbers into arr
-    // TODO: 6 ta sonni arr ga o'qing
-
-
-    // TODO: Track largest and second as you scan the array
-    // TODO: Massivni skanerlash paytida largest va second ni kuzatib boring
-
-
     cout << "Second largest = " << 0 /* replace */ << endl;
     return 0;
 }`,
@@ -1387,14 +1159,6 @@ int main() {
     int arr[6];
 
     cout << "Enter 6 numbers: ";
-
-    // TODO: Read 6 numbers into arr
-    // TODO: Прочитайте 6 чисел в arr
-
-
-    // TODO: Track largest and second as you scan the array
-    // TODO: При сканировании массива отслеживайте largest и second
-
 
     cout << "Second largest = " << 0 /* replace */ << endl;
     return 0;
@@ -1434,10 +1198,6 @@ int main() {
     cout << "Enter a lowercase word: ";
     cin >> s;
 
-    // TODO: Loop through s and convert each char to uppercase
-    // TODO: s bo'ylab yurib, har bir belgini katta harfga o'tkazing
-
-
     cout << s << endl;
     return 0;
 }`,
@@ -1449,10 +1209,6 @@ int main() {
     string s;
     cout << "Enter a lowercase word: ";
     cin >> s;
-
-    // TODO: Loop through s and convert each char to uppercase
-    // TODO: Пройдите циклом по s и переведите каждый символ в верхний регистр
-
 
     cout << s << endl;
     return 0;
@@ -1500,16 +1256,8 @@ int main() {
 
     cout << "Enter 6 numbers: ";
 
-    // TODO: Read 6 numbers into arr
-    // TODO: 6 ta sonni arr ga o'qing
-
-
     int maxVal = arr[0];
     int minVal = arr[0];
-
-    // TODO: Loop from i=1 to 5, update maxVal and minVal
-    // TODO: i=1 dan 5 gacha sikl, maxVal va minVal ni yangilang
-
 
     cout << "Difference = " << (maxVal - minVal) << endl;
     return 0;
@@ -1522,16 +1270,8 @@ int main() {
 
     cout << "Enter 6 numbers: ";
 
-    // TODO: Read 6 numbers into arr
-    // TODO: Прочитайте 6 чисел в arr
-
-
     int maxVal = arr[0];
     int minVal = arr[0];
-
-    // TODO: Loop from i=1 to 5, update maxVal and minVal
-    // TODO: Пройдите циклом от i=1 до 5, обновляя maxVal и minVal
-
 
     cout << "Difference = " << (maxVal - minVal) << endl;
     return 0;
@@ -1576,17 +1316,6 @@ int main() {
 
     cout << "Enter 8 numbers: ";
 
-    // TODO: Read 8 numbers into arr
-    // TODO: 8 ta sonni arr ga o'qing
-
-
-    // TODO (a): Find the minimum
-    // TODO (a): Eng kichigini toping
-
-    // TODO (b): Find the maximum (in the same loop)
-    // TODO (b): Eng kattasini toping (bir xil siklda)
-
-
     cout << "Min = " << 0 /* your min */ << endl;
     cout << "Max = " << 0 /* your max */ << endl;
     return 0;
@@ -1598,17 +1327,6 @@ int main() {
     int arr[8];
 
     cout << "Enter 8 numbers: ";
-
-    // TODO: Read 8 numbers into arr
-    // TODO: Прочитайте 8 чисел в arr
-
-
-    // TODO (a): Find the minimum
-    // TODO (a): Найдите минимум
-
-    // TODO (b): Find the maximum (in the same loop)
-    // TODO (b): Найдите максимум (в том же цикле)
-
 
     cout << "Min = " << 0 /* your min */ << endl;
     cout << "Max = " << 0 /* your max */ << endl;
@@ -1654,18 +1372,7 @@ int main() {
 
     cout << "Enter 8 numbers: ";
 
-    // TODO: Read 8 numbers into arr
-    // TODO: 8 ta sonni arr ga o'qing
-
-
     int sum = 0;
-    // TODO (a): Sum all elements
-    // TODO (a): Barcha elementlarni yig'ing
-
-
-    // TODO (b): Compute the average as a double
-    // TODO (b): O'rtachani double sifatida hisoblang
-
 
     cout << "Sum = " << sum << endl;
     cout << "Average = " << 0.0 /* replace */ << endl;
@@ -1679,18 +1386,7 @@ int main() {
 
     cout << "Enter 8 numbers: ";
 
-    // TODO: Read 8 numbers into arr
-    // TODO: Прочитайте 8 чисел в arr
-
-
     int sum = 0;
-    // TODO (a): Sum all elements
-    // TODO (a): Сложите все элементы
-
-
-    // TODO (b): Compute the average as a double
-    // TODO (b): Посчитайте среднее как double
-
 
     cout << "Sum = " << sum << endl;
     cout << "Average = " << 0.0 /* replace */ << endl;
@@ -1739,10 +1435,6 @@ int main() {
 
     int vowels = 0, consonants = 0;
 
-    // TODO: Loop through each character and classify it
-    // TODO: Har bir belgi bo'ylab yurib, uni tasniflang
-
-
     cout << "Vowels: " << vowels << endl;
     cout << "Consonants: " << consonants << endl;
     return 0;
@@ -1757,10 +1449,6 @@ int main() {
     cin >> word;
 
     int vowels = 0, consonants = 0;
-
-    // TODO: Loop through each character and classify it
-    // TODO: Пройдите циклом по каждому символу и классифицируйте его
-
 
     cout << "Vowels: " << vowels << endl;
     cout << "Consonants: " << consonants << endl;
@@ -1806,18 +1494,7 @@ int main() {
 
     cout << "Enter 6 numbers: ";
 
-    // TODO: Read 6 numbers into arr
-    // TODO: 6 ta sonni arr ga o'qing
-
-
-    // TODO (a): Bubble sort ascending
-    // TODO (a): O'sish tartibida bubble sort
-
-
-    // TODO (b): Print the sorted array space-separated
-    // TODO (b): Sarlangan massivni bo'sh joy bilan chiqaring
     cout << "Sorted: ";
-
 
     cout << endl;
     return 0;
@@ -1830,18 +1507,7 @@ int main() {
 
     cout << "Enter 6 numbers: ";
 
-    // TODO: Read 6 numbers into arr
-    // TODO: Прочитайте 6 чисел в arr
-
-
-    // TODO (a): Bubble sort ascending
-    // TODO (a): Сортировка пузырьком по возрастанию
-
-
-    // TODO (b): Print the sorted array space-separated
-    // TODO (b): Выведите отсортированный массив через пробел
     cout << "Sorted: ";
-
 
     cout << endl;
     return 0;
@@ -1886,15 +1552,7 @@ int main() {
 
     cout << "Enter 8 numbers: ";
 
-    // TODO: Read 8 numbers into arr
-    // TODO: 8 ta sonni arr ga o'qing
-
-
     int sumPos = 0, sumNeg = 0;
-
-    // TODO (a) and (b): One loop - add positive values to sumPos, negatives to sumNeg
-    // TODO (a) va (b): Bitta sikl - musbatlarni sumPos ga, manfiylarni sumNeg ga qo'shing
-
 
     cout << "Positives = " << sumPos << endl;
     cout << "Negatives = " << sumNeg << endl;
@@ -1908,15 +1566,7 @@ int main() {
 
     cout << "Enter 8 numbers: ";
 
-    // TODO: Read 8 numbers into arr
-    // TODO: Прочитайте 8 чисел в arr
-
-
     int sumPos = 0, sumNeg = 0;
-
-    // TODO (a) and (b): One loop - add positive values to sumPos, negatives to sumNeg
-    // TODO (a) va (b): Один цикл - добавляйте положительные в sumPos, отрицательные в sumNeg
-
 
     cout << "Positives = " << sumPos << endl;
     cout << "Negatives = " << sumNeg << endl;
@@ -1971,14 +1621,6 @@ int main() {
 
     int count = 0;
 
-    // TODO (a): Count how many times oldChar appears in s
-    // TODO (a): oldChar s da necha marta uchrashini sanang
-
-
-    // TODO (b): Replace all oldChar with newChar
-    // TODO (b): Barcha oldChar ni newChar bilan almashtiring
-
-
     cout << "Count = " << count << endl;
     cout << "Result = " << s << endl;
     return 0;
@@ -1999,14 +1641,6 @@ int main() {
     cin >> newChar;
 
     int count = 0;
-
-    // TODO (a): Count how many times oldChar appears in s
-    // TODO (a): Подсчитайте, сколько раз oldChar встречается в s
-
-
-    // TODO (b): Replace all oldChar with newChar
-    // TODO (b): Замените все oldChar на newChar
-
 
     cout << "Count = " << count << endl;
     cout << "Result = " << s << endl;
@@ -2052,24 +1686,11 @@ int main() {
 
     cout << "Enter 7 numbers: ";
 
-    // TODO: Read 7 numbers into arr
-    // TODO: 7 ta sonni arr ga o'qing
-
-
     int maxVal = arr[0], maxIdx = 0;
-
-    // TODO (a): Find the largest value and its index
-    // TODO (a): Eng katta qiymat va uning indeksini toping
-
 
     cout << "Largest = " << maxVal << " at index " << maxIdx << endl;
 
-    // TODO (b): Double arr[maxIdx], then print the whole array
-    // TODO (b): arr[maxIdx] ni ikkilantiring, so'ng butun massivni chiqaring
-
-
     cout << "Array: ";
-
 
     cout << endl;
     return 0;
@@ -2082,24 +1703,11 @@ int main() {
 
     cout << "Enter 7 numbers: ";
 
-    // TODO: Read 7 numbers into arr
-    // TODO: Прочитайте 7 чисел в arr
-
-
     int maxVal = arr[0], maxIdx = 0;
-
-    // TODO (a): Find the largest value and its index
-    // TODO (a): Найдите наибольшее значение и его индекс
-
 
     cout << "Largest = " << maxVal << " at index " << maxIdx << endl;
 
-    // TODO (b): Double arr[maxIdx], then print the whole array
-    // TODO (b): Удвойте arr[maxIdx], затем выведите весь массив
-
-
     cout << "Array: ";
-
 
     cout << endl;
     return 0;
@@ -2144,15 +1752,7 @@ int main() {
 
     cout << "Enter 8 numbers: ";
 
-    // TODO: Read 8 numbers into arr
-    // TODO: 8 ta sonni arr ga o'qing
-
-
     int evens = 0, odds = 0;
-
-    // TODO (a) & (b): In one loop, count evens and odds
-    // TODO (a) va (b): Bitta siklda juft va toq sonlarni sanang
-
 
     cout << "Even: " << evens << endl;
     cout << "Odd: " << odds << endl;
@@ -2166,15 +1766,7 @@ int main() {
 
     cout << "Enter 8 numbers: ";
 
-    // TODO: Read 8 numbers into arr
-    // TODO: Прочитайте 8 чисел в arr
-
-
     int evens = 0, odds = 0;
-
-    // TODO (a) & (b): In one loop, count evens and odds
-    // TODO (a) va (b): В одном цикле подсчитайте чётные и нечётные числа
-
 
     cout << "Even: " << evens << endl;
     cout << "Odd: " << odds << endl;
@@ -2221,14 +1813,9 @@ int main() {
     cout << "Enter a word: ";
     cin >> s;
 
-    // TODO (a): Print the length
-    // TODO (a): Uzunlikni chiqaring
     cout << "Length: " << 0 /* replace */ << endl;
 
-    // TODO (b): Print the string reversed
-    // TODO (b): Satrni teskari chiqaring
     cout << "Reversed: ";
-
 
     cout << endl;
     return 0;
@@ -2242,14 +1829,9 @@ int main() {
     cout << "Enter a word: ";
     cin >> s;
 
-    // TODO (a): Print the length
-    // TODO (a): Выведите длину
     cout << "Length: " << 0 /* replace */ << endl;
 
-    // TODO (b): Print the string reversed
-    // TODO (b): Выведите строку в обратном порядке
     cout << "Reversed: ";
-
 
     cout << endl;
     return 0;
@@ -2300,10 +1882,6 @@ int main() {
 
     cout << "Indexes: ";
 
-    // TODO: Loop through arr. When arr[i] == t, print i and increment count.
-    // TODO: arr bo'ylab yuring. arr[i] == t bo'lganda i ni chiqaring va count ni oshiring.
-
-
     cout << endl;
     cout << "Count = " << count << endl;
     return 0;
@@ -2321,10 +1899,6 @@ int main() {
     int count = 0;
 
     cout << "Indexes: ";
-
-    // TODO: Loop through arr. When arr[i] == t, print i and increment count.
-    // TODO: Пройдите циклом по arr. Когда arr[i] == t, выведите i и увеличьте count.
-
 
     cout << endl;
     cout << "Count = " << count << endl;
@@ -2369,10 +1943,6 @@ int main() {
     cout << "Enter n: ";
     cin >> n;
 
-    // TODO: Loop from 1 to n; print numbers divisible by 3 separated by spaces.
-    // TODO: 1 dan n gacha sikl; 3 ga karrali sonlarni bo'sh joy bilan chiqaring.
-
-
     cout << endl;
     return 0;
 }`,
@@ -2383,10 +1953,6 @@ int main() {
     int n;
     cout << "Enter n: ";
     cin >> n;
-
-    // TODO: Loop from 1 to n; print numbers divisible by 3 separated by spaces.
-    // TODO: Пройдите циклом от 1 до n; выведите числа, кратные 3, через пробел.
-
 
     cout << endl;
     return 0;
@@ -2426,10 +1992,6 @@ int main() {
 
     int count = 0;
 
-    // TODO: Read n numbers; count how many are > 0.
-    // TODO: n ta son o'qing; nechtasi > 0 ekanini sanang.
-
-
     cout << "Positives = " << count << endl;
     return 0;
 }`,
@@ -2442,10 +2004,6 @@ int main() {
     cin >> n;
 
     int count = 0;
-
-    // TODO: Read n numbers; count how many are > 0.
-    // TODO: Прочитайте n чисел; подсчитайте, сколько из них > 0.
-
 
     cout << "Positives = " << count << endl;
     return 0;
@@ -2478,35 +2036,20 @@ int main() {
     starter: `#include <iostream>
 using namespace std;
 
-// TODO: Define int square(int x) here that returns x * x.
-// TODO: x * x ni qaytaradigan int square(int x) funksiyasini shu yerda aniqlang.
-
-
 int main() {
     int n;
     cout << "Enter n: ";
     cin >> n;
-
-    // TODO: Call square(n) and print "Square = ..."
-
 
     return 0;
 }`,
     starter_ru: `#include <iostream>
 using namespace std;
 
-// TODO: Define int square(int x) here that returns x * x.
-// TODO: Определите функцию int square(int x), возвращающую x * x, здесь.
-
-
 int main() {
     int n;
     cout << "Enter n: ";
     cin >> n;
-
-    // TODO: Call square(n) and print "Square = ..."
-    // TODO: Вызовите square(n) и выведите "Square = ..."
-
 
     return 0;
 }`,
@@ -2538,35 +2081,20 @@ int main() {
     starter: `#include <iostream>
 using namespace std;
 
-// TODO: Define int sumTo(int n) here using a for or while loop.
-// TODO: int sumTo(int n) ni shu yerda for yoki while sikl bilan aniqlang.
-
-
 int main() {
     int n;
     cout << "Enter n: ";
     cin >> n;
-
-    // TODO: Call sumTo(n) and print "Sum = ..."
-
 
     return 0;
 }`,
     starter_ru: `#include <iostream>
 using namespace std;
 
-// TODO: Define int sumTo(int n) here using a for or while loop.
-// TODO: Определите функцию int sumTo(int n) здесь, используя цикл for или while.
-
-
 int main() {
     int n;
     cout << "Enter n: ";
     cin >> n;
-
-    // TODO: Call sumTo(n) and print "Sum = ..."
-    // TODO: Вызовите sumTo(n) и выведите "Sum = ..."
-
 
     return 0;
 }`,
@@ -2598,35 +2126,20 @@ int main() {
     starter: `#include <iostream>
 using namespace std;
 
-// TODO: Define bool isEven(int x) that returns x % 2 == 0.
-// TODO: x % 2 == 0 ni qaytaruvchi bool isEven(int x) ni aniqlang.
-
-
 int main() {
     int n;
     cout << "Enter n: ";
     cin >> n;
-
-    // TODO: Use isEven(n) in an if-else to print "Even" or "Odd".
-
 
     return 0;
 }`,
     starter_ru: `#include <iostream>
 using namespace std;
 
-// TODO: Define bool isEven(int x) that returns x % 2 == 0.
-// TODO: Определите функцию bool isEven(int x), возвращающую x % 2 == 0.
-
-
 int main() {
     int n;
     cout << "Enter n: ";
     cin >> n;
-
-    // TODO: Use isEven(n) in an if-else to print "Even" or "Odd".
-    // TODO: Используйте isEven(n) в if-else, чтобы вывести "Even" или "Odd".
-
 
     return 0;
 }`,
@@ -2658,30 +2171,16 @@ int main() {
     starter: `#include <iostream>
 using namespace std;
 
-// TODO: Define int sumArray(int arr[], int n) that loops and returns the sum.
-
-
 int main() {
     int arr[6] = {4, 8, 15, 16, 23, 42};
-
-    // TODO: Call sumArray(arr, 6) and print "Sum = ..."
-
 
     return 0;
 }`,
     starter_ru: `#include <iostream>
 using namespace std;
 
-// TODO: Define int sumArray(int arr[], int n) that loops and returns the sum.
-// TODO: Определите функцию int sumArray(int arr[], int n), которая в цикле возвращает сумму.
-
-
 int main() {
     int arr[6] = {4, 8, 15, 16, 23, 42};
-
-    // TODO: Call sumArray(arr, 6) and print "Sum = ..."
-    // TODO: Вызовите sumArray(arr, 6) и выведите "Sum = ..."
-
 
     return 0;
 }`,
@@ -2717,9 +2216,6 @@ int main() {
     int arr[8] = {3, -1, 7, -4, -2, 9, 5, -6};
     int count = 0;
 
-    // TODO: Loop through arr; increment count when arr[i] < 0.
-
-
     cout << "Negatives = " << count << endl;
     return 0;
 }`,
@@ -2729,10 +2225,6 @@ using namespace std;
 int main() {
     int arr[8] = {3, -1, 7, -4, -2, 9, 5, -6};
     int count = 0;
-
-    // TODO: Loop through arr; increment count when arr[i] < 0.
-    // TODO: Пройдите циклом по arr; увеличивайте count, когда arr[i] < 0.
-
 
     cout << "Negatives = " << count << endl;
     return 0;
@@ -2765,34 +2257,20 @@ int main() {
     starter: `#include <iostream>
 using namespace std;
 
-// TODO: Define int maxOf(int a, int b) that returns the larger.
-
-
 int main() {
     int a, b;
     cout << "Enter two integers: ";
     cin >> a >> b;
-
-    // TODO: Call maxOf(a, b) and print "Max = ..."
-
 
     return 0;
 }`,
     starter_ru: `#include <iostream>
 using namespace std;
 
-// TODO: Define int maxOf(int a, int b) that returns the larger.
-// TODO: Определите функцию int maxOf(int a, int b), возвращающую большее из двух.
-
-
 int main() {
     int a, b;
     cout << "Enter two integers: ";
     cin >> a >> b;
-
-    // TODO: Call maxOf(a, b) and print "Max = ..."
-    // TODO: Вызовите maxOf(a, b) и выведите "Max = ..."
-
 
     return 0;
 }`,
@@ -2829,10 +2307,6 @@ int main() {
     cout << "Enter height: ";
     cin >> n;
 
-    // TODO: Print a triangle of stars with height n.
-    // TODO: Balandligi n bo'lgan yulduzlar uchburchagini chiqaring.
-
-
     return 0;
 }`,
     starter_ru: `#include <iostream>
@@ -2842,10 +2316,6 @@ int main() {
     int n;
     cout << "Enter height: ";
     cin >> n;
-
-    // TODO: Print a triangle of stars with height n.
-    // TODO: Выведите треугольник из звёздочек высотой n.
-
 
     return 0;
 }`,
@@ -2877,14 +2347,8 @@ int main() {
     starter: `#include <iostream>
 using namespace std;
 
-// TODO: Define void printArray(int arr[], int n) that prints with spaces.
-
-
 int main() {
     int arr[5] = {5, 3, 8, 1, 9};
-
-    // TODO: Call printArray(arr, 5).
-
 
     cout << endl;
     return 0;
@@ -2892,16 +2356,8 @@ int main() {
     starter_ru: `#include <iostream>
 using namespace std;
 
-// TODO: Define void printArray(int arr[], int n) that prints with spaces.
-// TODO: Определите функцию void printArray(int arr[], int n), которая выводит элементы через пробел.
-
-
 int main() {
     int arr[5] = {5, 3, 8, 1, 9};
-
-    // TODO: Call printArray(arr, 5).
-    // TODO: Вызовите printArray(arr, 5).
-
 
     cout << endl;
     return 0;
@@ -2938,12 +2394,6 @@ int main() {
     double x;
     double sum = 0;
 
-    // TODO: Read 5 numbers in a loop; accumulate sum.
-
-
-    // TODO: Print "Average = " followed by sum / 5.
-
-
     return 0;
 }`,
     starter_ru: `#include <iostream>
@@ -2952,14 +2402,6 @@ using namespace std;
 int main() {
     double x;
     double sum = 0;
-
-    // TODO: Read 5 numbers in a loop; accumulate sum.
-    // TODO: Прочитайте 5 чисел в цикле; накапливайте сумму.
-
-
-    // TODO: Print "Average = " followed by sum / 5.
-    // TODO: Выведите "Average = ", затем sum / 5.
-
 
     return 0;
 }`,
@@ -2991,34 +2433,20 @@ int main() {
     starter: `#include <iostream>
 using namespace std;
 
-// TODO: Define int myAbs(int x) using if-else.
-
-
 int main() {
     int n;
     cout << "Enter n: ";
     cin >> n;
-
-    // TODO: Call myAbs(n) and print "|n| = ..."
-
 
     return 0;
 }`,
     starter_ru: `#include <iostream>
 using namespace std;
 
-// TODO: Define int myAbs(int x) using if-else.
-// TODO: Определите функцию int myAbs(int x), используя if-else.
-
-
 int main() {
     int n;
     cout << "Enter n: ";
     cin >> n;
-
-    // TODO: Call myAbs(n) and print "|n| = ..."
-    // TODO: Вызовите myAbs(n) и выведите "|n| = ..."
-
 
     return 0;
 }`,
@@ -3058,9 +2486,6 @@ int main() {
     int largest;
     int x;
 
-    // TODO: Read first number into largest. Then read n-1 more; update largest if new x is bigger.
-
-
     cout << "Largest = " << largest << endl;
     return 0;
 }`,
@@ -3074,10 +2499,6 @@ int main() {
 
     int largest;
     int x;
-
-    // TODO: Read first number into largest. Then read n-1 more; update largest if new x is bigger.
-    // TODO: Прочитайте первое число в largest. Затем прочитайте ещё n-1; обновляйте largest, если новый x больше.
-
 
     cout << "Largest = " << largest << endl;
     return 0;
@@ -3110,34 +2531,20 @@ int main() {
     starter: `#include <iostream>
 using namespace std;
 
-// TODO: Define int cube(int x) returning x * x * x.
-
-
 int main() {
     int n;
     cout << "Enter n: ";
     cin >> n;
-
-    // TODO: Call cube(n) and print "Cube = ..."
-
 
     return 0;
 }`,
     starter_ru: `#include <iostream>
 using namespace std;
 
-// TODO: Define int cube(int x) returning x * x * x.
-// TODO: Определите функцию int cube(int x), возвращающую x * x * x.
-
-
 int main() {
     int n;
     cout << "Enter n: ";
     cin >> n;
-
-    // TODO: Call cube(n) and print "Cube = ..."
-    // TODO: Вызовите cube(n) и выведите "Cube = ..."
-
 
     return 0;
 }`,
@@ -3169,30 +2576,16 @@ int main() {
     starter: `#include <iostream>
 using namespace std;
 
-// TODO: Define int countTarget(int arr[], int n, int target) using a loop.
-
-
 int main() {
     int arr[6] = {2, 5, 2, 7, 2, 3};
-
-    // TODO: Call countTarget(arr, 6, 2) and print "Count = ..."
-
 
     return 0;
 }`,
     starter_ru: `#include <iostream>
 using namespace std;
 
-// TODO: Define int countTarget(int arr[], int n, int target) using a loop.
-// TODO: Определите функцию int countTarget(int arr[], int n, int target), используя цикл.
-
-
 int main() {
     int arr[6] = {2, 5, 2, 7, 2, 3};
-
-    // TODO: Call countTarget(arr, 6, 2) and print "Count = ..."
-    // TODO: Вызовите countTarget(arr, 6, 2) и выведите "Count = ..."
-
 
     return 0;
 }`,
