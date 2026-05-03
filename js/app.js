@@ -1012,18 +1012,18 @@ async function handleRunClick(idx) {
       '<b>⚠ Your code looks the same as the starter template.</b> ' +
       'This means you have not written any solution yet. The compiler still ran it, ' +
       'but running the starter does not count as solving the problem. ' +
-      'Replace the <code>// TODO</code> comments with your actual solution.' +
+      'Write your actual solution in the editor before submitting.' +
       '<div class="uz-inline uz">' +
       '<b>⚠ Kodingiz boshlang\'ich shablon bilan bir xil ko\'rinadi.</b> ' +
       'Bu siz hali yechim yozmaganingizni anglatadi. Kompilyator uni baribir ishga tushirdi, ' +
       'lekin boshlang\'ich shablonni ishga tushirish masalani yechish hisoblanmaydi. ' +
-      '<code>// TODO</code> izohlari o\'rniga haqiqiy yechimingizni yozing.' +
+      'Yuborishdan oldin tahrirlovchida haqiqiy yechimingizni yozing.' +
       '</div>' +
       '<div class="ru-inline ru">' +
       '<b>⚠ Ваш код выглядит так же, как стартовый шаблон.</b> ' +
       'Это означает, что вы ещё не написали решение. Компилятор всё равно его выполнил, ' +
       'но запуск стартового шаблона не считается решением задачи. ' +
-      'Замените комментарии <code>// TODO</code> вашим реальным решением.' +
+      'Напишите ваше решение в редакторе перед отправкой.' +
       '</div></div>'
     : '';
 
